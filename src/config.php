@@ -1,0 +1,39 @@
+<?php
+// ----------------------------------------------------------------------
+// tecla. The tennis club app.
+// Copyright (C) 2020 Daniel J. Lauk <daniel.lauk@gmail.com>
+//
+// tecla is open source under the terms of the MIT license.
+// For details see LICENSE.md.
+// ----------------------------------------------------------------------
+
+// ======================================================================
+//
+// THIS IS A TEMPLATE CONFIGURATION !
+//
+// DO NOT DELETE THIS FILE!
+//
+// Instead, copy it to a file called `config.local.php` and make
+// adjustments _there_.
+//
+// ======================================================================
+
+// this DB configuration is setup for the local docker-compose LAMP stack
+$app["config.pdo"] = array(
+    'dsn' => 'mysql:host=db;dbname=tennis',
+    'user' => 'root',
+    'password' => 'my_secret_pw_shh',
+);
+$app["config.debug"] = false;
+
+// ======================================================================
+//
+// DO NOT REMOVE THIS PART BELOW!
+//
+// ======================================================================
+
+// override with local config, which is deliberately **NOT** put under
+// version control
+if (file_exists(__DIR__ . '/config.local.php')) {
+    require_once __DIR__ . '/config.local.php';
+}

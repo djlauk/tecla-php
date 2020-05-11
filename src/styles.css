@@ -1,0 +1,142 @@
+:root {
+    --tecla-primary: hsl(150, 50%, 30%);
+    --tecla-primary-on: white;
+    --tecla-primary-brighter: hsl(150, 50%, 40%);
+    --tecla-primary-darker: hsl(150, 50%, 20%);
+
+    --tecla-secondary: hsl(20, 100%, 50%);
+    --tecla-secondary-on: black;
+
+    --tecla-gray-90: hsl(0, 0%, 90%);
+    --tecla-gray-80: hsl(0, 0%, 80%);
+    --tecla-gray-60: hsl(0, 0%, 60%);
+    --tecla-gray-40: hsl(0, 0%, 40%);
+    --tecla-gray-20: hsl(0, 0%, 20%);
+
+    --tecla-surface: white;
+    --tecla-surface-on: var(--tecla-gray-20);
+    --tecla-border-color: var(--tecla-gray-40);
+    /* fibonacci: 2 3 5 8 13 21 34 55 89 */
+    --tecla-spacing: 8px;
+    --tecla-spacing-xs: 3px;
+    --tecla-spacing-s: 5px;
+    --tecla-spacing-m: 8px;
+    --tecla-spacing-l: 13px;
+    --tecla-spacing-xl: 21px;
+    --tecla-spacing-xxl: 34px;
+    --tecla-spacing-xxxl: 55px;
+    --tecla-spacing-xxxxl: 89px;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: inherit;
+}
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+}
+body {
+    font-family: "Roboto", "Noto", sans-serif;
+}
+
+#topnav {
+    background-color: var(--tecla-primary);
+    color: var(--tecla-primary-on);
+    padding: var(--tecla-spacing-m) var(--tecla-spacing-xl);
+}
+
+#topnav a,
+#topnav a:visited {
+    /* font-weight: bold; */
+    color: var(--tecla-primary-on);
+    margin-left: 2rem;
+    text-decoration: none;
+}
+
+.button {
+    display: inline-block;
+    padding: var(--tecla-spacing-m) var(--tecla-spacing-xl);
+    text-transform: uppercase;
+    text-decoration: none;
+    font-size: 1rem;
+    border-radius: 2px;
+    cursor: pointer;
+    background-color: var(--tecla-gray-80);
+    color: var(--tecla-gray-20);
+}
+
+.primary {
+    background-color: var(--tecla-primary);
+    color: var(--tecla-primary-on);
+}
+
+.primary:hover {
+    background-color: var(--tecla-primary-brighter);
+}
+
+.secondary {
+    background-color: var(--tecla-secondary);
+    color: var(--tecla-secondary-on);
+}
+
+main {
+    max-width: 960px;
+    margin: 0 auto;
+    background-color: var(--tecla-surface);
+    color: var(--tecla-surface-on);
+}
+
+label {
+    font-family: "Roboto Condensed", inherit;
+    font-size: 70%;
+    text-transform: uppercase;
+    color: var(--tecla-gray-60);
+    display: block;
+    margin-bottom: 4px;
+}
+
+label[required]::after {
+    content: " *";
+}
+
+select,
+input {
+    margin: 0 0 var(--tecla-spacing-m, 0) 0;
+    display: block;
+}
+
+.tecla-list {
+    width: 100%;
+    background-color: var(--tecla-surface);
+    border-color: var(--tecla-border-color);
+    border-width: 1px;
+    border-style: solid;
+    margin: var(--tecla-spacing) 0;
+    padding: 0;
+}
+
+.tecla-list-item {
+    list-style: none;
+    width: 100%;
+    padding: var(--tecla-spacing-s, 0);
+    margin: 0;
+}
+.tecla-list-item:hover {
+    background-color: var(--tecla-gray-90);
+}
+.tecla-list-item:active {
+    background-color: var(--tecla-primary);
+    color: var(--tecla-primary-on);
+}
+.tecla-list-item a {
+    text-decoration: inherit;
+    color: inherit;
+}
+.tecla-list-item .second-line {
+    font-size: 80%;
+    color: var(--tecla-gray-60);
+}
