@@ -67,7 +67,7 @@ class TimeslotDAO
     public function loadAll()
     {
         $results = array();
-        $sql = "SELECT `id`, `weekday`, `startTime`, `endTime`, `court`, `metaVersion`, `metaCreatedOn`, `metaUpdatedOn` FROM `time_slots`";
+        $sql = "SELECT `id`, `weekday`, `startTime`, `endTime`, `court`, `metaVersion`, `metaCreatedOn`, `metaUpdatedOn` FROM `time_slots` ORDER BY `weekday` ASC, `startTime` ASC, `court` ASC, `id` ASC";
         $rows = $this->db->query($sql);
         foreach ($rows as $row) {
             $results[] = TimeSlot::createFromArray($row);
