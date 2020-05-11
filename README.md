@@ -21,7 +21,7 @@ Tecla allows the tennis club to allocate the time slots it bought at tennis cent
 
 ## Contributing / Developing
 
-If you're interested in contributing to this project, have a look at [CONTRIBUTING.md].
+If you're interested in contributing to this project, have a look at [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 ## Installation
 

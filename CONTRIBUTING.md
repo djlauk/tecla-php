@@ -48,4 +48,4 @@ Copy file `./src/config.php` to `./src/config.local.php`. Now make local modific
 
 ## Initial setup
 
-For the initial setup, see the installation instructions in [README.md]. You'll need to create a database schema and the initial table structure.
+For the initial setup, see the installation instructions in [README.md](./README.md). You'll need to create a database schema and the initial table structure.
