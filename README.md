@@ -4,21 +4,6 @@ Tecla, the Tennis Club App, written as a server-side solution in PHP.
 
 Tecla allows the tennis club to allocate the time slots it bought at tennis centers for its members.
 
-## Functionality
-
-- Self management for users to ease the life of admins:
-  - New users can register online with email verification.
-  - Users can request password reset procedure through email verification.
-  - Users can view and update their information themselves.
-- Game management
-  - Members can book games according to club bylaws and regulations.
-  - Members are asked to enter results after the game.
-  - Admins can block games so they cannot be booked.
-  - Admins can generate available games from templates.
-- Auditing (planned)
-- Tournament management (planned)
-- Statistics and reporting (planned)
-
 ## Contributing / Developing
 
 If you're interested in contributing to this project, have a look at [CONTRIBUTING.md](./CONTRIBUTING.md).
