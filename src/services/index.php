@@ -7,6 +7,8 @@
 // For details see LICENSE.md.
 // ----------------------------------------------------------------------
 
+require_once __DIR__ . '/auth.php';
+
 $app->service('db', function () use ($app) {
     $cnx = $app['config.pdo/dsn'];
     $user = $app['config.pdo/user'];
