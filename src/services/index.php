@@ -27,3 +27,8 @@ $app->service('timeslotdao', function () use ($app) {
     $db = $app['db'];
     return new tecla\data\TimeslotDAO($db);
 });
+
+$app->service('userdao', function () use ($app) {
+    $db = $app['db'];
+    return new tecla\data\UserDAO($db);
+});

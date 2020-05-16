@@ -11,3 +11,4 @@ namespace tecla\data;
 
 require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/timeslot.php';
+require_once __DIR__ . '/user.php';
