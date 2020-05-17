@@ -43,6 +43,7 @@ class Timeslot
         $this->startTime = $arr['startTime'] ?? $this->startTime;
         $this->endTime = $arr['endTime'] ?? $this->endTime;
         $this->court = $arr['court'] ?? $this->court;
+        $this->notes = $arr['notes'] ?? $this->notes;
         $this->metaVersion = $arr['metaVersion'] ?? $this->metaVersion;
         $this->metaCreatedOn = $arr['metaCreatedOn'] ?? $this->metaCreatedOn;
         $this->metaUpdatedOn = $arr['metaUpdatedOn'] ?? $this->metaUpdatedOn;
@@ -67,7 +68,25 @@ class TimeslotDAO
     public function loadAll()
     {
         $results = array();
-        $sql = "SELECT `id`, `weekday`, `startTime`, `endTime`, `court`, `metaVersion`, `metaCreatedOn`, `metaUpdatedOn` FROM `time_slots` ORDER BY `weekday` ASC, `startTime` ASC, `court` ASC, `id` ASC";
+        $sql = <<<HERE
+SELECT
+    `id`,
+    `weekday`,
+    `startTime`,
+    `endTime`,
+    `court`,
+    `notes`,
+    `metaVersion`,
+    `metaCreatedOn`,
+    `metaUpdatedOn`
+FROM
+    `time_slots`
+ORDER BY
+    `weekday` ASC,
+    `startTime` ASC,
+    `court` ASC,
+    `id` ASC
+HERE;
         $rows = $this->db->query($sql);
         foreach ($rows as $row) {
             $results[] = TimeSlot::createFromArray($row);
@@ -77,7 +96,22 @@ class TimeslotDAO
 
     public function loadById($id)
     {
-        $sql = "SELECT `id`, `weekday`, `startTime`, `endTime`, `court`, `metaVersion`, `metaCreatedOn`, `metaUpdatedOn` FROM `time_slots` WHERE `id`=:id";
+        $sql = <<<HERE
+SELECT
+    `id`,
+    `weekday`,
+    `startTime`,
+    `endTime`,
+    `court`,
+    `notes`,
+    `metaVersion`,
+    `metaCreatedOn`,
+    `metaUpdatedOn`
+FROM
+    `time_slots`
+WHERE
+    `id` = :id
+HERE;
         $row = $this->db->querySingle($sql, array('id' => $id));
         return is_null($row) ? null : TimeSlot::createFromArray($row);
     }
