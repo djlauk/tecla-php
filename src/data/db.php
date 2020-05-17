@@ -10,13 +10,13 @@
 namespace tecla\data;
 
 const WEEKDAYS = array(
-    'Sonntag',
-    'Montag',
-    'Dienstag',
-    'Mittwoch',
-    'Donnerstag',
-    'Freitag',
-    'Samstag',
+    'Sunday',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
 );
 
 class VersionMismatchError extends \Exception

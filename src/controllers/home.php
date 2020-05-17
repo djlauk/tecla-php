@@ -10,8 +10,10 @@
 namespace tecla;
 
 $app->bind("/", function () use ($app) {
+    $today = strftime('%Y-%m-%d', time());
     $data = array(
         'user' => $app['auth']->getUser(),
+        'games' => $app['gamedao']->loadAllAfter($today),
     );
     return $this->render("views/home/index.php with views/layout.php", $data);
 });

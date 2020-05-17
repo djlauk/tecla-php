@@ -19,6 +19,9 @@
 
 	--tecla-error: #700000;
 	--tecla-error-on: white;
+
+	--tecla-available: hsl(150, 100%, 80%);
+	--tecla-taken: hsl(0, 100%, 80%);
 	/* fibonacci: 2 3 5 8 13 21 34 55 89 */
 	--tecla-spacing: 8px;
 	--tecla-spacing-xs: 3px;
@@ -137,6 +140,9 @@ input {
 	list-style: none;
 	padding: var(--tecla-spacing-s, 0);
 	margin: 0;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
 }
 .tecla-list-item:hover {
 	background-color: var(--tecla-gray-90);
@@ -152,4 +158,24 @@ input {
 .tecla-list-item .second-line {
 	font-size: 80%;
 	color: var(--tecla-gray-60);
+}
+
+.tecla-list-item-icon {
+	flex: 0 0 auto;
+	width: 40px;
+	height: 40px;
+	margin: 4px 8px 4px 4px;
+	border-radius: 50%;
+}
+
+.tecla-list-item-content {
+	flex: 1 1 auto;
+}
+
+.status-available {
+	background-color: var(--tecla-available);
+}
+
+.status-taken {
+	background-color: var(--tecla-taken);
 }
