@@ -8,14 +8,14 @@
 // ----------------------------------------------------------------------
 
 ?>
-<h1>Spielzeiten</h1>
+<h1>Time slots</h1>
 
-<p>Spielzeiten sind die Vorlage, nach der neue Spiele generiert werden.</p>
+<p>Time slots are templates for generating new games.</p>
 
 <ul class="tecla-list">
   <?php foreach ($items as $item): ?>
     <li class="tecla-list-item">
-        <a href="<?=$this->routeUrl("/admin/timeslots/edit/{$item->id}")?>">
+        <a href="<?=$this->routeUrl("/timeslots/edit/{$item->id}")?>">
             <div><?=tecla\data\WEEKDAYS[$item->weekday]?></div>
             <div class="second-line"><?=$item->startTime?> - <?=$item->endTime?>, <?=$item->court?></div>
         </a>
@@ -23,4 +23,7 @@
 	<?php endforeach?>
 </ul>
 
-<a class="button primary" href="<?=$this->routeUrl('/admin/timeslots/add')?>">Hinzufügen</a>
+<div>
+    <a class="button primary" href="<?=$this->routeUrl('/timeslots/add')?>">Add timeslot</a>
+    <a class="button secondary" href="<?=$this->routeUrl('/timeslots/generate-games')?>">Generate games</a>
+</div>

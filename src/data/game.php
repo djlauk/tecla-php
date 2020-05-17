@@ -155,6 +155,37 @@ HERE;
         return is_null($row) ? null : Game::createFromArray($row);
     }
 
+    public function getLastGame()
+    {
+        $sql = <<<HERE
+SELECT
+    `id`,
+    `startTime`,
+    `endTime`,
+    `court`,
+    `player1_id`,
+    `player2_id`,
+    `player3_id`,
+    `player4_id`,
+    `tournament_id`,
+    `winner`,
+    `status`,
+    `notes`,
+    `metaVersion`,
+    `metaCreatedOn`,
+    `metaUpdatedOn`
+FROM
+    `games`
+ORDER BY
+    `startTime` DESC,
+    `court` DESC,
+    `id` DESC
+LIMIT 1
+HERE;
+        $row = $this->db->querySingle($sql);
+        return is_null($row) ? null : Game::createFromArray($row);
+    }
+
     public function insert(&$obj)
     {
         $obj->metaVersion = 1;

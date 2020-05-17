@@ -46,3 +46,32 @@ $app->post("/timeslots/save", function ($params) use ($app) {
     $dao->update($newItem);
     $app->reroute('/timeslots');
 });
+
+$app->get('/timeslots/generate-games', function () use ($app) {
+    $gamedao = $app['gamedao'];
+    $g = $gamedao->getLastGame();
+    $t = is_null($g) ? new \DateTimeImmutable() : \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $g->startTime);
+    $data = array(
+        'firstDay' => $t->modify('+1 day')->format('Y-m-d'),
+        'lastDay' => $t->modify('+1 day')->modify('last day of this month')->format('Y-m-d'),
+        'problem' => false,
+    );
+    return $this->render("views/timeslots/generate-games.php with views/layout.php", $data);
+});
+
+$app->post('/timeslots/generate-games', function () use ($app) {
+    $firstDay = $_POST['firstDay'];
+    $lastDay = $_POST['lastDay'];
+    $numGenerated = $app['gameservice']->generateGames($firstDay, $lastDay);
+    $data = array(
+        'firstDay' => $firstDay,
+        'lastDay' => $lastDay,
+        'count' => $numGenerated,
+    );
+
+    if ($numGenerated === false) {
+        $data['problem'] = true;
+        return $this->render("views/timeslots/generate-games.php with views/layout.php", $data);
+    }
+    return $this->render("views/timeslots/generate-success.php with views/layout.php", $data);
+});

@@ -9,7 +9,7 @@
 ?>
 <h1>Add time slot</h1>
 
-<form method="POST" action="<?=$this->routeUrl('/admin/timeslots/create')?>">
+<form method="POST" action="<?=$this->routeUrl('/timeslots/create')?>">
     <div>
         <label for="weekday" required>Wochentag</label>
         <select id="weekday" name="weekday" required>
