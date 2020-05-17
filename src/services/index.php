@@ -25,6 +25,11 @@ $app->service('db', function () use ($app) {
     }
 });
 
+$app->service('gamedao', function () use ($app) {
+    $db = $app['db'];
+    return new tecla\data\GameDAO($db);
+});
+
 $app->service('timeslotdao', function () use ($app) {
     $db = $app['db'];
     return new tecla\data\TimeslotDAO($db);
