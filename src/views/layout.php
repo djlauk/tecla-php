@@ -20,7 +20,15 @@
 <body>
     <header id="topnav">
         <a href="<?=$this->routeUrl('/')?>">Home</a>
-        <a href="<?=$this->routeUrl('/admin/timeslots')?>">Spielzeiten</a>
+        <?php if ($this['auth']->hasRole('admin')): ?>
+        <a href="<?=$this->routeUrl('/timeslots')?>">Time slots</a>
+        <a href="<?=$this->routeUrl('/users')?>">Users</a>
+        <?php endif?>
+        <?php if ($this['auth']->isLoggedIn()): ?>
+        <a href="<?=$this->routeUrl('/logout')?>">Log out</a>
+        <?php else: ?>
+        <a href="<?=$this->routeUrl('/login')?>">Log in</a>
+        <?php endif?>
     </header>
     <main>
         <?php echo $content_for_layout; ?>

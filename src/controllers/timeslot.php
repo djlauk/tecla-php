@@ -7,7 +7,7 @@
 // For details see LICENSE.md.
 // ----------------------------------------------------------------------
 
-$app->bind("/admin/timeslots", function ($params) use ($app) {
+$app->bind("/timeslots", function ($params) use ($app) {
     $dao = $app['timeslotdao'];
     $items = $dao->loadAll();
     $data = array(
@@ -16,12 +16,12 @@ $app->bind("/admin/timeslots", function ($params) use ($app) {
     return $this->render("views/timeslots/list.php with views/layout.php", $data);
 });
 
-$app->bind("/admin/timeslots/add", function ($params) use ($app) {
+$app->bind("/timeslots/add", function ($params) use ($app) {
     $data = array();
     return $this->render("views/timeslots/add.php with views/layout.php", $data);
 });
 
-$app->get("/admin/timeslots/edit/:id", function ($params) use ($app) {
+$app->get("/timeslots/edit/:id", function ($params) use ($app) {
     $dao = $app['timeslotdao'];
     $id = $params['id'];
     $item = $dao->loadById($id);
@@ -34,15 +34,15 @@ $app->get("/admin/timeslots/edit/:id", function ($params) use ($app) {
     return $this->render("views/timeslots/edit.php with views/layout.php", $data);
 });
 
-$app->post("/admin/timeslots/create", function ($params) use ($app) {
+$app->post("/timeslots/create", function ($params) use ($app) {
     $item = tecla\data\Timeslot::createFromArray($_POST);
     $newId = $app['timeslotdao']->insert($item);
-    $app->reroute('/admin/timeslots');
+    $app->reroute('/timeslots');
 });
 
-$app->post("/admin/timeslots/save", function ($params) use ($app) {
+$app->post("/timeslots/save", function ($params) use ($app) {
     $newItem = tecla\data\Timeslot::createFromArray($_POST);
     $dao = $app['timeslotdao'];
     $dao->update($newItem);
-    $app->reroute('/admin/timeslots');
+    $app->reroute('/timeslots');
 });

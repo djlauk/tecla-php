@@ -23,6 +23,9 @@ $app = new Lime\App();
 // Because of Lime's DI capabilities and lazy evalution the order
 // doesn't really matter, but I still think, this is the right order...
 require_once __DIR__ . '/config.php';
+
+$app('session')->init();
+
 require_once __DIR__ . '/data/index.php';
 require_once __DIR__ . '/services/index.php';
 require_once __DIR__ . '/controllers/index.php';

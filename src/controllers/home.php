@@ -7,8 +7,11 @@
 // For details see LICENSE.md.
 // ----------------------------------------------------------------------
 
-namespace tecla\controllers;
+namespace tecla;
 
-require __DIR__ . '/auth.php';
-require __DIR__ . '/home.php';
-require __DIR__ . '/timeslot.php';
+$app->bind("/", function () use ($app) {
+    $data = array(
+        'user' => $app['auth']->getUser(),
+    );
+    return $this->render("views/home/index.php with views/layout.php", $data);
+});

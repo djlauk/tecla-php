@@ -8,3 +8,7 @@
 // ----------------------------------------------------------------------
 ?>
 <h1>Tennis Club App</h1>
+
+<?php if (!is_null($user)): ?>
+<p>Hello, <?=$user->displayName?>!</pre>
+<?php endif?>

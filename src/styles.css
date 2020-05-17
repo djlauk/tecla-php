@@ -16,6 +16,9 @@
 	--tecla-surface: white;
 	--tecla-surface-on: var(--tecla-gray-20);
 	--tecla-border-color: var(--tecla-gray-40);
+
+	--tecla-error: #700000;
+	--tecla-error-on: white;
 	/* fibonacci: 2 3 5 8 13 21 34 55 89 */
 	--tecla-spacing: 8px;
 	--tecla-spacing-xs: 3px;
@@ -81,6 +84,17 @@ body {
 .secondary {
 	background-color: var(--tecla-secondary);
 	color: var(--tecla-secondary-on);
+}
+
+.error {
+	background-color: var(--tecla-error);
+	color: var(--tecla-error-on);
+}
+
+.message {
+	padding: 1rem;
+	margin: 1rem 0;
+	font-size: 80%;
 }
 
 main {
