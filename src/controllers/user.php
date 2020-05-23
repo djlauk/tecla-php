@@ -85,3 +85,36 @@ $app->post("/users/create", function () use ($app) {
     $newId = $app['userdao']->insert($item);
     $app->reroute('/users');
 });
+
+$app->get("/users/enable/:id", function ($params) use ($app) {
+    $auth = $app['auth'];
+    $auth->requireRole('admin');
+
+    $id = $params['id'];
+    $user = $app['userdao']->loadById($id);
+
+    $data = array(
+        'id' => $id,
+        'user' => $user,
+    );
+
+    return $this->render("views/user/enable.php with views/layout.php", $data);
+});
+
+$app->post("/users/enable", function () use ($app) {
+    $auth = $app['auth'];
+    $auth->requireRole('admin');
+
+    $dao = $app['userdao'];
+    $id = $_POST['id'];
+    $user = $dao->loadById($id);
+    $user->fromArray($_POST);
+    if ($_POST['enabled'] === 'enabled') {
+        $user->disabledOn = null;
+    } else {
+        $user->disabledOn = strftime(ISODATETIME);
+    }
+    $dao->update($user);
+
+    $app->reroute('/users');
+});

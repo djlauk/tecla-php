@@ -24,4 +24,5 @@
 
 <div>
     <a class="button primary" href="<?=$this->routeUrl('/users/edit/' . $id)?>">Edit user</a>
+    <a class="button secondary" href="<?=$this->routeUrl('/users/enable/' . $id)?>">Enable / disable user</a>
 </div>
