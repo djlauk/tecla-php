@@ -21,4 +21,5 @@
 
 <div>
     <a class="button primary" href="<?=$this->routeUrl('/profile/edit')?>">Edit profile</a>
+    <a class="button secondary" href="<?=$this->routeUrl('/profile/change-password')?>">Change password</a>
 </div>
