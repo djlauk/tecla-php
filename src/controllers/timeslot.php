@@ -96,3 +96,29 @@ $app->post('/timeslots/generate-games', function () use ($app) {
     }
     return $this->render("views/timeslots/generate-success.php with views/layout.php", $data);
 });
+
+$app->get('/timeslots/delete/:id', function ($params) use ($app) {
+    $auth = $app['auth'];
+    $auth->requireRole('admin');
+
+    $timeslotdao = $app['timeslotdao'];
+    $id = $params['id'];
+    $timeslot = $timeslotdao->loadById($id);
+    $data = array(
+        'item' => $timeslot,
+    );
+    return $this->render("views/timeslots/delete.php with views/layout.php", $data);
+});
+
+$app->post('/timeslots/delete', function () use ($app) {
+    $auth = $app['auth'];
+    $auth->requireRole('admin');
+
+    $timeslotdao = $app['timeslotdao'];
+    $id = $_POST['id'];
+    $timeslot = $timeslotdao->loadById($id);
+    $timeslot->fromArray($_POST);
+    $timeslotdao->delete($timeslot);
+
+    $this->reroute('/timeslots');
+});

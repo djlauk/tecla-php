@@ -34,5 +34,6 @@
     </div>
     <div>
         <button class="button primary" type="submit">Speichern</button>
+        <a class="button secondary" href="<?=$this->routeUrl("/timeslots/delete/{$item->id}")?>">Delete</a>
     </div>
 </form>
