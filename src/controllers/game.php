@@ -139,3 +139,39 @@ $app->post("/game/cancel", function () use ($app) {
     $gamedao->update($game);
     $this->reroute("/game/view/$id");
 });
+
+$app->get("/game/edit/:id", function ($params) use ($app) {
+    $auth = $app['auth'];
+    $auth->requireRole('admin');
+
+    $user = $auth->getUser();
+    $gamedao = $app['gamedao'];
+    $userdao = $app['userdao'];
+    $id = $params['id'];
+    $game = $gamedao->loadById($id);
+    $allUsers = $userdao->loadAll();
+
+    $data = array(
+        'id' => $id,
+        'allUsers' => $allUsers,
+        'game' => $game,
+    );
+    return $this->render("views/game/edit.php with views/layout.php", $data);
+});
+
+$app->post("/game/save", function () use ($app) {
+    $auth = $app['auth'];
+    $auth->requireRole('admin');
+
+    $user = $auth->getUser();
+    $gamedao = $app['gamedao'];
+    $id = $_POST['id'];
+    $game = $gamedao->loadById($id);
+    $game->fromArray($_POST);
+    $game->player1_id = $_POST['player1_id'] ?: null;
+    $game->player2_id = $_POST['player2_id'] ?: null;
+    $game->player3_id = $_POST['player3_id'] ?: null;
+    $game->player4_id = $_POST['player4_id'] ?: null;
+    $gamedao->update($game);
+    $this->reroute("/game/view/$id");
+});

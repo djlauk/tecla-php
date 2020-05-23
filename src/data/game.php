@@ -15,13 +15,14 @@ define('GAME_REGULAR', 'regular');
 define('GAME_TRAINING', 'training');
 define('GAME_TOURNAMENT', 'tournament');
 define('GAME_BLOCKED', 'blocked');
+
 define('GAME_STATUS_VALUES', array(
-    GAME_AVAILABLE,
-    GAME_FREE,
-    GAME_REGULAR,
-    GAME_TRAINING,
-    GAME_TOURNAMENT,
-    GAME_BLOCKED,
+    GAME_AVAILABLE => GAME_AVAILABLE,
+    GAME_FREE => GAME_FREE,
+    GAME_REGULAR => GAME_REGULAR,
+    GAME_TRAINING => GAME_TRAINING,
+    GAME_TOURNAMENT => GAME_TOURNAMENT,
+    GAME_BLOCKED => GAME_BLOCKED,
 ));
 
 class Game
