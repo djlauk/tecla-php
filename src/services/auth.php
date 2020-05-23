@@ -116,6 +116,30 @@ class AuthService
         die($this->limeApp->render('views/auth/no-permission.php with views/layout.php'));
     }
 
+    /**
+     * Convenience function for controllers
+     */
+    public function requireLogin()
+    {
+        if ($this->isLoggedIn()) {
+            return;
+        }
+
+        die($this->limeApp->render('views/auth/no-permission.php with views/layout.php'));
+    }
+
+    /**
+     * Convenience function for controllers
+     */
+    public function requireUser($id)
+    {
+        if ($this->user->id === $id) {
+            return;
+        }
+
+        die($this->limeApp->render('views/auth/no-permission.php with views/layout.php'));
+    }
+
     public function logout()
     {
         // TODO: add audit log: user logged out

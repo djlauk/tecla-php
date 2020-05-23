@@ -11,5 +11,6 @@ namespace tecla\controllers;
 
 require __DIR__ . '/auth.php';
 require __DIR__ . '/home.php';
+require __DIR__ . '/profile.php';
 require __DIR__ . '/timeslot.php';
 require __DIR__ . '/user.php';
