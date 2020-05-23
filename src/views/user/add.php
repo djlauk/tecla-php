@@ -33,7 +33,7 @@ function formSelect($name, $label, $value, $options)
     $safeValue = htmlentities($value);
     $optStr = '';
     foreach ($options as $k => $v) {
-        $optStr .= "<option value=\"" . htmlentities($k) . "\"" . ($v === $value ? ' selected' : '') . ">" . htmlentities($v) . "</option>";
+        $optStr .= "<option value=\"" . htmlentities($k) . "\"" . ($k == $value ? ' selected' : '') . ">" . htmlentities($v) . "</option>";
     }
     return <<<HERE
 <div>
