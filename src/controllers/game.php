@@ -85,3 +85,57 @@ $app->post("/game/book", function () use ($app) {
     $gamedao->update($game);
     $this->reroute("/game/view/$id");
 });
+
+$app->get("/game/cancel/:id", function ($params) use ($app) {
+    $auth = $app['auth'];
+    $auth->requireRole('member');
+
+    $user = $auth->getUser();
+    $gamedao = $app['gamedao'];
+    $userdao = $app['userdao'];
+    $id = $params['id'];
+    $game = $gamedao->loadById($id);
+    $player1 = $userdao->loadById($game->player1_id);
+    $player2 = $userdao->loadById($game->player2_id);
+    $player3 = $userdao->loadById($game->player3_id);
+    $player4 = $userdao->loadById($game->player4_id);
+
+    $canCancel = $auth->canCancelGame($game);
+    if (!$canCancel) {
+        return $this->render("views/auth/no-permission.php with views/layout.php");
+    }
+    $data = array(
+        'id' => $id,
+        'user' => $user,
+        'game' => $game,
+        'player1' => $player1,
+        'player2' => $player2,
+        'player3' => $player3,
+        'player4' => $player4,
+        'canCancel' => $canCancel,
+    );
+    return $this->render("views/game/cancel.php with views/layout.php", $data);
+});
+
+$app->post("/game/cancel", function () use ($app) {
+    $auth = $app['auth'];
+    $auth->requireRole('member');
+
+    $user = $auth->getUser();
+    $gamedao = $app['gamedao'];
+    $id = $_POST['id'];
+    $game = $gamedao->loadById($id);
+
+    $canCancel = $auth->canCancelGame($game);
+    if (!$canCancel) {
+        return $this->render("views/auth/no-permission.php with views/layout.php");
+    }
+    $game->status = 'available';
+    $game->player1_id = null;
+    $game->player2_id = null;
+    $game->player3_id = null;
+    $game->player4_id = null;
+    $game->notes = null;
+    $gamedao->update($game);
+    $this->reroute("/game/view/$id");
+});
