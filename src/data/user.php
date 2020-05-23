@@ -95,6 +95,7 @@ SELECT
     DATE_FORMAT(`disabledOn`, '%Y-%m-%dT%H:%i:%S') as `disabledOn`,
     DATE_FORMAT(`verifiedOn`, '%Y-%m-%dT%H:%i:%S') as `verifiedOn`,
     DATE_FORMAT(`lastLoginOn`, '%Y-%m-%dT%H:%i:%S') as `lastLoginOn`,
+    `lastLoginFrom`,
     `metaVersion`,
     DATE_FORMAT(`metaCreatedOn`, '%Y-%m-%dT%H:%i:%S') as `metaCreatedOn`,
     DATE_FORMAT(`metaUpdatedOn`, '%Y-%m-%dT%H:%i:%S') as `metaUpdatedOn`
@@ -122,6 +123,7 @@ SELECT
     DATE_FORMAT(`disabledOn`, '%Y-%m-%dT%H:%i:%S') as `disabledOn`,
     DATE_FORMAT(`verifiedOn`, '%Y-%m-%dT%H:%i:%S') as `verifiedOn`,
     DATE_FORMAT(`lastLoginOn`, '%Y-%m-%dT%H:%i:%S') as `lastLoginOn`,
+    `lastLoginFrom`,
     `metaVersion`,
     DATE_FORMAT(`metaCreatedOn`, '%Y-%m-%dT%H:%i:%S') as `metaCreatedOn`,
     DATE_FORMAT(`metaUpdatedOn`, '%Y-%m-%dT%H:%i:%S') as `metaUpdatedOn`
@@ -146,6 +148,7 @@ SELECT
     DATE_FORMAT(`disabledOn`, '%Y-%m-%dT%H:%i:%S') as `disabledOn`,
     DATE_FORMAT(`verifiedOn`, '%Y-%m-%dT%H:%i:%S') as `verifiedOn`,
     DATE_FORMAT(`lastLoginOn`, '%Y-%m-%dT%H:%i:%S') as `lastLoginOn`,
+    `lastLoginFrom`,
     `metaVersion`,
     DATE_FORMAT(`metaCreatedOn`, '%Y-%m-%dT%H:%i:%S') as `metaCreatedOn`,
     DATE_FORMAT(`metaUpdatedOn`, '%Y-%m-%dT%H:%i:%S') as `metaUpdatedOn`
