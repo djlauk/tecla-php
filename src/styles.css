@@ -20,8 +20,9 @@
 	--tecla-error: #700000;
 	--tecla-error-on: white;
 
-	--tecla-available: hsl(150, 100%, 80%);
-	--tecla-taken: hsl(0, 100%, 80%);
+	--tecla-hue-available: 150;
+	--tecla-hue-taken: 0;
+
 	/* fibonacci: 2 3 5 8 13 21 34 55 89 */
 	--tecla-spacing: 8px;
 	--tecla-spacing-xs: 3px;
@@ -172,10 +173,148 @@ input {
 	flex: 1 1 auto;
 }
 
-.status-available {
-	background-color: var(--tecla-available);
+/* color scale per hour */
+.available-00 {
+	background-color: hsl(var(--tecla-hue-available), 100%, 90%);
 }
-
-.status-taken {
-	background-color: var(--tecla-taken);
+.available-01 {
+	background-color: hsl(var(--tecla-hue-available), 100%, 86.96%);
+}
+.available-02 {
+	background-color: hsl(var(--tecla-hue-available), 100%, 83.91%);
+}
+.available-03 {
+	background-color: hsl(var(--tecla-hue-available), 100%, 80.87%);
+}
+.available-04 {
+	background-color: hsl(var(--tecla-hue-available), 100%, 77.83%);
+}
+.available-05 {
+	background-color: hsl(var(--tecla-hue-available), 100%, 74.78%);
+}
+.available-06 {
+	background-color: hsl(var(--tecla-hue-available), 100%, 71.74%);
+}
+.available-07 {
+	background-color: hsl(var(--tecla-hue-available), 100%, 68.7%);
+}
+.available-08 {
+	background-color: hsl(var(--tecla-hue-available), 100%, 65.65%);
+}
+.available-09 {
+	background-color: hsl(var(--tecla-hue-available), 100%, 62.61%);
+}
+.available-10 {
+	background-color: hsl(var(--tecla-hue-available), 100%, 59.57%);
+}
+.available-11 {
+	background-color: hsl(var(--tecla-hue-available), 100%, 56.52%);
+}
+.available-12 {
+	background-color: hsl(var(--tecla-hue-available), 100%, 53.48%);
+}
+.available-13 {
+	background-color: hsl(var(--tecla-hue-available), 100%, 50.43%);
+}
+.available-14 {
+	background-color: hsl(var(--tecla-hue-available), 100%, 47.39%);
+}
+.available-15 {
+	background-color: hsl(var(--tecla-hue-available), 100%, 44.35%);
+}
+.available-16 {
+	background-color: hsl(var(--tecla-hue-available), 100%, 41.3%);
+}
+.available-17 {
+	background-color: hsl(var(--tecla-hue-available), 100%, 38.26%);
+}
+.available-18 {
+	background-color: hsl(var(--tecla-hue-available), 100%, 35.22%);
+}
+.available-19 {
+	background-color: hsl(var(--tecla-hue-available), 100%, 32.17%);
+}
+.available-20 {
+	background-color: hsl(var(--tecla-hue-available), 100%, 29.13%);
+}
+.available-21 {
+	background-color: hsl(var(--tecla-hue-available), 100%, 26.09%);
+}
+.available-22 {
+	background-color: hsl(var(--tecla-hue-available), 100%, 23.04%);
+}
+.available-23 {
+	background-color: hsl(var(--tecla-hue-available), 100%, 20%);
+}
+.taken-00 {
+	background-color: hsl(var(--tecla-hue-taken), 100%, 90%);
+}
+.taken-01 {
+	background-color: hsl(var(--tecla-hue-taken), 100%, 86.96%);
+}
+.taken-02 {
+	background-color: hsl(var(--tecla-hue-taken), 100%, 83.91%);
+}
+.taken-03 {
+	background-color: hsl(var(--tecla-hue-taken), 100%, 80.87%);
+}
+.taken-04 {
+	background-color: hsl(var(--tecla-hue-taken), 100%, 77.83%);
+}
+.taken-05 {
+	background-color: hsl(var(--tecla-hue-taken), 100%, 74.78%);
+}
+.taken-06 {
+	background-color: hsl(var(--tecla-hue-taken), 100%, 71.74%);
+}
+.taken-07 {
+	background-color: hsl(var(--tecla-hue-taken), 100%, 68.7%);
+}
+.taken-08 {
+	background-color: hsl(var(--tecla-hue-taken), 100%, 65.65%);
+}
+.taken-09 {
+	background-color: hsl(var(--tecla-hue-taken), 100%, 62.61%);
+}
+.taken-10 {
+	background-color: hsl(var(--tecla-hue-taken), 100%, 59.57%);
+}
+.taken-11 {
+	background-color: hsl(var(--tecla-hue-taken), 100%, 56.52%);
+}
+.taken-12 {
+	background-color: hsl(var(--tecla-hue-taken), 100%, 53.48%);
+}
+.taken-13 {
+	background-color: hsl(var(--tecla-hue-taken), 100%, 50.43%);
+}
+.taken-14 {
+	background-color: hsl(var(--tecla-hue-taken), 100%, 47.39%);
+}
+.taken-15 {
+	background-color: hsl(var(--tecla-hue-taken), 100%, 44.35%);
+}
+.taken-16 {
+	background-color: hsl(var(--tecla-hue-taken), 100%, 41.3%);
+}
+.taken-17 {
+	background-color: hsl(var(--tecla-hue-taken), 100%, 38.26%);
+}
+.taken-18 {
+	background-color: hsl(var(--tecla-hue-taken), 100%, 35.22%);
+}
+.taken-19 {
+	background-color: hsl(var(--tecla-hue-taken), 100%, 32.17%);
+}
+.taken-20 {
+	background-color: hsl(var(--tecla-hue-taken), 100%, 29.13%);
+}
+.taken-21 {
+	background-color: hsl(var(--tecla-hue-taken), 100%, 26.09%);
+}
+.taken-22 {
+	background-color: hsl(var(--tecla-hue-taken), 100%, 23.04%);
+}
+.taken-23 {
+	background-color: hsl(var(--tecla-hue-taken), 100%, 20%);
 }

@@ -14,14 +14,33 @@
 <?php endif?>
 
 <?php if (count($games) > 0): ?>
+    <?php
+function printWeekHeader($weekNumber)
+{
+    echo '<h2 class="week-header">Week ' . $weekNumber . '</h2>';
+}
+$lastWeek = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $games[0]->startTime)->format('W');
+printWeekHeader($lastWeek);
+?>
 <ul class="tecla-list">
 <?php foreach ($games as $g): ?>
-    <?php $start = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $g->startTime);
-$end = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $g->endTime);?>
+    <?php
+$start = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $g->startTime);
+$end = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $g->endTime);
+$thisWeek = $start->format('W');
+if ($thisWeek !== $lastWeek) {
+    $lastWeek = $thisWeek;
+    echo "</ul>";
+    printWeekHeader($lastWeek);
+    echo "<ul class=\"tecla-list\">";
+}
+$statusClass = $g->status === 'available' ? 'available' : 'taken';
+$statusClass .= '-' . $start->format('H');
+?>
     <li class="tecla-list-item">
-        <div class="tecla-list-item-icon status-<?=$g->status === 'available' ? 'available' : 'taken'?>"></div>
+        <div class="tecla-list-item-icon <?=$statusClass?>"></div>
         <div class="tecla-list-item-content">
-            <div><?=tecla\data\WEEKDAYS[strftime('%w', $start->getTimeStamp())]?>, <?=$start->format('Y-m-d')?></div>
+            <div><?=tecla\data\WEEKDAYS[$start->format('w')]?>, <?=$start->format('Y-m-d')?></div>
             <div class="second-line"><?=$start->format('H:i')?> - <?=$end->format('H:i')?>, <?=$g->court?></div>
         </div>
     </li>
