@@ -28,6 +28,9 @@ $app["config.debug"] = false;
 
 $app["config.defaultrole"] = 'member';
 
+// for the list of timezone identifiers see https://www.php.net/manual/en/timezones.php
+$app["config.timezone"] = 'Europe/Zurich';
+
 // ======================================================================
 //
 // DO NOT REMOVE THIS PART BELOW!

@@ -23,6 +23,7 @@ $app = new Lime\App();
 // Because of Lime's DI capabilities and lazy evalution the order
 // doesn't really matter, but I still think, this is the right order...
 require_once __DIR__ . '/config.php';
+date_default_timezone_set($app['config.timezone']);
 
 $app('session')->init();
 
