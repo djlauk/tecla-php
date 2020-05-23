@@ -26,6 +26,8 @@ $app["config.pdo"] = array(
 );
 $app["config.debug"] = false;
 
+$app["config.defaultrole"] = 'member';
+
 // ======================================================================
 //
 // DO NOT REMOVE THIS PART BELOW!

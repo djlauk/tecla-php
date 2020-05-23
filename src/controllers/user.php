@@ -65,3 +65,23 @@ $app->post("/users/save", function () use ($app) {
 
     $app->reroute("/users");
 });
+
+$app->get("/users/add", function () use ($app) {
+    $auth = $app['auth'];
+    $auth->requireRole('admin');
+
+    $data = array(
+        'role' => $app['config.defaultrole'],
+    );
+    return $this->render("views/user/add.php with views/layout.php", $data);
+});
+
+$app->post("/users/create", function () use ($app) {
+    $auth = $app['auth'];
+    $auth->requireRole('admin');
+
+    $item = \tecla\data\User::createFromArray($_POST);
+    $item->passwordHash = password_hash($_POST['password'], PASSWORD_DEFAULT);
+    $newId = $app['userdao']->insert($item);
+    $app->reroute('/users');
+});

@@ -22,5 +22,5 @@
 </ul>
 
 <div>
-    <a class="button primary" href="<?=$this->routeUrl('/users/add')?>">Add timeslot</a>
+    <a class="button primary" href="<?=$this->routeUrl('/users/add')?>">Add user</a>
 </div>
