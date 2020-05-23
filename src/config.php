@@ -33,6 +33,9 @@ $app["config.freegame"] = 6 * 60 * 60; // 6 hours in seconds
 // for the list of timezone identifiers see https://www.php.net/manual/en/timezones.php
 $app["config.timezone"] = 'Europe/Zurich';
 
+// maximum number of games on home screen
+$app["config.maxgames"] = 300;
+
 // ======================================================================
 //
 // DO NOT REMOVE THIS PART BELOW!

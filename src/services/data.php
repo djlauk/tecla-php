@@ -27,7 +27,7 @@ $app->service('db', function () use ($app) {
 
 $app->service('gamedao', function () use ($app) {
     $db = $app['db'];
-    return new \tecla\data\GameDAO($db);
+    return new \tecla\data\GameDAO($db, $app['config.maxgames']);
 });
 
 $app->service('timeslotdao', function () use ($app) {

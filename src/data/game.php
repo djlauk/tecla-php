@@ -102,9 +102,11 @@ class Game
 class GameDAO
 {
     private $db;
-    public function __construct(DBAccess &$db)
+    private $maxgames;
+    public function __construct(DBAccess &$db, $maxgames)
     {
         $this->db = $db;
+        $this->maxgames = $maxgames;
     }
 
     public function loadAllAfter($timestamp)
@@ -136,6 +138,8 @@ ORDER BY
     `court` ASC,
     `id` ASC
 HERE;
+        // this cannot be passed as a parameter, so let's build the sql through concatenation
+        $sql .= " LIMIT {$this->maxgames}";
         $rows = $this->db->query($sql, array('timestamp' => $timestamp));
         foreach ($rows as $row) {
             $results[] = Game::createFromArray($row);
