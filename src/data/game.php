@@ -9,6 +9,21 @@
 
 namespace tecla\data;
 
+define('GAME_AVAILABLE', 'available');
+define('GAME_FREE', 'freegame');
+define('GAME_REGULAR', 'regular');
+define('GAME_TRAINING', 'training');
+define('GAME_TOURNAMENT', 'tournament');
+define('GAME_BLOCKED', 'blocked');
+define('GAME_STATUS_VALUES', array(
+    GAME_AVAILABLE,
+    GAME_FREE,
+    GAME_REGULAR,
+    GAME_TRAINING,
+    GAME_TOURNAMENT,
+    GAME_BLOCKED,
+));
+
 class Game
 {
     // player1_id
@@ -153,6 +168,49 @@ WHERE
 HERE;
         $row = $this->db->querySingle($sql, array('id' => $id));
         return is_null($row) ? null : Game::createFromArray($row);
+    }
+
+    public function loadFutureGamesForUser($userId)
+    {
+        if (is_null($userId)) {
+            return array();
+        }
+        $results = array();
+        $sql = <<<HERE
+SELECT
+    `id`,
+    `startTime`,
+    `endTime`,
+    `court`,
+    `player1_id`,
+    `player2_id`,
+    `player3_id`,
+    `player4_id`,
+    `tournament_id`,
+    `winner`,
+    `status`,
+    `notes`,
+    `metaVersion`,
+    `metaCreatedOn`,
+    `metaUpdatedOn`
+FROM
+    `games`
+WHERE
+    `startTime` >= CURRENT_TIMESTAMP()
+    AND (
+           `player1_id` = :userid
+        OR `player2_id` = :userid
+        OR `player3_id` = :userid
+        OR `player4_id` = :userid
+    )
+ORDER BY
+    `startTime` ASC
+HERE;
+        $rows = $this->db->query($sql, array('userid' => $userId));
+        foreach ($rows as $row) {
+            $results[] = Game::createFromArray($row);
+        }
+        return $results;
     }
 
     public function getLastGame()

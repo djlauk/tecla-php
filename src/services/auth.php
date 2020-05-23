@@ -27,11 +27,13 @@ class AuthService
 {
     private $user = null;
     private $userdao;
+    private $gameService;
     private $session;
     private $limeApp;
-    public function __construct(\tecla\data\UserDao &$userdao, \Lime\Session &$session, \Lime\App &$app)
+    public function __construct(\tecla\data\UserDao &$userdao, \tecla\GameService &$gameService, \Lime\Session &$session, \Lime\App &$app)
     {
         $this->userdao = $userdao;
+        $this->gameService = $gameService;
         $this->session = $session;
         if ($this->session->read('userid', false)) {
             $this->user = $userdao->loadById($this->session->read('userid'));
@@ -146,8 +148,46 @@ class AuthService
         $this->user = null;
         $this->session->destroy();
     }
+
+    public function canBookGame(\tecla\data\Game &$game)
+    {
+        if (!$this->hasRole('member')) {
+            return false;
+        }
+        if ($game->status !== 'available') {
+            return false;
+        }
+        $now = time();
+        $start = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $game->startTime);
+        if ($start->getTimestamp() < $now) {
+            return false;
+        }
+        if ($this->gameService->isFreeGame($game)) {
+            return true;
+        }
+        if ($this->gameService->isGameScheduledForUser($this->user->id)) {
+            return false;
+        }
+        return true;
+    }
+
+    public function canCancelGame(\tecla\data\Game &$game)
+    {
+        if (!$this->hasRole('member')) {
+            return false;
+        }
+        if ($game->player1_id !== $this->user->id) {
+            return false;
+        }
+        $now = time();
+        $start = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $game->startTime);
+        if ($start->getTimestamp() < $now) {
+            return false;
+        }
+        return true;
+    }
 }
 
 $app->service('auth', function () use ($app) {
-    return new AuthService($app['userdao'], $app('session'), $app);
+    return new AuthService($app['userdao'], $app['gameservice'], $app('session'), $app);
 });

@@ -136,6 +136,10 @@ HERE;
 
     public function loadById($id)
     {
+        if (is_null($id)) {
+            return null;
+        }
+
         $sql = <<<HERE
 SELECT
     `id`,

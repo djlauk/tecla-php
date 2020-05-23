@@ -28,6 +28,8 @@ $app["config.debug"] = false;
 
 $app["config.defaultrole"] = 'member';
 
+$app["config.freegame"] = 6 * 60 * 60; // 6 hours in seconds
+
 // for the list of timezone identifiers see https://www.php.net/manual/en/timezones.php
 $app["config.timezone"] = 'Europe/Zurich';
 

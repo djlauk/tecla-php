@@ -13,10 +13,12 @@ class GameService
 {
     private $userdao;
     private $timeslotdao;
-    public function __construct(\tecla\data\GameDAO &$gamedao, \tecla\data\TimeslotDAO &$timeslotdao)
+    private $limeApp;
+    public function __construct(\tecla\data\GameDAO &$gamedao, \tecla\data\TimeslotDAO &$timeslotdao, \Lime\App &$app)
     {
         $this->gamedao = $gamedao;
         $this->timeslotdao = $timeslotdao;
+        $this->limeApp = $app;
     }
 
     public function generateGames($firstDay, $lastDay)
@@ -46,7 +48,7 @@ class GameService
                 $g->startTime = "${dateStr}T{$item->startTime}";
                 $g->endTime = "${dateStr}T{$item->endTime}";
                 $g->court = $item->court;
-                $g->status = 'available';
+                $g->status = GAME_AVAILABLE;
                 $newId = $this->gamedao->insert($g);
                 $count++;
             }
@@ -55,8 +57,21 @@ class GameService
         // TODO: add audit log: generated $count games for range $firstDay - $lastDay
         return $count;
     }
+
+    public function isFreeGame(\tecla\data\Game &$game)
+    {
+        $now = time();
+        $s = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $game->startTime)->getTimestamp();
+        return ($s > $now && $s - $now < $this->limeApp['config.freegame']);
+    }
+
+    public function isGameScheduledForUser($userId)
+    {
+        $games = $this->gamedao->loadFutureGamesForUser($userId);
+        return count($games) > 0;
+    }
 }
 
 $app->service('gameservice', function () use ($app) {
-    return new GameService($app['gamedao'], $app['timeslotdao']);
+    return new GameService($app['gamedao'], $app['timeslotdao'], $app);
 });

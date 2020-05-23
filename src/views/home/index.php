@@ -10,7 +10,12 @@
 <h1>Tennis Club App</h1>
 
 <?php if (!is_null($user)): ?>
-<p>Welcome, <?=$user->displayName?>!</p>
+<p>
+    Welcome, <?=$user->displayName?>!
+    <?php if (count($nextGames) > 0): ?>
+    Your next game is on: <a href="<?=$this->routeUrl("/game/view/{$nextGames[0]->id}")?>"><?=$nextGames[0]->startTime?></a>
+    <?php endif?>
+</p>
 <?php endif?>
 
 <?php if (count($games) > 0): ?>
@@ -34,14 +39,16 @@ if ($thisWeek !== $lastWeek) {
     printWeekHeader($lastWeek);
     echo "<ul class=\"tecla-list\">";
 }
-$statusClass = $g->status === 'available' ? 'available' : 'taken';
+$statusClass = $g->status === GAME_AVAILABLE ? 'available' : 'taken';
 $statusClass .= '-' . $start->format('H');
 ?>
     <li class="tecla-list-item">
         <div class="tecla-list-item-icon <?=$statusClass?>"></div>
         <div class="tecla-list-item-content">
+        <a href="<?=$this->routeUrl("/game/view/{$g->id}")?>">
             <div><?=tecla\data\WEEKDAYS[$start->format('w')]?>, <?=$start->format('Y-m-d')?></div>
             <div class="second-line"><?=$start->format('H:i')?> - <?=$end->format('H:i')?>, <?=$g->court?></div>
+        </a>
         </div>
     </li>
 <?php endforeach?>
