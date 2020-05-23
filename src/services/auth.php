@@ -28,13 +28,15 @@ class AuthService
     private $user = null;
     private $userdao;
     private $session;
-    public function __construct(\tecla\data\UserDao &$userdao, \Lime\Session &$session)
+    private $limeApp;
+    public function __construct(\tecla\data\UserDao &$userdao, \Lime\Session &$session, \Lime\App &$app)
     {
         $this->userdao = $userdao;
         $this->session = $session;
         if ($this->session->read('userid', false)) {
             $this->user = $userdao->loadById($this->session->read('userid'));
         }
+        $this->limeApp = $app;
     }
 
     public function login($email, $password)
@@ -102,6 +104,18 @@ class AuthService
         return ROLES[$r] >= ROLES[$roleName];
     }
 
+    /**
+     * Convenience function for controllers
+     */
+    public function requireRole($roleName)
+    {
+        if ($this->hasRole($roleName)) {
+            return;
+        }
+
+        die($this->limeApp->render('views/auth/no-permission.php with views/layout.php'));
+    }
+
     public function logout()
     {
         // TODO: add audit log: user logged out
@@ -111,5 +125,5 @@ class AuthService
 }
 
 $app->service('auth', function () use ($app) {
-    return new AuthService($app['userdao'], $app('session'));
+    return new AuthService($app['userdao'], $app('session'), $app);
 });

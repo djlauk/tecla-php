@@ -8,6 +8,9 @@
 // ----------------------------------------------------------------------
 
 $app->bind("/timeslots", function ($params) use ($app) {
+    $auth = $app['auth'];
+    $auth->requireRole('admin');
+
     $dao = $app['timeslotdao'];
     $items = $dao->loadAll();
     $data = array(
@@ -17,11 +20,17 @@ $app->bind("/timeslots", function ($params) use ($app) {
 });
 
 $app->bind("/timeslots/add", function ($params) use ($app) {
+    $auth = $app['auth'];
+    $auth->requireRole('admin');
+
     $data = array();
     return $this->render("views/timeslots/add.php with views/layout.php", $data);
 });
 
 $app->get("/timeslots/edit/:id", function ($params) use ($app) {
+    $auth = $app['auth'];
+    $auth->requireRole('admin');
+
     $dao = $app['timeslotdao'];
     $id = $params['id'];
     $item = $dao->loadById($id);
@@ -35,12 +44,18 @@ $app->get("/timeslots/edit/:id", function ($params) use ($app) {
 });
 
 $app->post("/timeslots/create", function ($params) use ($app) {
+    $auth = $app['auth'];
+    $auth->requireRole('admin');
+
     $item = tecla\data\Timeslot::createFromArray($_POST);
     $newId = $app['timeslotdao']->insert($item);
     $app->reroute('/timeslots');
 });
 
 $app->post("/timeslots/save", function ($params) use ($app) {
+    $auth = $app['auth'];
+    $auth->requireRole('admin');
+
     $newItem = tecla\data\Timeslot::createFromArray($_POST);
     $dao = $app['timeslotdao'];
     $dao->update($newItem);
@@ -48,6 +63,9 @@ $app->post("/timeslots/save", function ($params) use ($app) {
 });
 
 $app->get('/timeslots/generate-games', function () use ($app) {
+    $auth = $app['auth'];
+    $auth->requireRole('admin');
+
     $gamedao = $app['gamedao'];
     $g = $gamedao->getLastGame();
     $t = is_null($g) ? new \DateTimeImmutable() : \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $g->startTime);
@@ -60,6 +78,9 @@ $app->get('/timeslots/generate-games', function () use ($app) {
 });
 
 $app->post('/timeslots/generate-games', function () use ($app) {
+    $auth = $app['auth'];
+    $auth->requireRole('admin');
+
     $firstDay = $_POST['firstDay'];
     $lastDay = $_POST['lastDay'];
     $numGenerated = $app['gameservice']->generateGames($firstDay, $lastDay);
