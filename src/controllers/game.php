@@ -22,6 +22,7 @@ $app->get("/game/view/:id", function ($params) use ($app) {
     $canBook = $auth->canBookGame($game);
     $canCancel = $auth->canCancelGame($game);
     $canEdit = $auth->hasRole('admin');
+    $canDelete = $auth->hasRole('admin');
     $data = array(
         'id' => $id,
         'user' => $user,
@@ -33,6 +34,7 @@ $app->get("/game/view/:id", function ($params) use ($app) {
         'canBook' => $canBook,
         'canCancel' => $canCancel,
         'canEdit' => $canEdit,
+        'canDelete' => $canDelete,
     );
     return $this->render("views/game/view.php with views/layout.php", $data);
 });
@@ -174,4 +176,39 @@ $app->post("/game/save", function () use ($app) {
     $game->player4_id = $_POST['player4_id'] ?: null;
     $gamedao->update($game);
     $this->reroute("/game/view/$id");
+});
+
+$app->get("/game/delete/:id", function ($params) use ($app) {
+    $auth = $app['auth'];
+    $auth->requireRole('admin');
+
+    $gamedao = $app['gamedao'];
+    $userdao = $app['userdao'];
+    $id = $params['id'];
+    $game = $gamedao->loadById($id);
+    $player1 = $userdao->loadById($game->player1_id);
+    $player2 = $userdao->loadById($game->player2_id);
+    $player3 = $userdao->loadById($game->player3_id);
+    $player4 = $userdao->loadById($game->player4_id);
+
+    $data = array(
+        'id' => $id,
+        'game' => $game,
+        'player1' => $player1,
+        'player2' => $player2,
+        'player3' => $player3,
+        'player4' => $player4,
+    );
+    return $this->render("views/game/delete.php with views/layout.php", $data);
+});
+
+$app->post("/game/delete", function () use ($app) {
+    $auth = $app['auth'];
+    $auth->requireRole('admin');
+
+    $gamedao = $app['gamedao'];
+    $id = $_POST['id'];
+    $game = $gamedao->loadById($id);
+    $gamedao->delete($game);
+    $this->reroute('/');
 });

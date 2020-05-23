@@ -292,4 +292,22 @@ HERE;
         $sql = "UPDATE `games` SET $fields WHERE `id` = :id AND `metaVersion` = :oldVersion";
         $this->db->execute($sql, $arr);
     }
+
+    public function delete(&$obj)
+    {
+        $oldItem = $this->loadById($obj->id);
+        if (is_null($oldItem)) {
+            throw new \Exception('Internal inconsistency!');
+        }
+        if ($oldItem->metaVersion != $obj->metaVersion) {
+            throw new \Exception('Version mismatch!');
+        }
+
+        $arr = array(
+            'id' => $obj->id,
+            'oldVersion' => $oldItem->metaVersion,
+        );
+        $sql = "DELETE FROM `games` WHERE `id` = :id AND `metaVersion` = :oldVersion";
+        $this->db->execute($sql, $arr);
+    }
 }
