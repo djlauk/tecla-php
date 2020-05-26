@@ -84,10 +84,10 @@ function formSelectUsers($name, $label, $value, $allUsers)
 <form method="POST" action="<?=$this->routeUrl("/game/save")?>">
     <input type="hidden" name="id" value="<?=$id?>">
     <input type="hidden" name="metaVersion" value="<?=$game->metaVersion?>">
-    <?=formSelectUsers('player1_id', 'Player 1', $game->player1_id, $allUsers, $user)?>
-    <?=formSelectUsers('player2_id', 'Player 2', $game->player2_id, $allUsers, $user)?>
-    <?=formSelectUsers('player3_id', 'Player 3', $game->player3_id, $allUsers, $user)?>
-    <?=formSelectUsers('player4_id', 'Player 4', $game->player4_id, $allUsers, $user)?>
+    <?=formSelectUsers('player1_id', 'Player 1', $game->player1_id, $allUsers)?>
+    <?=formSelectUsers('player2_id', 'Player 2', $game->player2_id, $allUsers)?>
+    <?=formSelectUsers('player3_id', 'Player 3', $game->player3_id, $allUsers)?>
+    <?=formSelectUsers('player4_id', 'Player 4', $game->player4_id, $allUsers)?>
     <?=formTextArea('notes', 'Notes', $game->notes)?>
     <button class="button primary" type="submit">Save</button>
 </form>
