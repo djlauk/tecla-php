@@ -109,6 +109,51 @@ HERE;
         return $results;
     }
 
+    public function loadAllAvailableToday()
+    {
+        $results = array();
+        $sql = <<<HERE
+SELECT
+    `u`.`id`,
+    `displayName`,
+    `passwordHash`,
+    `email`,
+    `role`,
+    `failedLogins`,
+    DATE_FORMAT(`lockedUntil`, '%Y-%m-%dT%H:%i:%S') as `lockedUntil`,
+    DATE_FORMAT(`disabledOn`, '%Y-%m-%dT%H:%i:%S') as `disabledOn`,
+    DATE_FORMAT(`verifiedOn`, '%Y-%m-%dT%H:%i:%S') as `verifiedOn`,
+    DATE_FORMAT(`lastLoginOn`, '%Y-%m-%dT%H:%i:%S') as `lastLoginOn`,
+    `lastLoginFrom`,
+    `u`.`metaVersion`,
+    DATE_FORMAT(`u`.`metaCreatedOn`, '%Y-%m-%dT%H:%i:%S') as `metaCreatedOn`,
+    DATE_FORMAT(`u`.`metaUpdatedOn`, '%Y-%m-%dT%H:%i:%S') as `metaUpdatedOn`
+FROM `users` AS `u`
+LEFT JOIN `games` AS `g` ON (
+    `g`.`startTime` >= CURRENT_TIMESTAMP()
+    AND `g`.`status` = 'regular'
+    AND (
+    `g`.`player1_id` = `u`.`id`
+    OR `g`.`player2_id` = `u`.`id`
+    OR `g`.`player3_id` = `u`.`id`
+    OR `g`.`player4_id` = `u`.`id`
+    )
+)
+WHERE
+    `u`.`disabledOn` IS NULL
+    AND (
+        `g`.`id` IS NULL
+        OR `u`.`role` = 'guest'
+    )
+ORDER BY `displayName` ASC
+HERE;
+        $rows = $this->db->query($sql);
+        foreach ($rows as $row) {
+            $results[] = User::createFromArray($row);
+        }
+        return $results;
+    }
+
     public function loadByEmail($email)
     {
         $sql = <<<HERE

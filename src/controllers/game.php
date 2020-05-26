@@ -48,7 +48,7 @@ $app->get("/game/book/:id", function ($params) use ($app) {
     $userdao = $app['userdao'];
     $id = $params['id'];
     $game = $gamedao->loadById($id);
-    $allUsers = $userdao->loadAll();
+    $allUsers = $userdao->loadAllAvailableToday($game->startTime);
 
     $canBook = $auth->canBookGame($game);
     if (!$canBook) {
