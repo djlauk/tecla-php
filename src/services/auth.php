@@ -189,5 +189,8 @@ class AuthService
 }
 
 $app->service('auth', function () use ($app) {
-    return new AuthService($app['userdao'], $app['gameservice'], $app('session'), $app);
+    $userdao = $app['userdao'];
+    $gameservice = $app['gameservice'];
+    $session = $app('session');
+    return new AuthService($userdao, $gameservice, $session, $app);
 });
