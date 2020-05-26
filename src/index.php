@@ -24,6 +24,10 @@ $app = new Lime\App();
 // doesn't really matter, but I still think, this is the right order...
 require_once __DIR__ . '/config.php';
 date_default_timezone_set($app['config.timezone']);
+if ($app['config.debug']) {
+    error_reporting(E_ALL);
+    ini_set('display_errors', '1');
+}
 
 $app('session')->init();
 
