@@ -61,6 +61,7 @@ $app->get("/profile/change-password", function ($params) use ($app) {
     $data = array(
         'user' => $user,
         'problem' => false,
+        'pwRules' => $app['config.passwordrules'],
     );
     return $this->render("views/profile/change-password.php with views/layout.php", $data);
 });
@@ -73,20 +74,22 @@ $app->post("/profile/change-password", function () use ($app) {
     $data = array(
         'user' => $user,
         'problem' => false,
+        'pwRules' => $app['config.passwordrules'],
     );
-    if (strlen($_POST['password']) < 6) {
-        $data['problem'] = 'Password too short';
-    } elseif ($_POST['password'] !== $_POST['password2']) {
-        $data['problem'] = 'Passwords do not match';
+    if ($_POST['oldpassword'] === $_POST['newpassword']) {
+        $data['problem'] = 'Current password and new password are not different';
+    } elseif ($_POST['newpassword'] !== $_POST['newpassword2']) {
+        $data['problem'] = 'New password and re-typed password do not match';
+    } else {
+        try {
+            $app['userservice']->changePassword($user, $_POST['oldpassword'], $_POST['newpassword']);
+        } catch (\Exception $e) {
+            $data['problem'] = $e->getMessage();
+        }
     }
-    if ($data['problem']) {
+    if ($data['problem'] !== false) {
         return $this->render("views/profile/change-password.php with views/layout.php", $data);
-
     }
-    $pw = $_POST['password'];
 
-    $user->passwordHash = password_hash($pw, PASSWORD_DEFAULT);
-    $dao = $app['userdao'];
-    $dao->update($user);
     $app->reroute("/profile");
 });

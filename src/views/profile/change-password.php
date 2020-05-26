@@ -36,9 +36,22 @@ HERE;
 </div>
 <?php endif?>
 
+<?php if ($pwRules['enabled']): ?>
+<h3>Password requirements:</h3>
+<ul>
+    <?php if ($pwRules['minlength'] > 0): ?><li>Minimum length: <?=$pwRules['minlength']?></li><?php endif?>
+    <?php if ($pwRules['needsUppercase']): ?><li>Must contain upper case letter.</li><?php endif?>
+    <?php if ($pwRules['needsLowercase']): ?><li>Must contain lower case letter.</li><?php endif?>
+    <?php if ($pwRules['needsNumber']): ?><li>Must contain number.</li><?php endif?>
+    <?php if ($pwRules['needsSpecial']): ?><li>Must contain special character.</li><?php endif?>
+    <?php if ($pwRules['needsNumClasses'] > 0): ?><li>Must contain at least <?=$pwRules['needsNumClasses']?> different of these character classes: Upper case, lower case, numbers, special characters.</li><?php endif?>
+</ul>
+<?php endif?>
+
 <form method="POST" action="<?=$this->routeUrl('/profile/change-password')?>">
-    <?=formInput('password', 'Password', array('type' => 'password', 'required' => ''))?>
-    <?=formInput('password2', 'Repeat password', array('type' => 'password', 'required' => ''))?>
+    <?=formInput('oldpassword', 'Current password', array('type' => 'password', 'required' => ''))?>
+    <?=formInput('newpassword', 'New password', array('type' => 'password', 'required' => ''))?>
+    <?=formInput('newpassword2', 'Repeat new password', array('type' => 'password', 'required' => ''))?>
     <div>
         <button class="button primary" type="submit">Change password</button>
     </div>

@@ -36,6 +36,17 @@ $app["config.timezone"] = 'Europe/Zurich';
 // maximum number of games on home screen
 $app["config.maxgames"] = 300;
 
+// password requirements
+$app["config.passwordrules"] = array(
+    'enabled' => true,
+    'minlength' => 6, // set to 0 to disable length check
+    'needsUppercase' => false,
+    'needsLowercase' => false,
+    'needsNumber' => false,
+    'needsSpecial' => false,
+    'needsNumClasses' => 3, // requires 3 out of 4 character classes
+);
+
 // ======================================================================
 //
 // DO NOT REMOVE THIS PART BELOW!
