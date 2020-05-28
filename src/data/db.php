@@ -42,7 +42,7 @@ class DBAccess
         $this->debug = true;
     }
 
-    private function stopWithError(&$errorInfo = null)
+    private function stopWithError($errorInfo = null)
     {
         $msg = "Error during DB access";
         if ($this->debug && !is_null($errorInfo)) {
