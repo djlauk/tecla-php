@@ -21,7 +21,7 @@
     <header id="topnav">
         <a href="<?=$this->routeUrl('/')?>">Home</a>
         <?php if ($this['auth']->hasRole('admin')): ?>
-        <a href="<?=$this->routeUrl('/timeslots')?>">Time slots</a>
+        <a href="<?=$this->routeUrl('/templates')?>">Templates</a>
         <a href="<?=$this->routeUrl('/users')?>">Users</a>
         <?php endif?>
         <?php if ($this['auth']->isLoggedIn()): ?>

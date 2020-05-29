@@ -30,9 +30,9 @@ $app->service('gamedao', function () use ($app) {
     return new \tecla\data\GameDAO($db, $app['config.maxgames']);
 });
 
-$app->service('timeslotdao', function () use ($app) {
+$app->service('templatedao', function () use ($app) {
     $db = $app['db'];
-    return new \tecla\data\TimeslotDAO($db);
+    return new \tecla\data\TemplateDAO($db);
 });
 
 $app->service('userdao', function () use ($app) {

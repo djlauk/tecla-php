@@ -112,7 +112,7 @@ CREATE TABLE `games` (
 );
 
 
-CREATE TABLE `time_slots` (
+CREATE TABLE `templates` (
     `id` int unsigned NOT NULL AUTO_INCREMENT,
     `weekday` int unsigned NOT NULL, -- Sunday = 0, Monday = 1, ...
     `startTime` time NOT NULL,

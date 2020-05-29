@@ -7,7 +7,7 @@
 // For details see LICENSE.md.
 // ----------------------------------------------------------------------
 ?>
-<h1>Delete time slot <?=$item->id?></h1>
+<h1>Delete template <?=$item->id?></h1>
 
 <table>
     <tr><td>Start time:</td><td><?=$item->startTime?></td></tr>
@@ -16,7 +16,7 @@
     <tr><td>Notes:</td><td><?=str_replace("\n", "<br>", htmlentities($item->notes))?></td></tr>
 </table>
 
-<form method="POST" action="<?=$this->routeUrl('/timeslots/delete')?>">
+<form method="POST" action="<?=$this->routeUrl('/templates/delete')?>">
     <input name="id" type="hidden" value="<?=$item->id?>">
     <input name="metaVersion" type="hidden" value="<?=$item->metaVersion?>">
     <div>

@@ -15,7 +15,7 @@
 </div>
 <?php endif?>
 
-<form method="POST" action="<?=$this->routeUrl('/timeslots/generate-games')?>">
+<form method="POST" action="<?=$this->routeUrl('/templates/generate-games')?>">
     <div>
         <label for="firstDay" required>First day</label>
         <input id="firstDay" name="firstDay" placeholder="yyyy-mm-dd" regex="\d\d\d\d-\d\d-\d\d" required value="<?=$firstDay?>">

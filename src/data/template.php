@@ -9,7 +9,7 @@
 
 namespace tecla\data;
 
-class Timeslot
+class Template
 {
     public $id = null;
     public $weekday = null;
@@ -51,13 +51,13 @@ class Timeslot
 
     public static function createFromArray($arr)
     {
-        $obj = new Timeslot();
+        $obj = new Template();
         $obj->fromArray($arr);
         return $obj;
     }
 }
 
-class TimeslotDAO
+class TemplateDAO
 {
     private $db;
     public function __construct(DBAccess &$db)
@@ -80,7 +80,7 @@ SELECT
     `metaCreatedOn`,
     `metaUpdatedOn`
 FROM
-    `time_slots`
+    `templates`
 ORDER BY
     `weekday` ASC,
     `startTime` ASC,
@@ -89,7 +89,7 @@ ORDER BY
 HERE;
         $rows = $this->db->query($sql);
         foreach ($rows as $row) {
-            $results[] = TimeSlot::createFromArray($row);
+            $results[] = Template::createFromArray($row);
         }
         return $results;
     }
@@ -108,12 +108,12 @@ SELECT
     `metaCreatedOn`,
     `metaUpdatedOn`
 FROM
-    `time_slots`
+    `templates`
 WHERE
     `id` = :id
 HERE;
         $row = $this->db->querySingle($sql, array('id' => $id));
-        return is_null($row) ? null : TimeSlot::createFromArray($row);
+        return is_null($row) ? null : Template::createFromArray($row);
     }
 
     public function insert(&$obj)
@@ -131,7 +131,7 @@ HERE;
         }
         $fields = implode(', ', $fields);
         $placeholders = implode(', ', $placeholders);
-        $sql = "INSERT INTO `time_slots` ($fields) VALUES ($placeholders)";
+        $sql = "INSERT INTO `templates` ($fields) VALUES ($placeholders)";
         $newId = $this->db->insert($sql, $arr);
         return $newId;
     }
@@ -160,7 +160,7 @@ HERE;
         }
         $fields = implode(', ', $fields);
         $arr['oldVersion'] = $oldItem->metaVersion;
-        $sql = "UPDATE `time_slots` SET $fields WHERE `id` = :id AND `metaVersion` = :oldVersion";
+        $sql = "UPDATE `templates` SET $fields WHERE `id` = :id AND `metaVersion` = :oldVersion";
         $this->db->execute($sql, $arr);
     }
 
@@ -177,7 +177,7 @@ HERE;
         $arr = array(
             'id' => $obj->id,
             'oldVersion' => $oldItem->metaVersion);
-        $sql = "DELETE FROM `time_slots` WHERE `id` = :id AND `metaVersion` = :oldVersion";
+        $sql = "DELETE FROM `templates` WHERE `id` = :id AND `metaVersion` = :oldVersion";
         $this->db->execute($sql, $arr);
     }
 }

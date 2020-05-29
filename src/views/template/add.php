@@ -7,9 +7,9 @@
 // For details see LICENSE.md.
 // ----------------------------------------------------------------------
 ?>
-<h1>Add time slot</h1>
+<h1>Add template</h1>
 
-<form method="POST" action="<?=$this->routeUrl('/timeslots/create')?>">
+<form method="POST" action="<?=$this->routeUrl('/templates/create')?>">
     <div>
         <label for="weekday" required>Wochentag</label>
         <select id="weekday" name="weekday" required>

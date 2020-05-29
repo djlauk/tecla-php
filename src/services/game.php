@@ -12,18 +12,18 @@ namespace tecla;
 class GameService
 {
     private $userdao;
-    private $timeslotdao;
+    private $templatedao;
     private $limeApp;
-    public function __construct(\tecla\data\GameDAO &$gamedao, \tecla\data\TimeslotDAO &$timeslotdao, \Lime\App &$app)
+    public function __construct(\tecla\data\GameDAO &$gamedao, \tecla\data\TemplateDAO &$templatedao, \Lime\App &$app)
     {
         $this->gamedao = $gamedao;
-        $this->timeslotdao = $timeslotdao;
+        $this->templatedao = $templatedao;
         $this->limeApp = $app;
     }
 
     public function generateGames($firstDay, $lastDay)
     {
-        $timeslotsByWeekday = array(
+        $templatesByWeekday = array(
             0 => array(),
             1 => array(),
             2 => array(),
@@ -32,9 +32,9 @@ class GameService
             5 => array(),
             6 => array(),
         );
-        $timeslots = $this->timeslotdao->loadAll();
-        foreach ($timeslots as $item) {
-            $timeslotsByWeekday[$item->weekday][] = $item;
+        $templates = $this->templatedao->loadAll();
+        foreach ($templates as $item) {
+            $templatesByWeekday[$item->weekday][] = $item;
         }
         $count = 0;
         $oneDay = new \DateInterval('P1D');
@@ -43,7 +43,7 @@ class GameService
         while ($t->getTimeStamp() <= $end) {
             $weekday = strftime('%w', $t->getTimeStamp());
             $dateStr = $t->format('Y-m-d');
-            foreach ($timeslotsByWeekday[$weekday] as $item) {
+            foreach ($templatesByWeekday[$weekday] as $item) {
                 $g = new \tecla\data\Game();
                 $g->startTime = "${dateStr}T{$item->startTime}";
                 $g->endTime = "${dateStr}T{$item->endTime}";
@@ -73,5 +73,5 @@ class GameService
 }
 
 $app->service('gameservice', function () use ($app) {
-    return new GameService($app['gamedao'], $app['timeslotdao'], $app);
+    return new GameService($app['gamedao'], $app['templatedao'], $app);
 });

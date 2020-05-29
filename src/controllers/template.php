@@ -7,31 +7,31 @@
 // For details see LICENSE.md.
 // ----------------------------------------------------------------------
 
-$app->bind("/timeslots", function ($params) use ($app) {
+$app->bind("/templates", function ($params) use ($app) {
     $auth = $app['auth'];
     $auth->requireRole('admin');
 
-    $dao = $app['timeslotdao'];
+    $dao = $app['templatedao'];
     $items = $dao->loadAll();
     $data = array(
         'items' => $items,
     );
-    return $this->render("views/timeslots/list.php with views/layout.php", $data);
+    return $this->render("views/template/list.php with views/layout.php", $data);
 });
 
-$app->bind("/timeslots/add", function ($params) use ($app) {
+$app->bind("/templates/add", function ($params) use ($app) {
     $auth = $app['auth'];
     $auth->requireRole('admin');
 
     $data = array();
-    return $this->render("views/timeslots/add.php with views/layout.php", $data);
+    return $this->render("views/template/add.php with views/layout.php", $data);
 });
 
-$app->get("/timeslots/edit/:id", function ($params) use ($app) {
+$app->get("/templates/edit/:id", function ($params) use ($app) {
     $auth = $app['auth'];
     $auth->requireRole('admin');
 
-    $dao = $app['timeslotdao'];
+    $dao = $app['templatedao'];
     $id = $params['id'];
     $item = $dao->loadById($id);
 
@@ -40,29 +40,29 @@ $app->get("/timeslots/edit/:id", function ($params) use ($app) {
         "item" => $item,
     );
 
-    return $this->render("views/timeslots/edit.php with views/layout.php", $data);
+    return $this->render("views/template/edit.php with views/layout.php", $data);
 });
 
-$app->post("/timeslots/create", function ($params) use ($app) {
+$app->post("/templates/create", function ($params) use ($app) {
     $auth = $app['auth'];
     $auth->requireRole('admin');
 
-    $item = tecla\data\Timeslot::createFromArray($_POST);
-    $newId = $app['timeslotdao']->insert($item);
-    $app->reroute('/timeslots');
+    $item = tecla\data\Template::createFromArray($_POST);
+    $newId = $app['templatedao']->insert($item);
+    $app->reroute('/templates');
 });
 
-$app->post("/timeslots/save", function ($params) use ($app) {
+$app->post("/templates/save", function ($params) use ($app) {
     $auth = $app['auth'];
     $auth->requireRole('admin');
 
-    $newItem = tecla\data\Timeslot::createFromArray($_POST);
-    $dao = $app['timeslotdao'];
+    $newItem = tecla\data\Template::createFromArray($_POST);
+    $dao = $app['templatedao'];
     $dao->update($newItem);
-    $app->reroute('/timeslots');
+    $app->reroute('/templates');
 });
 
-$app->get('/timeslots/generate-games', function () use ($app) {
+$app->get('/templates/generate-games', function () use ($app) {
     $auth = $app['auth'];
     $auth->requireRole('admin');
 
@@ -74,10 +74,10 @@ $app->get('/timeslots/generate-games', function () use ($app) {
         'lastDay' => $t->modify('+1 day')->modify('last day of this month')->format('Y-m-d'),
         'problem' => false,
     );
-    return $this->render("views/timeslots/generate-games.php with views/layout.php", $data);
+    return $this->render("views/template/generate-games.php with views/layout.php", $data);
 });
 
-$app->post('/timeslots/generate-games', function () use ($app) {
+$app->post('/templates/generate-games', function () use ($app) {
     $auth = $app['auth'];
     $auth->requireRole('admin');
 
@@ -92,33 +92,33 @@ $app->post('/timeslots/generate-games', function () use ($app) {
 
     if ($numGenerated === false) {
         $data['problem'] = true;
-        return $this->render("views/timeslots/generate-games.php with views/layout.php", $data);
+        return $this->render("views/template/generate-games.php with views/layout.php", $data);
     }
-    return $this->render("views/timeslots/generate-success.php with views/layout.php", $data);
+    return $this->render("views/template/generate-success.php with views/layout.php", $data);
 });
 
-$app->get('/timeslots/delete/:id', function ($params) use ($app) {
+$app->get('/templates/delete/:id', function ($params) use ($app) {
     $auth = $app['auth'];
     $auth->requireRole('admin');
 
-    $timeslotdao = $app['timeslotdao'];
+    $templatedao = $app['templatedao'];
     $id = $params['id'];
-    $timeslot = $timeslotdao->loadById($id);
+    $template = $templatedao->loadById($id);
     $data = array(
-        'item' => $timeslot,
+        'item' => $template,
     );
-    return $this->render("views/timeslots/delete.php with views/layout.php", $data);
+    return $this->render("views/template/delete.php with views/layout.php", $data);
 });
 
-$app->post('/timeslots/delete', function () use ($app) {
+$app->post('/templates/delete', function () use ($app) {
     $auth = $app['auth'];
     $auth->requireRole('admin');
 
-    $timeslotdao = $app['timeslotdao'];
+    $templatedao = $app['templatedao'];
     $id = $_POST['id'];
-    $timeslot = $timeslotdao->loadById($id);
-    $timeslot->fromArray($_POST);
-    $timeslotdao->delete($timeslot);
+    $template = $templatedao->loadById($id);
+    $template->fromArray($_POST);
+    $templatedao->delete($template);
 
-    $this->reroute('/timeslots');
+    $this->reroute('/templates');
 });

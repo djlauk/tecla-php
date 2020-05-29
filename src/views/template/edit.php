@@ -7,9 +7,9 @@
 // For details see LICENSE.md.
 // ----------------------------------------------------------------------
 ?>
-<h1>Edit time slot <?=$item->id?></h1>
+<h1>Edit template <?=$item->id?></h1>
 
-<form method="POST" action="<?=$this->routeUrl('/timeslots/save')?>">
+<form method="POST" action="<?=$this->routeUrl('/templates/save')?>">
     <input name="id" type="hidden" value="<?=$item->id?>">
     <input name="metaVersion" type="hidden" value="<?=$item->metaVersion?>">
     <div>
@@ -34,6 +34,6 @@
     </div>
     <div>
         <button class="button primary" type="submit">Speichern</button>
-        <a class="button secondary" href="<?=$this->routeUrl("/timeslots/delete/{$item->id}")?>">Delete</a>
+        <a class="button secondary" href="<?=$this->routeUrl("/templates/delete/{$item->id}")?>">Delete</a>
     </div>
 </form>
