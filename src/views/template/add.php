@@ -11,30 +11,30 @@
 
 <form method="POST" action="<?=$this->routeUrl('/templates/create')?>">
     <div>
-        <label for="weekday" required>Wochentag</label>
-        <select id="weekday" name="weekday" required>
-            <option value="1">Montag</option>
-            <option value="2">Dienstag</option>
-            <option value="3">Mittwoch</option>
-            <option value="4">Donnerstag</option>
-            <option value="5">Freitag</option>
-            <option value="6">Samstag</option>
-            <option value="0">Sonntag</option>
+        <label for="weekday" required>Weekday</label>
+        <select id="weekday" name="weekday">
+            <?php foreach (tecla\data\WEEKDAYS as $num => $str): ?>
+                <option value="<?=$num?>"><?=$str?></option>
+            <?php endforeach?>
         </select>
     </div>
     <div>
-        <label for="startTime" required>Beginn</label>
+        <label for="startTime" required>Start time</label>
         <input id="startTime" name="startTime" placeholder="hh:mm" regex="\d\d:\d\d" required>
     </div>
     <div>
-        <label for="endTime" required>Ende</label>
-        <input name="endTime" placeholder="hh:mm" required>
+        <label for="endTime" required>End time</label>
+        <input name="endTime" placeholder="hh:mm" regex="\d\d:\d\d" required>
     </div>
     <div>
-        <label for="court" required>Platz</label>
+        <label for="court" required>Court</label>
         <input name="court" placeholder="Wimbledon" required>
     </div>
+    <div>
+        <label for="notes">Notes</label>
+        <textarea name="notes" placeholder="Note to future self ..."></textarea>
+    </div>
     <div class="form-buttons">
-        <button class="button primary" type="submit">Speichern</button>
+        <button class="button primary" type="submit">Add template</button>
     </div>
 </form>

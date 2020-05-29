@@ -13,7 +13,7 @@
     <input name="id" type="hidden" value="<?=$item->id?>">
     <input name="metaVersion" type="hidden" value="<?=$item->metaVersion?>">
     <div>
-        <label for="weekday">Wochentag</label>
+        <label for="weekday">Weekday</label>
         <select id="weekday" name="weekday">
             <?php foreach (tecla\data\WEEKDAYS as $num => $str): ?>
                 <option value="<?=$num?>"<?=$item->weekday == $num ? ' selected' : ''?>><?=$str?></option>
@@ -21,19 +21,23 @@
         </select>
     </div>
     <div>
-        <label for="startTime">Beginn</label>
-        <input name="startTime" value="<?=$item->startTime?>">
+        <label for="startTime">Start time</label>
+        <input name="startTime" placeholder="hh:mm" regex="\d\d:\d\d" required value="<?=$item->startTime?>">
     </div>
     <div>
-        <label for="endTime">Ende</label>
-        <input name="endTime" value="<?=$item->endTime?>">
+        <label for="endTime">End time</label>
+        <input name="endTime" placeholder="hh:mm" regex="\d\d:\d\d" required value="<?=$item->endTime?>">
     </div>
     <div>
-        <label for="court">Platz</label>
-        <input name="court" value="<?=$item->court?>">
+        <label for="court">Court</label>
+        <input name="court" placeholder="Wimbledon" required value="<?=htmlentities($item->court)?>">
     </div>
     <div>
-        <button class="button primary" type="submit">Speichern</button>
-        <a class="button secondary" href="<?=$this->routeUrl("/templates/delete/{$item->id}")?>">Delete</a>
+        <label for="notes" required>Notes</label>
+        <textarea name="notes" placeholder="Note to future self ..."><?=htmlentities($item->notes)?></textarea>
+    </div>
+    <div>
+        <button class="button primary" type="submit">Save template</button>
+        <a class="button secondary" href="<?=$this->routeUrl("/templates/delete/{$item->id}")?>">Delete template</a>
     </div>
 </form>
