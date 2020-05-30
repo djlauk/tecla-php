@@ -154,7 +154,7 @@ class AuthService
         if (!$this->hasRole('member')) {
             return false;
         }
-        if ($game->status !== 'available') {
+        if ($game->status !== GAME_AVAILABLE) {
             return false;
         }
         $now = time();
@@ -165,7 +165,7 @@ class AuthService
         if ($this->gameService->isFreeGame($game)) {
             return true;
         }
-        if ($this->gameService->isGameScheduledForUser($this->user->id)) {
+        if ($this->gameService->isGameScheduledForUser($this->user->id, GAME_REGULAR)) {
             return false;
         }
         return true;

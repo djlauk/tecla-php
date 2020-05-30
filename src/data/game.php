@@ -175,12 +175,13 @@ HERE;
         return is_null($row) ? null : Game::createFromArray($row);
     }
 
-    public function loadFutureGamesForUser($userId)
+    public function loadFutureGamesForUser($userId, $status = null)
     {
         if (is_null($userId)) {
             return array();
         }
         $results = array();
+        $params = array('userid' => $userId);
         $sql = <<<HERE
 SELECT
     `id`,
@@ -208,10 +209,16 @@ WHERE
         OR `player3_id` = :userid
         OR `player4_id` = :userid
     )
+HERE;
+        if (!is_null($status)) {
+            $sql .= ' AND `status` = :status ';
+            $params['status'] = $status;
+        }
+        $sql .= <<<HERE
 ORDER BY
     `startTime` ASC
 HERE;
-        $rows = $this->db->query($sql, array('userid' => $userId));
+        $rows = $this->db->query($sql, $params);
         foreach ($rows as $row) {
             $results[] = Game::createFromArray($row);
         }

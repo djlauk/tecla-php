@@ -65,9 +65,9 @@ class GameService
         return ($s > $now && $s - $now < $this->limeApp['config.freegame']);
     }
 
-    public function isGameScheduledForUser($userId)
+    public function isGameScheduledForUser($userId, $gameStatus = null)
     {
-        $games = $this->gamedao->loadFutureGamesForUser($userId);
+        $games = $this->gamedao->loadFutureGamesForUser($userId, $gameStatus);
         return count($games) > 0;
     }
 }
