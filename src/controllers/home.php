@@ -17,6 +17,7 @@ $app->bind("/", function () use ($app) {
         'user' => $user,
         'nextGames' => $app['gamedao']->loadFutureGamesForUser($userId),
         'games' => $app['gamedao']->loadAllAfter($today),
+        'userLookup' => $app['userservice']->getUserLookupMap(),
     );
     return $this->render("views/home/index.php with views/layout.php", $data);
 });

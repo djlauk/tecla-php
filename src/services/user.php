@@ -91,6 +91,15 @@ class UserService
         $this->userdao->update($user);
         // TODO: add audit log: password changed for user
     }
+
+    public function getUserLookupMap()
+    {
+        $users = array();
+        foreach ($this->userdao->loadAll() as $u) {
+            $users[$u->id] = $u;
+        }
+        return $users;
+    }
 }
 
 $app->service('userservice', function () use ($app) {
