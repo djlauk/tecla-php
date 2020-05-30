@@ -71,6 +71,14 @@ function formSelectUsers($name, $label, $value, $allUsers)
 
 <h1>Edit game</h1>
 
+<?php if ($problem): ?>
+<div class="error message">
+<p><strong>Updating game failed. Sorry.</strong></p>
+
+<p>Reason: <?=$problem?></p>
+</div>
+<?php endif?>
+
 <form method="POST" action="<?=$this->routeUrl('/game/save')?>">
     <input type="hidden" name="id" value="<?=$game->id?>">
     <input type="hidden" name="metaVersion" value="<?=$game->metaVersion?>">

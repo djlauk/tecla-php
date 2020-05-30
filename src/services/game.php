@@ -82,13 +82,19 @@ class GameService
         $this->checkUserCanBeBooked($game->player4_id);
     }
 
-    public function checkNumberOfPlayers(\tecla\data\Game &$game)
+    public function countPlayers(\tecla\data\Game &$game)
     {
         $numPlayers = 0;
         if (!is_null($game->player1_id)) {$numPlayers++;}
         if (!is_null($game->player2_id)) {$numPlayers++;}
         if (!is_null($game->player3_id)) {$numPlayers++;}
         if (!is_null($game->player4_id)) {$numPlayers++;}
+        return $numPlayers;
+    }
+
+    public function checkNumberOfPlayers(\tecla\data\Game &$game)
+    {
+        $numPlayers = $this->countPlayers($game);
         if ($numPlayers != 2 && $numPlayers != 4) {
             throw new \Exception("Number of players must be 2 or 4 (not $numPlayers)");
         }

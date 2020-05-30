@@ -172,6 +172,7 @@ $app->get("/game/edit/:id", function ($params) use ($app) {
         'id' => $id,
         'allUsers' => $allUsers,
         'game' => $game,
+        'problem' => false,
     );
     return $this->render("views/game/edit.php with views/layout.php", $data);
 });
@@ -189,6 +190,15 @@ $app->post("/game/save", function () use ($app) {
     $game->player2_id = $_POST['player2_id'] ?: null;
     $game->player3_id = $_POST['player3_id'] ?: null;
     $game->player4_id = $_POST['player4_id'] ?: null;
+    if ($app['gameservice']->countPlayers($game) > 0 && $game->status === GAME_AVAILABLE) {
+        $data = array(
+            'id' => $id,
+            'allUsers' => $app['userdao']->loadAll(),
+            'game' => $game,
+            'problem' => 'Game must not be available if there are players set.',
+        );
+        return $this->render("views/game/edit.php with views/layout.php", $data);
+    }
     $gamedao->update($game);
     $this->reroute("/game/view/$id");
 });
