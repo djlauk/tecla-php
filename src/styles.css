@@ -121,7 +121,8 @@ label {
 	text-transform: uppercase;
 	color: var(--tecla-gray-60);
 	display: block;
-	margin-bottom: 4px;
+	margin-bottom: var(--tecla-spacing-s);
+	margin-top: var(--tecla-spacing-l);
 }
 
 label[required]::after {
