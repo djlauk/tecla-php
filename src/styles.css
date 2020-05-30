@@ -64,11 +64,17 @@ body {
 	text-decoration: none;
 }
 
+.fullwidth {
+	width: 100%;
+}
+
 .button {
+	border: none;
 	display: inline-block;
 	padding: var(--tecla-spacing-m) var(--tecla-spacing-xl);
 	text-transform: uppercase;
 	text-decoration: none;
+	font: inherit;
 	font-size: 1rem;
 	border-radius: 2px;
 	cursor: pointer;
@@ -104,6 +110,7 @@ body {
 main {
 	max-width: 960px;
 	margin: 0 auto;
+	padding: var(--tecla-spacing-xs);
 	background-color: var(--tecla-surface);
 	color: var(--tecla-surface-on);
 }
@@ -122,7 +129,12 @@ label[required]::after {
 }
 
 select,
-input {
+input,
+textarea {
+	font-family: inherit;
+	border: none;
+	background-color: var(--tecla-gray-90);
+	padding: var(--tecla-spacing-s);
 	margin: 0 0 var(--tecla-spacing-m, 0) 0;
 	display: block;
 }
