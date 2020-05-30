@@ -200,7 +200,7 @@ $app->post("/game/save", function () use ($app) {
         return $this->render("views/game/edit.php with views/layout.php", $data);
     }
     $gamedao->update($game);
-    $this->reroute("/game/view/$id");
+    $this->reroute("/game/bulk-edit");
 });
 
 $app->get("/game/delete/:id", function ($params) use ($app) {
@@ -235,5 +235,38 @@ $app->post("/game/delete", function () use ($app) {
     $id = $_POST['id'];
     $game = $gamedao->loadById($id);
     $gamedao->delete($game);
-    $this->reroute('/');
+    $this->reroute('/game/bulk-edit');
+});
+
+$app->get("/game/bulk-edit", function () use ($app) {
+    $auth = $app['auth'];
+    $auth->requireRole('admin');
+
+    $today = strftime('%Y-%m-%d', time());
+    $data = array(
+        'games' => $app['gamedao']->loadAllAfter($today),
+        'userLookup' => $app['userservice']->getUserLookupMap(),
+        'problem' => false,
+    );
+    return $this->render("views/game/bulk-edit.php with views/layout.php", $data);
+});
+
+$app->post("/game/bulk-edit", function () use ($app) {
+    $auth = $app['auth'];
+    $auth->requireRole('admin');
+
+    $operation = $_POST['operation'];
+    $selectedGames = $_POST['selectedGames'];
+    try {
+        $app['gameservice']->bulkEdit($operation, $selectedGames);
+    } catch (\Exception $e) {
+        $today = strftime('%Y-%m-%d', time());
+        $data = array(
+            'games' => $app['gamedao']->loadAllAfter($today),
+            'userLookup' => $app['userservice']->getUserLookupMap(),
+            'problem' => $e->getMessage(),
+        );
+        return $this->render("views/game/bulk-edit.php with views/layout.php", $data);
+    }
+    $this->reroute('/game/bulk-edit');
 });

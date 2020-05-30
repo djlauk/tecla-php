@@ -35,6 +35,4 @@ if ($this['auth']->isLoggedIn()): ?>
 <div>
     <?php if ($canBook): ?><a class="button primary" href="<?=$this->routeUrl("/game/book/$id")?>">Book game</a><?php endif?>
     <?php if ($canCancel): ?><a class="button primary" href="<?=$this->routeUrl("/game/cancel/$id")?>">Cancel game</a><?php endif?>
-    <?php if ($canEdit): ?><a class="button secondary" href="<?=$this->routeUrl("/game/edit/$id")?>">Edit game</a><?php endif?>
-    <?php if ($canDelete): ?><a class="button secondary" href="<?=$this->routeUrl("/game/delete/$id")?>">Delete game</a><?php endif?>
 </div>

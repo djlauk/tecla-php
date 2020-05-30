@@ -115,6 +115,29 @@ class GameService
         if (count($games) === 0) {return;}
         throw new \Exception("Player '{$u->displayName}' already has a game on {$games[0]->startTime}");
     }
+
+    public function bulkEdit($operation, $selectedGames)
+    {
+        switch ($operation) {
+            case 'cancel':
+                foreach ($selectedGames as $id) {
+                    $g = $this->gamedao->loadById($id);
+                    $g->status = GAME_AVAILABLE;
+                    $g->player1_id = null;
+                    $g->player2_id = null;
+                    $g->player3_id = null;
+                    $g->player4_id = null;
+                    $g->notes = null;
+                    $this->gamedao->update($g);
+                    // TODO: Add audit log: admin canceled game $id
+                }
+                break;
+
+            default:
+                throw new \Exception("Operation not supported: $operation");
+
+        }
+    }
 }
 
 $app->service('gameservice', function () use ($app) {
