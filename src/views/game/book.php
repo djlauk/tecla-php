@@ -40,7 +40,7 @@ function formSelect($name, $label, $value, $options)
 HERE;
 }
 
-function formSelectUsers($name, $label, $allUsers, \tecla\Data\User &$currentUser)
+function formSelectUsers($name, $label, $allUsers, $value, \tecla\Data\User &$currentUser)
 {
     $options = array('' => '-- no one --');
     foreach ($allUsers as $u) {
@@ -49,11 +49,19 @@ function formSelectUsers($name, $label, $allUsers, \tecla\Data\User &$currentUse
         }
         $options[$u->id] = $u->displayName;
     }
-    return formSelect($name, $label, '', $options);
+    return formSelect($name, $label, $value, $options);
 }
 ?>
 
 <h1>Book game</h1>
+
+<?php if ($problem): ?>
+<div class="error message">
+<p><strong>Booking game failed. Sorry.</strong></p>
+
+<p>Reason: <?=$problem?></p>
+</div>
+<?php endif?>
 
 <table>
     <tr><td>Date:</td><td><?=$start->format('Y-m-d')?></td></tr>
@@ -72,9 +80,9 @@ function formSelectUsers($name, $label, $allUsers, \tecla\Data\User &$currentUse
         <label>Player 1</label>
         <div><?=$user->displayName?></div>
     </div>
-    <?=formSelectUsers('player2_id', 'Player 2', $allUsers, $user)?>
-    <?=formSelectUsers('player3_id', 'Player 3', $allUsers, $user)?>
-    <?=formSelectUsers('player4_id', 'Player 4', $allUsers, $user)?>
+    <?=formSelectUsers('player2_id', 'Player 2', $allUsers, $game->player2_id, $user)?>
+    <?=formSelectUsers('player3_id', 'Player 3', $allUsers, $game->player3_id, $user)?>
+    <?=formSelectUsers('player4_id', 'Player 4', $allUsers, $game->player4_id, $user)?>
     <?=formTextArea('notes', 'Notes', '')?>
     <button class="button primary" type="submit">Book</button>
 </form>

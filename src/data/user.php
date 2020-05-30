@@ -109,13 +109,17 @@ HERE;
         return $results;
     }
 
-    public function loadAllAvailableToday()
+    public function loadAllForBooking()
     {
         $results = array();
         $sql = <<<HERE
 SELECT
     `u`.`id`,
-    `displayName`,
+    CASE
+        WHEN `g`.`gameid` IS NULL OR `u`.`role` = 'guest'
+        THEN `u`.`displayName`
+        ELSE CONCAT(`u`.`displayName`, ' *')
+    END AS `displayName`,
     `passwordHash`,
     `email`,
     `role`,
@@ -129,22 +133,22 @@ SELECT
     DATE_FORMAT(`u`.`metaCreatedOn`, '%Y-%m-%dT%H:%i:%S') as `metaCreatedOn`,
     DATE_FORMAT(`u`.`metaUpdatedOn`, '%Y-%m-%dT%H:%i:%S') as `metaUpdatedOn`
 FROM `users` AS `u`
-LEFT JOIN `games` AS `g` ON (
-    `g`.`startTime` >= CURRENT_TIMESTAMP()
-    AND `g`.`status` = 'regular'
-    AND (
-    `g`.`player1_id` = `u`.`id`
-    OR `g`.`player2_id` = `u`.`id`
-    OR `g`.`player3_id` = `u`.`id`
-    OR `g`.`player4_id` = `u`.`id`
-    )
-)
+LEFT JOIN (
+    SELECT `users`.`id` AS `userid`, MIN(`games`.`id`) `gameid`
+    FROM `users`
+    LEFT JOIN `games` ON
+            `games`.`startTime` >= CURRENT_TIMESTAMP()
+        AND `games`.`status` = 'regular'
+        AND (
+               `users`.`id` = `games`.`player1_id`
+            OR `users`.`id` = `games`.`player2_id`
+            OR `users`.`id` = `games`.`player3_id`
+            OR `users`.`id` = `games`.`player4_id`
+        )
+        GROUP BY `users`.`id`
+) AS `g` ON `g`.`userid` = `u`.`id`
 WHERE
     `u`.`disabledOn` IS NULL
-    AND (
-        `g`.`id` IS NULL
-        OR `u`.`role` = 'guest'
-    )
 ORDER BY `displayName` ASC
 HERE;
         $rows = $this->db->query($sql);

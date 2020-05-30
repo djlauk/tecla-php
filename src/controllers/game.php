@@ -48,7 +48,7 @@ $app->get("/game/book/:id", function ($params) use ($app) {
     $userdao = $app['userdao'];
     $id = $params['id'];
     $game = $gamedao->loadById($id);
-    $allUsers = $userdao->loadAllAvailableToday($game->startTime);
+    $allUsers = $userdao->loadAllForBooking();
 
     $canBook = $auth->canBookGame($game);
     if (!$canBook) {
@@ -60,6 +60,7 @@ $app->get("/game/book/:id", function ($params) use ($app) {
         'allUsers' => $allUsers,
         'game' => $game,
         'canBook' => $canBook,
+        'problem' => false,
     );
     return $this->render("views/game/book.php with views/layout.php", $data);
 });
@@ -82,6 +83,20 @@ $app->post("/game/book", function () use ($app) {
     $game->player2_id = $_POST['player2_id'] ?: null;
     $game->player3_id = $_POST['player3_id'] ?: null;
     $game->player4_id = $_POST['player4_id'] ?: null;
+    try {
+        $app['gameservice']->validatePlayers($game);
+    } catch (\Exception $e) {
+        $data = array(
+            'id' => $id,
+            'user' => $user,
+            'allUsers' => $userdao->loadAllForBooking(),
+            'game' => $game,
+            'canBook' => $canBook,
+            'problem' => $e->getMessage(),
+        );
+        return $this->render("views/game/book.php with views/layout.php", $data);
+
+    }
     $free = $app['gameservice']->isFreeGame($game);
     $game->status = $free ? GAME_FREE : GAME_REGULAR;
     $gamedao->update($game);
