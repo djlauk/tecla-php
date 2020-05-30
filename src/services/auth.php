@@ -176,7 +176,10 @@ class AuthService
         if (!$this->hasRole('member')) {
             return false;
         }
-        if ($game->player1_id !== $this->user->id) {
+        if ($game->player1_id !== $this->user->id
+            && $game->player2_id !== $this->user->id
+            && $game->player3_id !== $this->user->id
+            && $game->player4_id !== $this->user->id) {
             return false;
         }
         $now = time();
