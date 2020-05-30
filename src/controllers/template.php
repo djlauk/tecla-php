@@ -72,6 +72,7 @@ $app->get('/templates/generate-games', function () use ($app) {
     $data = array(
         'firstDay' => $t->modify('+1 day')->format('Y-m-d'),
         'lastDay' => $t->modify('+1 day')->modify('last day of this month')->format('Y-m-d'),
+        'templates' => $app['templatedao']->loadAll(),
         'problem' => false,
     );
     return $this->render("views/template/generate-games.php with views/layout.php", $data);
@@ -83,11 +84,13 @@ $app->post('/templates/generate-games', function () use ($app) {
 
     $firstDay = $_POST['firstDay'];
     $lastDay = $_POST['lastDay'];
-    $numGenerated = $app['gameservice']->generateGames($firstDay, $lastDay);
+    $templates = $_POST['templates'];
+    $numGenerated = $app['gameservice']->generateGames($firstDay, $lastDay, $templates);
     $data = array(
         'firstDay' => $firstDay,
         'lastDay' => $lastDay,
         'count' => $numGenerated,
+        'templates' => $app['templatedao']->loadAll(),
     );
 
     if ($numGenerated === false) {

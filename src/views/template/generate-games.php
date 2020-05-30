@@ -24,6 +24,25 @@
         <label for="lastDay" required>Last day</label>
         <input name="lastDay" placeholder="yyyy-mm-dd" regex="\d\d\d\d-\d\d-\d\d" required value="<?=$lastDay?>">
     </div>
+    <div>
+        <label>Templates to use</label>
+        <table>
+            <tr>
+                <th>Use?</th>
+                <th>Weekday</th>
+                <th>Time</th>
+                <th>Court</th>
+            </tr>
+            <?php foreach ($templates as $item): ?>
+            <tr>
+                <td><input type="checkbox" name="templates[]" value="<?=$item->id?>" checked></td>
+                <td><?=tecla\data\WEEKDAYS[$item->weekday]?></td>
+                <td><?=$item->startTime?> - <?=$item->endTime?></td>
+                <td><?=$item->court?></td>
+            </tr>
+            <?php endforeach?>
+        </table>
+    </div>
     <div class="form-buttons">
         <button class="button primary" type="submit">Generate</button>
     </div>

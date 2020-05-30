@@ -23,7 +23,7 @@ class GameService
         $this->limeApp = $app;
     }
 
-    public function generateGames($firstDay, $lastDay)
+    public function generateGames($firstDay, $lastDay, $selectedTemplates)
     {
         $templatesByWeekday = array(
             0 => array(),
@@ -36,6 +36,9 @@ class GameService
         );
         $templates = $this->templatedao->loadAll();
         foreach ($templates as $item) {
+            if (!in_array($item->id, $selectedTemplates)) {
+                continue;
+            }
             $templatesByWeekday[$item->weekday][] = $item;
         }
         $count = 0;
