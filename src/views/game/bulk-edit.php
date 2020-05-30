@@ -64,6 +64,7 @@ $statusClass .= '-' . $start->format('H');
     <label for="operation">Operation</label>
     <select name="operation" id="operation">
         <option value="cancel">Cancel games</option>
+        <option value="block">Block slots</option>
     </select>
 </div>
 <div class="form-buttons">

@@ -132,6 +132,27 @@ class GameService
                     // TODO: Add audit log: admin canceled game $id
                 }
                 break;
+            case 'block':
+                // preflight check: are all those games available?
+                foreach ($selectedGames as $id) {
+                    $g = $this->gamedao->loadById($id);
+                    if ($g->status !== GAME_AVAILABLE) {
+                        throw new \Exception("Only available games can be blocked!");
+                    }
+                }
+                $now = strftime('%Y-%m-%d %H:%M:%S', time());
+                foreach ($selectedGames as $id) {
+                    $g = $this->gamedao->loadById($id);
+                    $g->status = GAME_BLOCKED;
+                    $g->player1_id = null;
+                    $g->player2_id = null;
+                    $g->player3_id = null;
+                    $g->player4_id = null;
+                    $g->notes = "Blocked by {$this->limeApp['auth']->getUser()->displayName} on $now";
+                    $this->gamedao->update($g);
+                    // TODO: Add audit log: admin blocked game $id
+                }
+                break;
 
             default:
                 throw new \Exception("Operation not supported: $operation");
