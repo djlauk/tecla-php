@@ -153,6 +153,20 @@ class GameService
                     // TODO: Add audit log: admin blocked game $id
                 }
                 break;
+            case 'delete':
+                // preflight check: are all those games available?
+                foreach ($selectedGames as $id) {
+                    $g = $this->gamedao->loadById($id);
+                    if ($g->status !== GAME_AVAILABLE) {
+                        throw new \Exception("Only available games can be deleted!");
+                    }
+                }
+                foreach ($selectedGames as $id) {
+                    $g = $this->gamedao->loadById($id);
+                    $this->gamedao->delete($g);
+                    // TODO: Add audit log: admin deleted game $id
+                }
+                break;
 
             default:
                 throw new \Exception("Operation not supported: $operation");
