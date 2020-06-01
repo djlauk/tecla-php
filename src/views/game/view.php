@@ -35,7 +35,11 @@ if ($this['auth']->isLoggedIn()): ?>
 <div>
     <?php if ($canBook): ?><a class="button primary" href="<?=$this->routeUrl("/game/book/$id")?>">Book game</a><?php endif?>
     <?php if ($canCancel): ?><a class="button primary" href="<?=$this->routeUrl("/game/cancel/$id")?>">Cancel game</a><?php endif?>
-    <?php if (!$canBook && $game->status === GAME_AVAILABLE && $this['auth']->hasRole('member') && count($nextGames) > 0): ?>
+    <?php if (!$canBook && $game->status === GAME_AVAILABLE && $this['auth']->hasRole('member')): ?>
+        <?php if ($game->startTime < strftime('%Y-%m-%d %H:%M:%S', time())): ?>
+        <div class="info message"><strong>You can&apos;t book this game.</strong><br>This game started in the past.</div>
+        <?php elseif (count($nextGames > 0)): ?>
         <div class="info message"><strong>You can&apos;t book this game.</strong><br>Your next games is: <a href="<?=$this->routeUrl('/game/view/' . $nextGames[0]->id)?>"><?=$nextGames[0]->startTime?></a></div>
+        <?php endif?>
     <?php endif?>
 </div>
