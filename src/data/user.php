@@ -118,7 +118,7 @@ SELECT
     CASE
         WHEN `g`.`gameid` IS NULL OR `u`.`role` = 'guest'
         THEN `u`.`displayName`
-        ELSE CONCAT(`u`.`displayName`, ' *')
+        ELSE CONCAT(`u`.`displayName`, ' (', `g`.`status`, ' on ', `g`.`date`, ')')
     END AS `displayName`,
     `passwordHash`,
     `email`,
@@ -134,11 +134,11 @@ SELECT
     DATE_FORMAT(`u`.`metaUpdatedOn`, '%Y-%m-%dT%H:%i:%S') as `metaUpdatedOn`
 FROM `users` AS `u`
 LEFT JOIN (
-    SELECT `users`.`id` AS `userid`, MIN(`games`.`id`) `gameid`
+    SELECT `users`.`id` AS `userid`, MIN(`games`.`id`) `gameid`, `games`.`status`, DATE_FORMAT(`games`.`startTime`, '%Y-%m-%d %H:%i') as `date`
     FROM `users`
     LEFT JOIN `games` ON
             `games`.`startTime` >= CURRENT_TIMESTAMP()
-        AND `games`.`status` = 'regular'
+        AND `games`.`status` IN ('regular', 'freegame')
         AND (
                `users`.`id` = `games`.`player1_id`
             OR `users`.`id` = `games`.`player2_id`

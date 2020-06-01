@@ -83,6 +83,8 @@ $app->post("/game/book", function () use ($app) {
     $game->player2_id = $_POST['player2_id'] ?: null;
     $game->player3_id = $_POST['player3_id'] ?: null;
     $game->player4_id = $_POST['player4_id'] ?: null;
+    $free = $app['gameservice']->isFreeGame($game);
+    $game->status = $free ? GAME_FREE : GAME_REGULAR;
     try {
         $app['gameservice']->validatePlayers($game);
     } catch (\Exception $e) {
@@ -95,10 +97,8 @@ $app->post("/game/book", function () use ($app) {
             'problem' => $e->getMessage(),
         );
         return $this->render("views/game/book.php with views/layout.php", $data);
-
     }
-    $free = $app['gameservice']->isFreeGame($game);
-    $game->status = $free ? GAME_FREE : GAME_REGULAR;
+
     $gamedao->update($game);
     $this->reroute("/game/view/$id");
 });

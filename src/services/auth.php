@@ -163,10 +163,13 @@ class AuthService
             return false;
         }
         if ($this->gameService->isFreeGame($game)) {
-            return true;
-        }
-        if ($this->gameService->isGameScheduledForUser($this->user->id, GAME_REGULAR)) {
-            return false;
+            if ($this->gameService->isGameScheduledForUser($this->user->id, GAME_FREE)) {
+                return false;
+            }
+        } else {
+            if ($this->gameService->isGameScheduledForUser($this->user->id, GAME_REGULAR)) {
+                return false;
+            }
         }
         return true;
     }

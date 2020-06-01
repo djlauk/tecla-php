@@ -79,10 +79,10 @@ class GameService
     public function validatePlayers(\tecla\data\Game &$game)
     {
         $this->checkNumberOfPlayers($game);
-        $this->checkUserCanBeBooked($game->player1_id);
-        $this->checkUserCanBeBooked($game->player2_id);
-        $this->checkUserCanBeBooked($game->player3_id);
-        $this->checkUserCanBeBooked($game->player4_id);
+        $this->checkUserCanBeBooked($game->player1_id, $game->status);
+        $this->checkUserCanBeBooked($game->player2_id, $game->status);
+        $this->checkUserCanBeBooked($game->player3_id, $game->status);
+        $this->checkUserCanBeBooked($game->player4_id, $game->status);
     }
 
     public function countPlayers(\tecla\data\Game &$game)
@@ -103,7 +103,7 @@ class GameService
         }
     }
 
-    public function checkUserCanBeBooked($userId)
+    public function checkUserCanBeBooked($userId, $gameType)
     {
         if (is_null($userId)) {return;}
         $u = $this->userdao->loadById($userId);
@@ -111,9 +111,9 @@ class GameService
             throw new \Exception("Player '{$u->displayName}' is disabled");
         }
         if ($u->role === 'guest') {return;} // guest users may be placeholders and used multiple times. they don't count.
-        $games = $this->gamedao->loadFutureGamesForUser($userId, GAME_REGULAR);
+        $games = $this->gamedao->loadFutureGamesForUser($userId, $gameType);
         if (count($games) === 0) {return;}
-        throw new \Exception("Player '{$u->displayName}' already has a game on {$games[0]->startTime}");
+        throw new \Exception("Player '{$u->displayName}' already has a {$games[0]->status} game on {$games[0]->startTime}");
     }
 
     public function bulkEdit($operation, $selectedGames)
