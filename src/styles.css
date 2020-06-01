@@ -101,6 +101,10 @@ body {
 	color: var(--tecla-error-on);
 }
 
+.info {
+	background-color: var(--tecla-gray-80);
+}
+
 .message {
 	padding: 1rem;
 	margin: 1rem 0;
