@@ -32,5 +32,5 @@ $end = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $game->endTime);
 
 <form method="POST" action="<?=$this->routeUrl('/game/delete')?>">
     <input type="hidden" name="id" value="<?=$game->id?>">
-    <button class="button primary">Delete</button>
+    <button class="button primary">Confirm deletion</button>
 </form>
