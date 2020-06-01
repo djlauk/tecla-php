@@ -100,7 +100,7 @@ $app->post("/game/book", function () use ($app) {
     }
 
     $gamedao->update($game);
-    $this->reroute("/game/view/$id");
+    $this->reroute("/");
 });
 
 $app->get("/game/cancel/:id", function ($params) use ($app) {
@@ -154,7 +154,7 @@ $app->post("/game/cancel", function () use ($app) {
     $game->player4_id = null;
     $game->notes = null;
     $gamedao->update($game);
-    $this->reroute("/game/view/$id");
+    $this->reroute("/");
 });
 
 $app->get("/game/edit/:id", function ($params) use ($app) {
