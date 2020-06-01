@@ -32,5 +32,5 @@ $end = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $game->endTime);
 
 <form method="POST" action="<?=$this->routeUrl('/game/cancel')?>">
     <input type="hidden" name="id" value="<?=$game->id?>">
-    <button class="button primary">Cancel</button>
+    <button class="button primary">Confirm cancellation</button>
 </form>
