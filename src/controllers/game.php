@@ -23,7 +23,7 @@ $app->get("/game/view/:id", function ($params) use ($app) {
     $canCancel = $auth->canCancelGame($game);
     $canEdit = $auth->hasRole('admin');
     $canDelete = $auth->hasRole('admin');
-    $nextGames = $gamedao->loadFutureGamesForUser($user->id);
+    $nextGames = is_null($user) ? array() : $gamedao->loadFutureGamesForUser($user->id);
     $data = array(
         'id' => $id,
         'user' => $user,
