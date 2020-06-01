@@ -54,7 +54,9 @@ $statusClass = $g->status === GAME_AVAILABLE ? 'available' : 'taken';
 $statusClass .= '-' . $start->format('H');
 ?>
     <li class="tecla-list-item">
-        <div class="tecla-list-item-icon <?=$statusClass?>"></div>
+        <a href="<?=$this->routeUrl("/game/view/{$g->id}")?>">
+            <div class="tecla-list-item-icon <?=$statusClass?>"></div>
+        </a>
         <div class="tecla-list-item-content">
         <a href="<?=$this->routeUrl("/game/view/{$g->id}")?>">
             <div><?=tecla\data\WEEKDAYS[$start->format('w')]?>, <?=$start->format('Y-m-d')?> <?=$start->format('H:i')?> - <?=$end->format('H:i')?>, <?=$g->court?></div>
