@@ -12,10 +12,12 @@ namespace tecla;
 class UserService
 {
     private $userdao;
+    private $authService;
     private $limeApp;
-    public function __construct(\tecla\data\UserDAO &$userdao, \Lime\App &$app)
+    public function __construct(\tecla\data\UserDAO &$userdao, \tecla\AuthService &$authService, \Lime\App &$app)
     {
         $this->userdao = $userdao;
+        $this->authService = $authService;
         $this->limeApp = $app;
     }
 
@@ -77,19 +79,19 @@ class UserService
         $this->checkPasswordRules($password);
         $user->passwordHash = password_hash($password, PASSWORD_DEFAULT);
         $this->userdao->update($user);
-        // TODO: add audit log: password set for user
+        $this->authService->logAction('USER:ADMINPWCHANGE', "USER:{$user->id}", "admin set password");
     }
 
     public function changePassword(\tecla\data\User &$user, $oldPassword, $password)
     {
         if (!password_verify($oldPassword, $user->passwordHash)) {
+            $this->authService->logAction('USER:PWFAIL', "USER:{$user->id}", "old password was wrong");
             throw new \Exception("Wrong password");
-            // TODO: add audit log: wrong password for user when changing passwords
         }
         $this->checkPasswordRules($password);
         $user->passwordHash = password_hash($password, PASSWORD_DEFAULT);
         $this->userdao->update($user);
-        // TODO: add audit log: password changed for user
+        $this->authService->logAction('USER:PWCHANGE', "USER:{$user->id}", "user changed password");
     }
 
     public function getUserLookupMap()
@@ -103,5 +105,5 @@ class UserService
 }
 
 $app->service('userservice', function () use ($app) {
-    return new UserService($app['userdao'], $app);
+    return new UserService($app['userdao'], $app['auth'], $app);
 });

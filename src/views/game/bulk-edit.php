@@ -23,11 +23,12 @@ function getPlayer($userId, $userLookup)
 <?php endif?>
 <form method="POST" action="<?=$this->routeUrl('/game/bulk-edit')?>">
 
-<label>Games</label>
+<label>Select games</label>
 <table class="fullwidth">
     <tr>
         <th></th>
         <th></th>
+        <th>ID</th>
         <th>Weekday</th>
         <th>Date</th>
         <th>Time</th>
@@ -48,6 +49,7 @@ $statusClass .= '-' . $start->format('H');
     <tr>
         <td><input type="checkbox" name="selectedGames[]" value="<?=$g->id?>"></td>
         <td><div class="tecla-list-item-icon small <?=$statusClass?>"></div></td>
+        <td><a href="<?=$this->routeUrl("/game/edit/{$g->id}")?>"><?=$g->id?></a></td>
         <td><a href="<?=$this->routeUrl("/game/edit/{$g->id}")?>"><?=tecla\data\WEEKDAYS[$start->format('w')]?></a></td>
         <td><?=$start->format('Y-m-d')?></td>
         <td><?=$start->format('H:i')?> - <?=$end->format('H:i')?></td>
@@ -61,7 +63,7 @@ $statusClass .= '-' . $start->format('H');
 <?php endforeach?>
 </table>
 <div>
-    <label for="operation">Operation</label>
+    <label for="operation">Select operation</label>
     <select name="operation" id="operation">
         <option value="cancel">Cancel games</option>
         <option value="block">Block slots</option>

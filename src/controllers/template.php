@@ -49,6 +49,7 @@ $app->post("/templates/create", function ($params) use ($app) {
 
     $item = tecla\data\Template::createFromArray($_POST);
     $newId = $app['templatedao']->insert($item);
+    $auth->logAction('TEMPLATE:CREATE', "TEMPLATE:$newId");
     $app->reroute('/templates');
 });
 
@@ -59,6 +60,7 @@ $app->post("/templates/save", function ($params) use ($app) {
     $newItem = tecla\data\Template::createFromArray($_POST);
     $dao = $app['templatedao'];
     $dao->update($newItem);
+    $auth->logAction('TEMPLATE:UPDATE', "TEMPLATE:{$newItem->id}");
     $app->reroute('/templates');
 });
 
@@ -122,6 +124,7 @@ $app->post('/templates/delete', function () use ($app) {
     $template = $templatedao->loadById($id);
     $template->fromArray($_POST);
     $templatedao->delete($template);
+    $auth->logAction('TEMPLATE:DELETE', "TEMPLATE:$id");
 
     $this->reroute('/templates');
 });

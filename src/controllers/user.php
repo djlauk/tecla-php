@@ -62,6 +62,7 @@ $app->post("/users/save", function () use ($app) {
     }
     $user->fromArray($_POST);
     $dao->update($user);
+    $auth->logAction('USER:UPDATE', "USER:$id");
 
     $app->reroute("/users");
 });
@@ -83,6 +84,7 @@ $app->post("/users/create", function () use ($app) {
     $item = \tecla\data\User::createFromArray($_POST);
     $item->passwordHash = password_hash($_POST['password'], PASSWORD_DEFAULT);
     $newId = $app['userdao']->insert($item);
+    $auth->logAction('USER:CREATE', "USER:$newId");
     $app->reroute('/users');
 });
 
@@ -111,10 +113,12 @@ $app->post("/users/enable", function () use ($app) {
     $user->fromArray($_POST);
     if ($_POST['enabled'] === 'enabled') {
         $user->disabledOn = null;
+        $action = 'USER:ENABLE';
     } else {
         $user->disabledOn = strftime(ISODATETIME);
+        $action = 'USER:DISABLE';
     }
     $dao->update($user);
-
+    $auth->logAction($action, "USER:$id");
     $app->reroute('/users');
 });

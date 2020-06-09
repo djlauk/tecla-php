@@ -27,18 +27,32 @@ class AuthService
 {
     private $user = null;
     private $userdao;
-    private $gameService;
+    private $auditlogdao;
     private $session;
     private $limeApp;
-    public function __construct(\tecla\data\UserDao &$userdao, \tecla\GameService &$gameService, \Lime\Session &$session, \Lime\App &$app)
+    public function __construct(\tecla\data\UserDao &$userdao, \tecla\data\AuditlogDAO &$auditlogdao, \Lime\Session &$session, \Lime\App &$app)
     {
         $this->userdao = $userdao;
-        $this->gameService = $gameService;
+        $this->auditlogdao = $auditlogdao;
         $this->session = $session;
         if ($this->session->read('userid', false)) {
             $this->user = $userdao->loadById($this->session->read('userid'));
         }
         $this->limeApp = $app;
+    }
+
+    public function logAction($action, $object = null, $message = null, $user_id = null)
+    {
+        if (is_null($user_id)) {
+            $user_id = $this->user->id;
+        }
+        $entry = \tecla\data\Auditlog::createFromArray(array(
+            'action' => $action,
+            'user_id' => $user_id,
+            'object' => $object,
+            'message' => $message,
+        ));
+        $this->auditlogdao->insert($entry);
     }
 
     public function login($email, $password)
@@ -62,18 +76,18 @@ class AuthService
         }
 
         if (password_verify($password, $user->passwordHash) === false) {
-            // TODO: add audit entry: failed login for user $email from $_SERVER['REMOTE_ADDR']
+            $this->logAction('USER:LOGINFAIL', 'USER:' . $user->id, "failed login for user '$email' from {$_SERVER['REMOTE_ADDR']}", $user->id);
             $user->failedLogins++;
             if ($user->failedLogins >= MAX_LOGIN_TRIES) {
                 $user->lockedUntil = strftime(ISODATETIME, time() + 300);
-                // TODO: add audit entry: locking user $email for exceeding maximum attempts
+                $this->logAction('USER:LOCK', 'USER:' . $user->id, "locked user after exceeding maximum failures until {$user->lockedUntil}", $user->id);
             }
             $this->userdao->update($user);
             sleep(1); // further delay of brute force attacks -- 1 sec is bearable for humans
             return false;
         }
 
-        // TODO: add audit entry: user $email logged in from $_SERVER['REMOTE_ADDR']
+        $this->logAction('USER:LOGIN', 'USER:' . $user->id, "user '$email' logged in from {$_SERVER['REMOTE_ADDR']}", $user->id);
         $user->lockedUntil = null;
         $user->failedLogins = 0;
         $user->lastLoginOn = strftime(ISODATETIME);
@@ -144,59 +158,15 @@ class AuthService
 
     public function logout()
     {
-        // TODO: add audit log: user logged out
+        $this->logAction('USER:LOGOUT', 'USER:' . $this->user->id, "user '{$this->user->email}' logged out from {$_SERVER['REMOTE_ADDR']}");
         $this->user = null;
         $this->session->destroy();
-    }
-
-    public function canBookGame(\tecla\data\Game &$game)
-    {
-        if (!$this->hasRole('member')) {
-            return false;
-        }
-        if ($game->status !== GAME_AVAILABLE) {
-            return false;
-        }
-        $now = time();
-        $start = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $game->startTime);
-        if ($start->getTimestamp() < $now) {
-            return false;
-        }
-        if ($this->gameService->isFreeGame($game)) {
-            if ($this->gameService->isGameScheduledForUser($this->user->id, GAME_FREE)) {
-                return false;
-            }
-        } else {
-            if ($this->gameService->isGameScheduledForUser($this->user->id, GAME_REGULAR)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public function canCancelGame(\tecla\data\Game &$game)
-    {
-        if (!$this->hasRole('member')) {
-            return false;
-        }
-        if ($game->player1_id !== $this->user->id
-            && $game->player2_id !== $this->user->id
-            && $game->player3_id !== $this->user->id
-            && $game->player4_id !== $this->user->id) {
-            return false;
-        }
-        $now = time();
-        $start = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $game->startTime);
-        if ($start->getTimestamp() < $now) {
-            return false;
-        }
-        return true;
     }
 }
 
 $app->service('auth', function () use ($app) {
     $userdao = $app['userdao'];
-    $gameservice = $app['gameservice'];
+    $auditlogdao = $app['auditlogdao'];
     $session = $app('session');
-    return new AuthService($userdao, $gameservice, $session, $app);
+    return new AuthService($userdao, $auditlogdao, $session, $app);
 });

@@ -14,13 +14,61 @@ class GameService
     private $gamedao;
     private $templatedao;
     private $userdao;
+    private $authService;
     private $limeApp;
-    public function __construct(\tecla\data\GameDAO &$gamedao, \tecla\data\TemplateDAO &$templatedao, \tecla\data\UserDAO &$userdao, \Lime\App &$app)
+    public function __construct(\tecla\data\GameDAO &$gamedao, \tecla\data\TemplateDAO &$templatedao, \tecla\data\UserDAO &$userdao, \tecla\AuthService &$authService, \Lime\App &$app)
     {
         $this->gamedao = $gamedao;
         $this->templatedao = $templatedao;
         $this->userdao = $userdao;
+        $this->authService = $authService;
         $this->limeApp = $app;
+    }
+
+    public function canBookGame(\tecla\data\Game &$game)
+    {
+        if (!$this->authService->hasRole('member')) {
+            return false;
+        }
+        if ($game->status !== GAME_AVAILABLE) {
+            return false;
+        }
+        $now = time();
+        $start = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $game->startTime);
+        if ($start->getTimestamp() < $now) {
+            return false;
+        }
+        $user = $this->authService->getUser();
+        if ($this->isFreeGame($game)) {
+            if ($this->isGameScheduledForUser($user->id, GAME_FREE)) {
+                return false;
+            }
+        } else {
+            if ($this->isGameScheduledForUser($user->id, GAME_REGULAR)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public function canCancelGame(\tecla\data\Game &$game)
+    {
+        if (!$this->authService->hasRole('member')) {
+            return false;
+        }
+        $user = $this->authService->getUser();
+        if ($game->player1_id !== $user->id
+            && $game->player2_id !== $user->id
+            && $game->player3_id !== $user->id
+            && $game->player4_id !== $user->id) {
+            return false;
+        }
+        $now = time();
+        $start = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $game->startTime);
+        if ($start->getTimestamp() < $now) {
+            return false;
+        }
+        return true;
     }
 
     public function generateGames($firstDay, $lastDay, $selectedTemplates)
@@ -59,7 +107,8 @@ class GameService
             }
             $t->add($oneDay);
         }
-        // TODO: add audit log: generated $count games for range $firstDay - $lastDay
+        $this->authService->logAction('GAME:GENERATE', null, "generated $count games for range $firstDay - $lastDay");
+
         return $count;
     }
 
@@ -129,7 +178,7 @@ class GameService
                     $g->player4_id = null;
                     $g->notes = null;
                     $this->gamedao->update($g);
-                    // TODO: Add audit log: admin canceled game $id
+                    $this->authService->logAction('GAME:BULKCANCEL', "GAME:$id", "admin canceled game");
                 }
                 break;
             case 'block':
@@ -150,7 +199,7 @@ class GameService
                     $g->player4_id = null;
                     $g->notes = "Blocked by {$this->limeApp['auth']->getUser()->displayName} on $now";
                     $this->gamedao->update($g);
-                    // TODO: Add audit log: admin blocked game $id
+                    $this->authService->logAction('GAME:BULKBLOCK', "GAME:$id", "admin blocked game");
                 }
                 break;
             case 'delete':
@@ -164,7 +213,7 @@ class GameService
                 foreach ($selectedGames as $id) {
                     $g = $this->gamedao->loadById($id);
                     $this->gamedao->delete($g);
-                    // TODO: Add audit log: admin deleted game $id
+                    $this->authService->logAction('GAME:BULKDELETE', "GAME:$id", "admin deleted game");
                 }
                 break;
 
@@ -176,5 +225,5 @@ class GameService
 }
 
 $app->service('gameservice', function () use ($app) {
-    return new GameService($app['gamedao'], $app['templatedao'], $app['userdao'], $app);
+    return new GameService($app['gamedao'], $app['templatedao'], $app['userdao'], $app['auth'], $app);
 });

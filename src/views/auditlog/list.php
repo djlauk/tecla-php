@@ -27,8 +27,8 @@ function getUser($userId, $userLookup)
     <a class="button primary" href="<?=$this->routeUrl('/auditlog/list/' . ($page + 1))?>">Next</a>
     <a class="button primary" href="<?=$this->routeUrl('/auditlog/list/' . $numPages)?>">Last page</a>
     <?php else: ?>
-    <span class="button">Next</span>
-    <span class="button">Last page</span>
+    <span disabled class="button">Next</span>
+    <span disabled class="button">Last page</span>
     <?php endif?>
 </div>
 

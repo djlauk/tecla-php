@@ -50,6 +50,7 @@ $app->post("/profile/save", function () use ($app) {
     $user->fromArray($_POST);
     $dao->update($user);
 
+    $auth->logAction('USER:PROFILEUPDATE', "USER:{$user->id}");
     $app->reroute("/profile");
 });
 
