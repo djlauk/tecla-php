@@ -17,6 +17,10 @@
 //
 // 3.  Run the app.
 
+if (!isset($_SERVER['PATH_INFO'])) {
+    $_SERVER['PATH_INFO'] = $_SERVER['REQUEST_URI'];
+}
+
 require_once __DIR__ . '/vendor/Lime/App.php';
 $app = new Lime\App();
 
