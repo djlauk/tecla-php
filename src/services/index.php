@@ -9,6 +9,7 @@
 
 namespace tecla;
 
+require_once __DIR__ . '/auditlog.php';
 require_once __DIR__ . '/auth.php';
 require_once __DIR__ . '/data.php';
 require_once __DIR__ . '/game.php';

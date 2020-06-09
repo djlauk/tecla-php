@@ -39,3 +39,8 @@ $app->service('userdao', function () use ($app) {
     $db = $app['db'];
     return new \tecla\data\UserDAO($db);
 });
+
+$app->service('auditlogdao', function () use ($app) {
+    $db = $app['db'];
+    return new \tecla\data\AuditlogDAO($db);
+});

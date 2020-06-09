@@ -47,6 +47,10 @@ $app["config.passwordrules"] = array(
     'needsNumClasses' => 3, // requires 3 out of 4 character classes
 );
 
+$app['config.auditlog'] = array(
+    'pagesize' => 20,
+);
+
 // ======================================================================
 //
 // DO NOT REMOVE THIS PART BELOW!

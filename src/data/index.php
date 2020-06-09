@@ -10,6 +10,8 @@
 namespace tecla\data;
 
 require_once __DIR__ . '/db.php';
+
+require_once __DIR__ . '/auditlog.php';
 require_once __DIR__ . '/game.php';
 require_once __DIR__ . '/template.php';
 require_once __DIR__ . '/user.php';

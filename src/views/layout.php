@@ -24,6 +24,7 @@
         <a href="<?=$this->routeUrl('/game/bulk-edit')?>">Games</a>
         <a href="<?=$this->routeUrl('/templates')?>">Templates</a>
         <a href="<?=$this->routeUrl('/users')?>">Users</a>
+        <a href="<?=$this->routeUrl('/auditlog/list/1')?>">Audit log</a>
         <?php endif?>
         <?php if ($this['auth']->isLoggedIn()): ?>
         <a href="<?=$this->routeUrl('/profile')?>">My account</a>

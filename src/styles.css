@@ -82,6 +82,10 @@ body {
 	color: var(--tecla-gray-20);
 }
 
+[disabled] {
+	cursor: not-allowed;
+}
+
 .primary {
 	background-color: var(--tecla-primary);
 	color: var(--tecla-primary-on);
