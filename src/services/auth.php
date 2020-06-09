@@ -76,7 +76,7 @@ class AuthService
         }
 
         if (password_verify($password, $user->passwordHash) === false) {
-            $this->logAction('USER:LOGINFAIL', 'USER:' . $user->id, "failed login for user '$email' from {$_SERVER['REMOTE_ADDR']}", $user->id);
+            $this->logAction('LOGIN:FAIL', 'USER:' . $user->id, "failed login for user '$email' from {$_SERVER['REMOTE_ADDR']}", $user->id);
             $user->failedLogins++;
             if ($user->failedLogins >= MAX_LOGIN_TRIES) {
                 $user->lockedUntil = strftime(ISODATETIME, time() + 300);
@@ -87,7 +87,7 @@ class AuthService
             return false;
         }
 
-        $this->logAction('USER:LOGIN', 'USER:' . $user->id, "user '$email' logged in from {$_SERVER['REMOTE_ADDR']}", $user->id);
+        $this->logAction('LOGIN:SUCCESS', 'USER:' . $user->id, "user '$email' logged in from {$_SERVER['REMOTE_ADDR']}", $user->id);
         $user->lockedUntil = null;
         $user->failedLogins = 0;
         $user->lastLoginOn = strftime(ISODATETIME);
@@ -158,7 +158,7 @@ class AuthService
 
     public function logout()
     {
-        $this->logAction('USER:LOGOUT', 'USER:' . $this->user->id, "user '{$this->user->email}' logged out from {$_SERVER['REMOTE_ADDR']}");
+        $this->logAction('LOGIN:LOGOUT', 'USER:' . $this->user->id, "user '{$this->user->email}' logged out from {$_SERVER['REMOTE_ADDR']}");
         $this->user = null;
         $this->session->destroy();
     }
