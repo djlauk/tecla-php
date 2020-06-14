@@ -40,13 +40,24 @@ function getUser($userId, $userLookup)
         <th>Action</th>
         <th>Object</th>
     </tr>
-<?php foreach ($entries as $e): ?>
-    <tr>
-        <td><a href="<?=$this->routeUrl("/auditlog/view/{$e->id}")?>"><?=$e->id?></a></td>
-        <td><?=$e->metaCreatedOn?></td>
-        <td><a href="<?=$this->routeUrl("/users/view/{$e->user_id}")?>"><?=getUser($e->user_id, $userLookup)?></a></td>
-        <td><?=htmlentities($e->action)?></td>
-        <td><?=htmlentities($e->object)?></td>
+<?php foreach ($entries as $e):
+    if ($e->object) {
+        $objParts = explode(':', $e->object, 2);
+        $objType = strtolower($objParts[0]);
+        $objId = $objParts[1];
+        $historyLink = $this->routeUrl("/history/$objType/$objId");
+    } else {
+        $historyLink = '';
+    }
+    $viewLink = $this->routeUrl("/auditlog/view/{$e->id}");
+    $userLink = $this->routeUrl("/users/view/{$e->user_id}");
+    ?>
+	<tr>
+	    <td><a href="<?=$viewLink?>"><?=$e->id?></a></td>
+	    <td><a href="<?=$viewLink?>"><?=$e->metaCreatedOn?></a></td>
+	    <td><a href="<?=$userLink?>"><?=getUser($e->user_id, $userLookup)?></a></td>
+	    <td><?=htmlentities($e->action)?></td>
+	    <td><?php if ($historyLink): ?><a href="<?=$historyLink?>"><?=htmlentities($e->object)?></a><?php endif?></td>
     </tr>
 <?php endforeach?>
 </table>

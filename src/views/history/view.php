@@ -6,13 +6,11 @@
 // tecla is open source under the terms of the MIT license.
 // For details see LICENSE.md.
 // ----------------------------------------------------------------------
+?>
 
-namespace tecla\data;
+<h1>History of <?=strtoupper($type)?>:<?=$id?></h1>
 
-require_once __DIR__ . '/db.php';
-
-require_once __DIR__ . '/auditlog.php';
-require_once __DIR__ . '/game.php';
-require_once __DIR__ . '/objecthistory.php';
-require_once __DIR__ . '/template.php';
-require_once __DIR__ . '/user.php';
+<?php foreach ($entries as $e): ?>
+<h2>Version <?=$e->version?> (<?=$e->metaCreatedOn?>)</h2>
+<pre><?=htmlentities($e->data)?></pre>
+<?php endforeach?>

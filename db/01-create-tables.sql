@@ -127,3 +127,16 @@ CREATE TABLE `templates` (
 
     PRIMARY KEY (`id`)
 );
+
+
+CREATE TABLE `objecthistory` (
+    `type` VARCHAR(30) NOT NULL,
+    `id` int unsigned NOT NULL,
+    `version` int unsigned NOT NULL,
+		`data` VARCHAR(2000) NOT NULL,
+
+		-- meta data columns
+    `metaCreatedOn` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+		PRIMARY KEY (`type`, `id`, `version`)
+);
