@@ -11,14 +11,13 @@ namespace tecla;
 
 class UserService
 {
-    private $userdao;
-    private $authService;
-    private $limeApp;
-    public function __construct(\tecla\data\UserDAO &$userdao, \tecla\AuthService &$authService, \Lime\App &$app)
+    private $data;
+    private $auth;
+    public function __construct(\tecla\Dataservice &$data, \tecla\AuthService &$auth, \Lime\App &$app)
     {
-        $this->userdao = $userdao;
-        $this->authService = $authService;
-        $this->limeApp = $app;
+        $this->data = $data;
+        $this->auth = $auth;
+        $this->cfgPasswordRules = $app['config.passwordrules'];
     }
 
     /**
@@ -27,7 +26,7 @@ class UserService
      */
     public function checkPasswordRules($password)
     {
-        $pwRules = $this->limeApp['config.passwordrules'];
+        $pwRules = $this->cfgPasswordRules;
         if (!$pwRules['enabled']) {
             return;
         }
@@ -78,26 +77,26 @@ class UserService
     {
         $this->checkPasswordRules($password);
         $user->passwordHash = password_hash($password, PASSWORD_DEFAULT);
-        $this->userdao->update($user);
-        $this->authService->logAction('USER:ADMINPWCHANGE', "USER:{$user->id}", "admin set password");
+        $this->data->updateUser($user);
+        $this->auth->logAction('USER:ADMINPWCHANGE', "USER:{$user->id}", "admin set password");
     }
 
     public function changePassword(\tecla\data\User &$user, $oldPassword, $password)
     {
         if (!password_verify($oldPassword, $user->passwordHash)) {
-            $this->authService->logAction('USER:PWFAIL', "USER:{$user->id}", "old password was wrong");
+            $this->auth->logAction('USER:PWFAIL', "USER:{$user->id}", "old password was wrong");
             throw new \Exception("Wrong password");
         }
         $this->checkPasswordRules($password);
         $user->passwordHash = password_hash($password, PASSWORD_DEFAULT);
-        $this->userdao->update($user);
-        $this->authService->logAction('USER:PWCHANGE', "USER:{$user->id}", "user changed password");
+        $this->data->updateUser($user);
+        $this->auth->logAction('USER:PWCHANGE', "USER:{$user->id}", "user changed password");
     }
 
     public function getUserLookupMap()
     {
         $users = array();
-        foreach ($this->userdao->loadAll() as $u) {
+        foreach ($this->data->loadAllUsers() as $u) {
             $users[$u->id] = $u;
         }
         return $users;
@@ -105,5 +104,5 @@ class UserService
 }
 
 $app->service('userservice', function () use ($app) {
-    return new UserService($app['userdao'], $app['auth'], $app);
+    return new UserService($app['dataservice'], $app['auth'], $app);
 });

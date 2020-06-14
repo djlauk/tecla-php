@@ -17,9 +17,9 @@ $app->get("/auditlog/list/:page", function ($params) use ($app) {
     }
     $pageSize = $app['config.auditlog/pagesize'];
     $offset = ($page - 1) * $pageSize;
-    $auditlogdao = $app['auditlogdao'];
-    $entries = $auditlogdao->loadPage($pageSize, $offset);
-    $numEntries = $auditlogdao->count();
+    $data = $app['dataservice'];
+    $entries = $data->loadAuditlogPage($pageSize, $offset);
+    $numEntries = $data->countAuditlogEntries();
     $numPages = ceil($numEntries / $pageSize);
     $data = array(
         'entries' => $entries,
@@ -38,8 +38,8 @@ $app->get("/auditlog/view/:id", function ($params) use ($app) {
     $auth->requireRole('admin');
 
     $pageSize = $app['config.auditlog/pagesize'];
-    $auditlogdao = $app['auditlogdao'];
-    $entry = $auditlogdao->loadById($params['id']);
+    $data = $app['dataservice'];
+    $entry = $data->loadAuditlogById($params['id']);
 
     $data = array(
         'entry' => $entry,

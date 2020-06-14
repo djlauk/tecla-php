@@ -77,8 +77,8 @@ SELECT
     `court`,
     `notes`,
     `metaVersion`,
-    `metaCreatedOn`,
-    `metaUpdatedOn`
+    DATE_FORMAT(`metaCreatedOn`, '%Y-%m-%dT%H:%i:%S') as `metaCreatedOn`,
+    DATE_FORMAT(`metaUpdatedOn`, '%Y-%m-%dT%H:%i:%S') as `metaUpdatedOn`
 FROM
     `templates`
 ORDER BY
@@ -105,8 +105,8 @@ SELECT
     `court`,
     `notes`,
     `metaVersion`,
-    `metaCreatedOn`,
-    `metaUpdatedOn`
+    DATE_FORMAT(`metaCreatedOn`, '%Y-%m-%dT%H:%i:%S') as `metaCreatedOn`,
+    DATE_FORMAT(`metaUpdatedOn`, '%Y-%m-%dT%H:%i:%S') as `metaUpdatedOn`
 FROM
     `templates`
 WHERE
@@ -133,6 +133,7 @@ HERE;
         $placeholders = implode(', ', $placeholders);
         $sql = "INSERT INTO `templates` ($fields) VALUES ($placeholders)";
         $newId = $this->db->insert($sql, $arr);
+        $obj->id = $newId;
         return $newId;
     }
 

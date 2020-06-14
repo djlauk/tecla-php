@@ -11,8 +11,8 @@ $app->bind("/templates", function ($params) use ($app) {
     $auth = $app['auth'];
     $auth->requireRole('admin');
 
-    $dao = $app['templatedao'];
-    $items = $dao->loadAll();
+    $data = $app['dataservice'];
+    $items = $data->loadAllTemplates();
     $data = array(
         'items' => $items,
     );
@@ -31,9 +31,9 @@ $app->get("/templates/edit/:id", function ($params) use ($app) {
     $auth = $app['auth'];
     $auth->requireRole('admin');
 
-    $dao = $app['templatedao'];
+    $data = $app['dataservice'];
     $id = $params['id'];
-    $item = $dao->loadById($id);
+    $item = $data->loadTemplateById($id);
 
     $data = array(
         "id" => $id,
@@ -48,7 +48,7 @@ $app->post("/templates/create", function ($params) use ($app) {
     $auth->requireRole('admin');
 
     $item = tecla\data\Template::createFromArray($_POST);
-    $newId = $app['templatedao']->insert($item);
+    $newId = $app['dataservice']->insertTemplate($item);
     $auth->logAction('TEMPLATE:CREATE', "TEMPLATE:$newId");
     $app->reroute('/templates');
 });
@@ -58,8 +58,8 @@ $app->post("/templates/save", function ($params) use ($app) {
     $auth->requireRole('admin');
 
     $newItem = tecla\data\Template::createFromArray($_POST);
-    $dao = $app['templatedao'];
-    $dao->update($newItem);
+    $data = $app['dataservice'];
+    $data->updateTemplate($newItem);
     $auth->logAction('TEMPLATE:UPDATE', "TEMPLATE:{$newItem->id}");
     $app->reroute('/templates');
 });
@@ -68,13 +68,12 @@ $app->get('/templates/generate-games', function () use ($app) {
     $auth = $app['auth'];
     $auth->requireRole('admin');
 
-    $gamedao = $app['gamedao'];
-    $g = $gamedao->getLastGame();
+    $g = $app['dataservice']->getLastGame();
     $t = is_null($g) ? new \DateTimeImmutable() : \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $g->startTime);
     $data = array(
         'firstDay' => $t->modify('+1 day')->format('Y-m-d'),
         'lastDay' => $t->modify('+1 day')->modify('last day of this month')->format('Y-m-d'),
-        'templates' => $app['templatedao']->loadAll(),
+        'templates' => $app['dataservice']->loadAllTemplates(),
         'problem' => false,
     );
     return $this->render("views/template/generate-games.php with views/layout.php", $data);
@@ -92,7 +91,7 @@ $app->post('/templates/generate-games', function () use ($app) {
         'firstDay' => $firstDay,
         'lastDay' => $lastDay,
         'count' => $numGenerated,
-        'templates' => $app['templatedao']->loadAll(),
+        'templates' => $app['dataservice']->loadAllTemplates(),
     );
 
     if ($numGenerated === false) {
@@ -106,9 +105,9 @@ $app->get('/templates/delete/:id', function ($params) use ($app) {
     $auth = $app['auth'];
     $auth->requireRole('admin');
 
-    $templatedao = $app['templatedao'];
+    $data = $app['dataservice'];
     $id = $params['id'];
-    $template = $templatedao->loadById($id);
+    $template = $data->loadTemplateById($id);
     $data = array(
         'item' => $template,
     );
@@ -119,11 +118,11 @@ $app->post('/templates/delete', function () use ($app) {
     $auth = $app['auth'];
     $auth->requireRole('admin');
 
-    $templatedao = $app['templatedao'];
+    $data = $app['dataservice'];
     $id = $_POST['id'];
-    $template = $templatedao->loadById($id);
+    $template = $data->loadTemplateById($id);
     $template->fromArray($_POST);
-    $templatedao->delete($template);
+    $data->deleteTemplate($template);
     $auth->logAction('TEMPLATE:DELETE', "TEMPLATE:$id");
 
     $this->reroute('/templates');

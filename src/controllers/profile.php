@@ -40,7 +40,7 @@ $app->post("/profile/save", function () use ($app) {
         'user' => $user,
     );
 
-    $dao = $app['userdao'];
+    $data = $app['dataservice'];
     // if email is updated, remove verification status
     if ($_POST['email'] !== $user->email) {
         $user->verifiedOn = null;
@@ -48,7 +48,7 @@ $app->post("/profile/save", function () use ($app) {
         // TODO: request verification
     }
     $user->fromArray($_POST);
-    $dao->update($user);
+    $data->updateUser($user);
 
     $auth->logAction('USER:PROFILEUPDATE', "USER:{$user->id}");
     $app->reroute("/profile");

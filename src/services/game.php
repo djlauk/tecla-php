@@ -11,23 +11,33 @@ namespace tecla;
 
 class GameService
 {
-    private $gamedao;
-    private $templatedao;
-    private $userdao;
-    private $authService;
-    private $limeApp;
-    public function __construct(\tecla\data\GameDAO &$gamedao, \tecla\data\TemplateDAO &$templatedao, \tecla\data\UserDAO &$userdao, \tecla\AuthService &$authService, \Lime\App &$app)
+    private $data;
+    private $auth;
+    private $cfgMaxGames;
+    private $cfgFreeGameSeconds;
+
+    public function __construct(DataService &$data, AuthService &$auth, \Lime\App &$app)
     {
-        $this->gamedao = $gamedao;
-        $this->templatedao = $templatedao;
-        $this->userdao = $userdao;
-        $this->authService = $authService;
-        $this->limeApp = $app;
+        $this->data = $data;
+        $this->auth = $auth;
+        $this->cfgMaxGames = $app['config.maxgames'];
+        $this->cfgFreeGameSeconds = $app['config.freegame'];
+    }
+
+    public function loadAllGamesAfterToday()
+    {
+        $today = strftime('%Y-%m-%d', time());
+        return $this->data->loadAllGamesAfter($today, $this->cfgMaxGames);
+    }
+
+    public function loadFutureGamesForUser($userId, $status = null)
+    {
+        return $this->data->loadFutureGamesForUser($userId, $status);
     }
 
     public function canBookGame(\tecla\data\Game &$game)
     {
-        if (!$this->authService->hasRole('member')) {
+        if (!$this->auth->hasRole('member')) {
             return false;
         }
         if ($game->status !== GAME_AVAILABLE) {
@@ -38,7 +48,7 @@ class GameService
         if ($start->getTimestamp() < $now) {
             return false;
         }
-        $user = $this->authService->getUser();
+        $user = $this->auth->getUser();
         if ($this->isFreeGame($game)) {
             if ($this->isGameScheduledForUser($user->id, GAME_FREE)) {
                 return false;
@@ -53,10 +63,10 @@ class GameService
 
     public function canCancelGame(\tecla\data\Game &$game)
     {
-        if (!$this->authService->hasRole('member')) {
+        if (!$this->auth->hasRole('member')) {
             return false;
         }
-        $user = $this->authService->getUser();
+        $user = $this->auth->getUser();
         if ($game->player1_id !== $user->id
             && $game->player2_id !== $user->id
             && $game->player3_id !== $user->id
@@ -82,7 +92,7 @@ class GameService
             5 => array(),
             6 => array(),
         );
-        $templates = $this->templatedao->loadAll();
+        $templates = $this->data->loadAllTemplates();
         foreach ($templates as $item) {
             if (!in_array($item->id, $selectedTemplates)) {
                 continue;
@@ -102,12 +112,12 @@ class GameService
                 $g->endTime = "${dateStr}T{$item->endTime}";
                 $g->court = $item->court;
                 $g->status = GAME_AVAILABLE;
-                $newId = $this->gamedao->insert($g);
+                $newId = $this->data->insertGame($g);
                 $count++;
             }
             $t->add($oneDay);
         }
-        $this->authService->logAction('GAME:GENERATE', null, "generated $count games for range $firstDay - $lastDay");
+        $this->auth->logAction('GAME:GENERATE', null, "generated $count games for range $firstDay - $lastDay");
 
         return $count;
     }
@@ -116,12 +126,12 @@ class GameService
     {
         $now = time();
         $s = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $game->startTime)->getTimestamp();
-        return ($s > $now && $s - $now < $this->limeApp['config.freegame']);
+        return ($s > $now && $s - $now < $this->cfgFreeGameSeconds);
     }
 
     public function isGameScheduledForUser($userId, $gameStatus = null)
     {
-        $games = $this->gamedao->loadFutureGamesForUser($userId, $gameStatus);
+        $games = $this->data->loadFutureGamesForUser($userId, $gameStatus);
         return count($games) > 0;
     }
 
@@ -155,12 +165,12 @@ class GameService
     public function checkUserCanBeBooked($userId, $gameType)
     {
         if (is_null($userId)) {return;}
-        $u = $this->userdao->loadById($userId);
+        $u = $this->data->loadUserById($userId);
         if (!is_null($u->disabledOn)) {
             throw new \Exception("Player '{$u->displayName}' is disabled");
         }
         if ($u->role === 'guest') {return;} // guest users may be placeholders and used multiple times. they don't count.
-        $games = $this->gamedao->loadFutureGamesForUser($userId, $gameType);
+        $games = $this->data->loadFutureGamesForUser($userId, $gameType);
         if (count($games) === 0) {return;}
         throw new \Exception("Player '{$u->displayName}' already has a {$games[0]->status} game on {$games[0]->startTime}");
     }
@@ -170,50 +180,50 @@ class GameService
         switch ($operation) {
             case 'cancel':
                 foreach ($selectedGames as $id) {
-                    $g = $this->gamedao->loadById($id);
+                    $g = $this->data->loadGameById($id);
                     $g->status = GAME_AVAILABLE;
                     $g->player1_id = null;
                     $g->player2_id = null;
                     $g->player3_id = null;
                     $g->player4_id = null;
                     $g->notes = null;
-                    $this->gamedao->update($g);
-                    $this->authService->logAction('GAME:BULKCANCEL', "GAME:$id", "admin canceled game");
+                    $this->data->updateGame($g);
+                    $this->auth->logAction('GAME:BULKCANCEL', "GAME:$id", "admin canceled game");
                 }
                 break;
             case 'block':
                 // preflight check: are all those games available?
                 foreach ($selectedGames as $id) {
-                    $g = $this->gamedao->loadById($id);
+                    $g = $this->data->loadGameById($id);
                     if ($g->status !== GAME_AVAILABLE) {
                         throw new \Exception("Only available games can be blocked!");
                     }
                 }
                 $now = strftime('%Y-%m-%d %H:%M:%S', time());
                 foreach ($selectedGames as $id) {
-                    $g = $this->gamedao->loadById($id);
+                    $g = $this->data->loadGameById($id);
                     $g->status = GAME_BLOCKED;
                     $g->player1_id = null;
                     $g->player2_id = null;
                     $g->player3_id = null;
                     $g->player4_id = null;
                     $g->notes = "Blocked by {$this->limeApp['auth']->getUser()->displayName} on $now";
-                    $this->gamedao->update($g);
-                    $this->authService->logAction('GAME:BULKBLOCK', "GAME:$id", "admin blocked game");
+                    $this->data->updateGame($g);
+                    $this->auth->logAction('GAME:BULKBLOCK', "GAME:$id", "admin blocked game");
                 }
                 break;
             case 'delete':
                 // preflight check: are all those games available?
                 foreach ($selectedGames as $id) {
-                    $g = $this->gamedao->loadById($id);
+                    $g = $this->data->loadGameById($id);
                     if ($g->status !== GAME_AVAILABLE) {
                         throw new \Exception("Only available games can be deleted!");
                     }
                 }
                 foreach ($selectedGames as $id) {
-                    $g = $this->gamedao->loadById($id);
-                    $this->gamedao->delete($g);
-                    $this->authService->logAction('GAME:BULKDELETE', "GAME:$id", "admin deleted game");
+                    $g = $this->data->loadGameById($id);
+                    $this->data->deleteGame($g);
+                    $this->auth->logAction('GAME:BULKDELETE', "GAME:$id", "admin deleted game");
                 }
                 break;
 
@@ -225,5 +235,7 @@ class GameService
 }
 
 $app->service('gameservice', function () use ($app) {
-    return new GameService($app['gamedao'], $app['templatedao'], $app['userdao'], $app['auth'], $app);
+    $data = $app['dataservice'];
+    $auth = $app['auth'];
+    return new GameService($data, $auth, $app);
 });

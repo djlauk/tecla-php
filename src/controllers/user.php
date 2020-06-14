@@ -14,7 +14,7 @@ $app->get("/users", function () use ($app) {
     $auth->requireRole('admin');
 
     $data = array(
-        'users' => $app['userdao']->loadAll(),
+        'users' => $app['dataservice']->loadAllUsers(),
     );
     return $this->render("views/user/list.php with views/layout.php", $data);
 });
@@ -24,7 +24,7 @@ $app->get("/users/view/:id", function ($params) use ($app) {
     $auth->requireRole('admin');
 
     $id = $params['id'];
-    $user = $app['userdao']->loadById($id);
+    $user = $app['dataservice']->loadUserById($id);
 
     $data = array(
         'id' => $id,
@@ -38,7 +38,7 @@ $app->get("/users/edit/:id", function ($params) use ($app) {
     $auth->requireRole('admin');
 
     $id = $params['id'];
-    $user = $app['userdao']->loadById($id);
+    $user = $app['dataservice']->loadUserById($id);
 
     $data = array(
         'id' => $id,
@@ -51,9 +51,9 @@ $app->post("/users/save", function () use ($app) {
     $auth = $app['auth'];
     $auth->requireRole('admin');
 
-    $dao = $app['userdao'];
+    $data = $app['dataservice'];
     $id = $_POST['id'];
-    $user = $dao->loadById($id);
+    $user = $data->loadUserById($id);
     // if email is updated, remove verification status
     if ($_POST['email'] !== $user->email) {
         $user->verifiedOn = null;
@@ -61,7 +61,7 @@ $app->post("/users/save", function () use ($app) {
         // TODO: request verification
     }
     $user->fromArray($_POST);
-    $dao->update($user);
+    $data->updateUser($user);
     $auth->logAction('USER:UPDATE', "USER:$id");
 
     $app->reroute("/users");
@@ -83,7 +83,7 @@ $app->post("/users/create", function () use ($app) {
 
     $item = \tecla\data\User::createFromArray($_POST);
     $item->passwordHash = password_hash($_POST['password'], PASSWORD_DEFAULT);
-    $newId = $app['userdao']->insert($item);
+    $newId = $app['dataservice']->insertUser($item);
     $auth->logAction('USER:CREATE', "USER:$newId");
     $app->reroute('/users');
 });
@@ -93,7 +93,7 @@ $app->get("/users/enable/:id", function ($params) use ($app) {
     $auth->requireRole('admin');
 
     $id = $params['id'];
-    $user = $app['userdao']->loadById($id);
+    $user = $app['dataservice']->loadUserById($id);
 
     $data = array(
         'id' => $id,
@@ -107,9 +107,9 @@ $app->post("/users/enable", function () use ($app) {
     $auth = $app['auth'];
     $auth->requireRole('admin');
 
-    $dao = $app['userdao'];
+    $data = $app['dataservice'];
     $id = $_POST['id'];
-    $user = $dao->loadById($id);
+    $user = $data->loadUserById($id);
     $user->fromArray($_POST);
     if ($_POST['enabled'] === 'enabled') {
         $user->disabledOn = null;
@@ -118,7 +118,7 @@ $app->post("/users/enable", function () use ($app) {
         $user->disabledOn = strftime(ISODATETIME);
         $action = 'USER:DISABLE';
     }
-    $dao->update($user);
+    $data->updateUser($user);
     $auth->logAction($action, "USER:$id");
     $app->reroute('/users');
 });

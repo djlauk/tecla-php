@@ -10,21 +10,20 @@
 $app->get("/game/view/:id", function ($params) use ($app) {
     $auth = $app['auth'];
     $user = $auth->getUser();
-    $gamedao = $app['gamedao'];
-    $userdao = $app['userdao'];
+    $data = $app['dataservice'];
     $gameService = $app['gameservice'];
     $id = $params['id'];
-    $game = $gamedao->loadById($id);
-    $player1 = $userdao->loadById($game->player1_id);
-    $player2 = $userdao->loadById($game->player2_id);
-    $player3 = $userdao->loadById($game->player3_id);
-    $player4 = $userdao->loadById($game->player4_id);
+    $game = $data->loadGameById($id);
+    $player1 = $data->loadUserById($game->player1_id);
+    $player2 = $data->loadUserById($game->player2_id);
+    $player3 = $data->loadUserById($game->player3_id);
+    $player4 = $data->loadUserById($game->player4_id);
 
     $canBook = $gameService->canBookGame($game);
     $canCancel = $gameService->canCancelGame($game);
     $canEdit = $auth->hasRole('admin');
     $canDelete = $auth->hasRole('admin');
-    $nextGames = is_null($user) ? array() : $gamedao->loadFutureGamesForUser($user->id);
+    $nextGames = is_null($user) ? array() : $gameService->loadFutureGamesForUser($user->id);
     $data = array(
         'id' => $id,
         'user' => $user,
@@ -45,12 +44,11 @@ $app->get("/game/book/:id", function ($params) use ($app) {
     $auth->requireRole('member');
 
     $user = $auth->getUser();
-    $gamedao = $app['gamedao'];
-    $userdao = $app['userdao'];
+    $data = $app['dataservice'];
     $gameService = $app['gameservice'];
     $id = $params['id'];
-    $game = $gamedao->loadById($id);
-    $allUsers = $userdao->loadAllForBooking();
+    $game = $data->loadGameById($id);
+    $allUsers = $data->loadAllUsersForBooking();
 
     $canBook = $gameService->canBookGame($game);
     if (!$canBook) {
@@ -72,11 +70,10 @@ $app->post("/game/book", function () use ($app) {
     $auth->requireRole('member');
 
     $user = $auth->getUser();
-    $gamedao = $app['gamedao'];
-    $userdao = $app['userdao'];
+    $data = $app['dataservice'];
     $gameService = $app['gameservice'];
     $id = $_POST['id'];
-    $game = $gamedao->loadById($id);
+    $game = $data->loadGameById($id);
     $game->fromArray($_POST);
     $canBook = $gameService->canBookGame($game);
     if (!$canBook) {
@@ -94,7 +91,7 @@ $app->post("/game/book", function () use ($app) {
         $data = array(
             'id' => $id,
             'user' => $user,
-            'allUsers' => $userdao->loadAllForBooking(),
+            'allUsers' => $data->loadAllUsersForBooking(),
             'game' => $game,
             'canBook' => $canBook,
             'problem' => $e->getMessage(),
@@ -102,7 +99,7 @@ $app->post("/game/book", function () use ($app) {
         return $this->render("views/game/book.php with views/layout.php", $data);
     }
 
-    $gamedao->update($game);
+    $data->updateGame($game);
     $auth->logAction('GAME:BOOK', "GAME:$id");
     $this->reroute("/");
 });
@@ -112,15 +109,14 @@ $app->get("/game/cancel/:id", function ($params) use ($app) {
     $auth->requireRole('member');
 
     $user = $auth->getUser();
-    $gamedao = $app['gamedao'];
-    $userdao = $app['userdao'];
+    $data = $app['dataservice'];
     $gameService = $app['gameservice'];
     $id = $params['id'];
-    $game = $gamedao->loadById($id);
-    $player1 = $userdao->loadById($game->player1_id);
-    $player2 = $userdao->loadById($game->player2_id);
-    $player3 = $userdao->loadById($game->player3_id);
-    $player4 = $userdao->loadById($game->player4_id);
+    $game = $data->loadGameById($id);
+    $player1 = $data->loadUserById($game->player1_id);
+    $player2 = $data->loadUserById($game->player2_id);
+    $player3 = $data->loadUserById($game->player3_id);
+    $player4 = $data->loadUserById($game->player4_id);
 
     $canCancel = $gameService->canCancelGame($game);
     if (!$canCancel) {
@@ -144,10 +140,10 @@ $app->post("/game/cancel", function () use ($app) {
     $auth->requireRole('member');
 
     $user = $auth->getUser();
-    $gamedao = $app['gamedao'];
+    $data = $app['dataservice'];
     $gameService = $app['gameservice'];
     $id = $_POST['id'];
-    $game = $gamedao->loadById($id);
+    $game = $data->loadGameById($id);
 
     $canCancel = $gameService->canCancelGame($game);
     if (!$canCancel) {
@@ -159,7 +155,7 @@ $app->post("/game/cancel", function () use ($app) {
     $game->player3_id = null;
     $game->player4_id = null;
     $game->notes = null;
-    $gamedao->update($game);
+    $data->updateGame($game);
     $auth->logAction('GAME:CANCEL', "GAME:$id");
     $this->reroute("/");
 });
@@ -169,11 +165,10 @@ $app->get("/game/edit/:id", function ($params) use ($app) {
     $auth->requireRole('admin');
 
     $user = $auth->getUser();
-    $gamedao = $app['gamedao'];
-    $userdao = $app['userdao'];
+    $data = $app['dataservice'];
     $id = $params['id'];
-    $game = $gamedao->loadById($id);
-    $allUsers = $userdao->loadAll();
+    $game = $data->loadGameById($id);
+    $allUsers = $data->loadAllUsers();
 
     $data = array(
         'id' => $id,
@@ -189,9 +184,9 @@ $app->post("/game/save", function () use ($app) {
     $auth->requireRole('admin');
 
     $user = $auth->getUser();
-    $gamedao = $app['gamedao'];
+    $data = $app['dataservice'];
     $id = $_POST['id'];
-    $game = $gamedao->loadById($id);
+    $game = $data->loadGameById($id);
     $game->fromArray($_POST);
     $game->player1_id = $_POST['player1_id'] ?: null;
     $game->player2_id = $_POST['player2_id'] ?: null;
@@ -200,13 +195,13 @@ $app->post("/game/save", function () use ($app) {
     if ($app['gameservice']->countPlayers($game) > 0 && $game->status === GAME_AVAILABLE) {
         $data = array(
             'id' => $id,
-            'allUsers' => $app['userdao']->loadAll(),
+            'allUsers' => $data->loadAllUsers(),
             'game' => $game,
             'problem' => 'Game must not be available if there are players set.',
         );
         return $this->render("views/game/edit.php with views/layout.php", $data);
     }
-    $gamedao->update($game);
+    $data->updateGame($game);
     $auth->logAction('GAME:UPDATE', "GAME:$id");
     $this->reroute("/game/bulk-edit");
 });
@@ -215,14 +210,13 @@ $app->get("/game/delete/:id", function ($params) use ($app) {
     $auth = $app['auth'];
     $auth->requireRole('admin');
 
-    $gamedao = $app['gamedao'];
-    $userdao = $app['userdao'];
+    $data = $app['dataservice'];
     $id = $params['id'];
-    $game = $gamedao->loadById($id);
-    $player1 = $userdao->loadById($game->player1_id);
-    $player2 = $userdao->loadById($game->player2_id);
-    $player3 = $userdao->loadById($game->player3_id);
-    $player4 = $userdao->loadById($game->player4_id);
+    $game = $data->loadGameById($id);
+    $player1 = $data->loadUserById($game->player1_id);
+    $player2 = $data->loadUserById($game->player2_id);
+    $player3 = $data->loadUserById($game->player3_id);
+    $player4 = $data->loadUserById($game->player4_id);
 
     $data = array(
         'id' => $id,
@@ -239,10 +233,10 @@ $app->post("/game/delete", function () use ($app) {
     $auth = $app['auth'];
     $auth->requireRole('admin');
 
-    $gamedao = $app['gamedao'];
+    $data = $app['dataservice'];
     $id = $_POST['id'];
-    $game = $gamedao->loadById($id);
-    $gamedao->delete($game);
+    $game = $data->loadGameById($id);
+    $data->deleteGame($game);
     $auth->logAction('GAME:DELETE', "GAME:$id");
     $this->reroute('/game/bulk-edit');
 });
@@ -251,9 +245,8 @@ $app->get("/game/bulk-edit", function () use ($app) {
     $auth = $app['auth'];
     $auth->requireRole('admin');
 
-    $today = strftime('%Y-%m-%d', time());
     $data = array(
-        'games' => $app['gamedao']->loadAllAfter($today),
+        'games' => $app['gameservice']->loadAllGamesAfterToday(),
         'userLookup' => $app['userservice']->getUserLookupMap(),
         'problem' => false,
     );
@@ -265,13 +258,12 @@ $app->post("/game/bulk-edit", function () use ($app) {
     $auth->requireRole('admin');
 
     $operation = $_POST['operation'];
-    $selectedGames = $_POST['selectedGames'];
+    $selectedGames = $_POST['selectedGames'] ?? array();
     try {
         $app['gameservice']->bulkEdit($operation, $selectedGames);
     } catch (\Exception $e) {
-        $today = strftime('%Y-%m-%d', time());
         $data = array(
-            'games' => $app['gamedao']->loadAllAfter($today),
+            'games' => $app['gameservice']->loadAllGamesAfterToday(),
             'userLookup' => $app['userservice']->getUserLookupMap(),
             'problem' => $e->getMessage(),
         );

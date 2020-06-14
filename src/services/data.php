@@ -177,23 +177,3 @@ $app->service('dataservice', function () use ($app) {
     $db = $app['db'];
     return new DataService($db);
 });
-
-$app->service('gamedao', function () use ($app) {
-    $db = $app['db'];
-    return new \tecla\data\GameDAO($db, $app['config.maxgames']);
-});
-
-$app->service('templatedao', function () use ($app) {
-    $db = $app['db'];
-    return new \tecla\data\TemplateDAO($db);
-});
-
-$app->service('userdao', function () use ($app) {
-    $db = $app['db'];
-    return new \tecla\data\UserDAO($db);
-});
-
-$app->service('auditlogdao', function () use ($app) {
-    $db = $app['db'];
-    return new \tecla\data\AuditlogDAO($db);
-});

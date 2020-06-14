@@ -26,17 +26,15 @@ define('LOCK_SECONDS', 300); // lock user for 5 minutes
 class AuthService
 {
     private $user = null;
-    private $userdao;
-    private $auditlogdao;
+    private $data;
     private $session;
     private $limeApp;
-    public function __construct(\tecla\data\UserDao &$userdao, \tecla\data\AuditlogDAO &$auditlogdao, \Lime\Session &$session, \Lime\App &$app)
+    public function __construct(\tecla\DataService &$data, \Lime\Session &$session, \Lime\App &$app)
     {
-        $this->userdao = $userdao;
-        $this->auditlogdao = $auditlogdao;
+        $this->data = $data;
         $this->session = $session;
         if ($this->session->read('userid', false)) {
-            $this->user = $userdao->loadById($this->session->read('userid'));
+            $this->user = $this->data->loadUserById($this->session->read('userid'));
         }
         $this->limeApp = $app;
     }
@@ -52,12 +50,12 @@ class AuthService
             'object' => $object,
             'message' => $message,
         ));
-        $this->auditlogdao->insert($entry);
+        $this->data->insertAuditlog($entry);
     }
 
     public function login($email, $password)
     {
-        $user = $this->userdao->loadByEmail($email);
+        $user = $this->data->loadUserByEmail($email);
         if (is_null($user)) {
             return false;
         }
@@ -82,7 +80,7 @@ class AuthService
                 $user->lockedUntil = strftime(ISODATETIME, time() + 300);
                 $this->logAction('USER:LOCK', 'USER:' . $user->id, "locked user after exceeding maximum failures until {$user->lockedUntil}", $user->id);
             }
-            $this->userdao->update($user);
+            $this->data->updateUser($user);
             sleep(1); // further delay of brute force attacks -- 1 sec is bearable for humans
             return false;
         }
@@ -92,7 +90,7 @@ class AuthService
         $user->failedLogins = 0;
         $user->lastLoginOn = strftime(ISODATETIME);
         $user->lastLoginFrom = $_SERVER['REMOTE_ADDR'];
-        $this->userdao->update($user);
+        $this->data->updateUser($user);
 
         $this->user = $user;
         $this->session->write('userid', $user->id);
@@ -165,8 +163,7 @@ class AuthService
 }
 
 $app->service('auth', function () use ($app) {
-    $userdao = $app['userdao'];
-    $auditlogdao = $app['auditlogdao'];
+    $dataservice = $app['dataservice'];
     $session = $app('session');
-    return new AuthService($userdao, $auditlogdao, $session, $app);
+    return new AuthService($dataservice, $session, $app);
 });

@@ -102,14 +102,12 @@ class Game
 class GameDAO
 {
     private $db;
-    private $maxgames;
-    public function __construct(DBAccess &$db, $maxgames)
+    public function __construct(DBAccess &$db)
     {
         $this->db = $db;
-        $this->maxgames = $maxgames;
     }
 
-    public function loadAllAfter($timestamp)
+    public function loadAllAfter($timestamp, $maxgames = 100)
     {
         $results = array();
         $sql = <<<HERE
@@ -139,7 +137,7 @@ ORDER BY
     `id` ASC
 HERE;
         // this cannot be passed as a parameter, so let's build the sql through concatenation
-        $sql .= " LIMIT {$this->maxgames}";
+        $sql .= " LIMIT $maxgames";
         $rows = $this->db->query($sql, array('timestamp' => $timestamp));
         foreach ($rows as $row) {
             $results[] = Game::createFromArray($row);
@@ -273,6 +271,7 @@ HERE;
         $placeholders = implode(', ', $placeholders);
         $sql = "INSERT INTO `games` ($fields) VALUES ($placeholders)";
         $newId = $this->db->insert($sql, $arr);
+        $obj->id = $newId;
         return $newId;
     }
 
