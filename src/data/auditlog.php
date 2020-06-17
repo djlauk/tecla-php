@@ -29,8 +29,8 @@ class Auditlog
             'object' => $this->object,
             'message' => $this->message,
             'metaVersion' => $this->metaVersion,
-            'metaCreatedOn' => $this->metaCreatedOn,
-            'metaUpdatedOn' => $this->metaUpdatedOn,
+            'metaCreatedOn' => \tecla\util\dbFormatDateTime($this->metaCreatedOn),
+            'metaUpdatedOn' => \tecla\util\dbFormatDateTime($this->metaUpdatedOn),
         );
     }
 
@@ -42,8 +42,8 @@ class Auditlog
         $this->object = $arr['object'] ?? $this->object;
         $this->message = $arr['message'] ?? $this->message;
         $this->metaVersion = $arr['metaVersion'] ?? $this->metaVersion;
-        $this->metaCreatedOn = $arr['metaCreatedOn'] ?? $this->metaCreatedOn;
-        $this->metaUpdatedOn = $arr['metaUpdatedOn'] ?? $this->metaUpdatedOn;
+        $this->metaCreatedOn = isset($arr['metaCreatedOn']) ? \tecla\util\dbParseDateTime($arr['metaCreatedOn']) : $this->metaCreatedOn;
+        $this->metaUpdatedOn = isset($arr['metaUpdatedOn']) ? \tecla\util\dbParseDateTime($arr['metaUpdatedOn']) : $this->metaUpdatedOn;
     }
 
     public static function createFromArray($arr)
@@ -116,13 +116,13 @@ HERE;
         return is_null($row) ? null : Auditlog::createFromArray($row);
     }
 
-    public function insert(&$obj)
+    public function insert(\tecla\data\Auditlog &$obj)
     {
         $obj->metaVersion = 1;
+        $obj->metaUpdatedOn = \tecla\util\dbTime();
+        $obj->metaCreatedOn = $obj->metaUpdatedOn;
         $arr = $obj->toArray();
         unset($arr['id']);
-        unset($arr['metaUpdatedOn']);
-        unset($arr['metaCreatedOn']);
         $fields = array();
         $placeholders = array();
         foreach ($arr as $key => $value) {
@@ -133,6 +133,7 @@ HERE;
         $placeholders = implode(', ', $placeholders);
         $sql = "INSERT INTO `auditlog` ($fields) VALUES ($placeholders)";
         $newId = $this->db->insert($sql, $arr);
+        $obj->id = $newId;
         return $newId;
     }
 }

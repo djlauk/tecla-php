@@ -44,8 +44,7 @@ class GameService
             return false;
         }
         $now = time();
-        $start = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $game->startTime);
-        if ($start->getTimestamp() < $now) {
+        if ($game->startTime->getTimestamp() < $now) {
             return false;
         }
         $user = $this->auth->getUser();
@@ -74,8 +73,7 @@ class GameService
             return false;
         }
         $now = time();
-        $start = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $game->startTime);
-        if ($start->getTimestamp() < $now) {
+        if ($game->startTime->getTimestamp() < $now) {
             return false;
         }
         return true;
@@ -101,21 +99,22 @@ class GameService
         }
         $count = 0;
         $oneDay = new \DateInterval('P1D');
-        $t = \DateTime::createFromFormat('Y-m-d\\TH:i:s', "${firstDay}T00:00:00");
-        $end = \DateTime::createFromFormat('Y-m-d\\TH:i:s', "${lastDay}T23:59:59")->getTimeStamp();
-        while ($t->getTimeStamp() <= $end) {
-            $weekday = strftime('%w', $t->getTimeStamp());
+        $t = \tecla\util\dbParseDateTime("${firstDay}T00:00:00");
+        $end = \tecla\util\dbParseDateTime("${lastDay}T23:59:59")->getTimestamp();
+        while ($t->getTimestamp() <= $end) {
+            $weekday = strftime('%w', $t->getTimestamp());
             $dateStr = $t->format('Y-m-d');
             foreach ($templatesByWeekday[$weekday] as $item) {
+                die(var_export($item));
                 $g = new \tecla\data\Game();
-                $g->startTime = "${dateStr}T{$item->startTime}";
-                $g->endTime = "${dateStr}T{$item->endTime}";
+                $g->startTime = \tecla\util\dbParseDateTime("${dateStr}T{$item->startTime}");
+                $g->endTime = \tecla\util\dbParseDateTime("${dateStr}T{$item->endTime}");
                 $g->court = $item->court;
                 $g->status = GAME_AVAILABLE;
                 $newId = $this->data->insertGame($g);
                 $count++;
             }
-            $t->add($oneDay);
+            $t = $t->add($oneDay);
         }
         $this->auth->logAction('GAME:GENERATE', null, "generated $count games for range $firstDay - $lastDay");
 
@@ -125,7 +124,7 @@ class GameService
     public function isFreeGame(\tecla\data\Game &$game)
     {
         $now = time();
-        $s = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $game->startTime)->getTimestamp();
+        $s = $game->startTime->getTimestamp();
         return ($s > $now && $s - $now < $this->cfgFreeGameSeconds);
     }
 
@@ -207,7 +206,7 @@ class GameService
                     $g->player2_id = null;
                     $g->player3_id = null;
                     $g->player4_id = null;
-                    $g->notes = "Blocked by {$this->limeApp['auth']->getUser()->displayName} on $now";
+                    $g->notes = "Blocked by {$this->auth->getUser()->displayName} on $now";
                     $this->data->updateGame($g);
                     $this->auth->logAction('GAME:BULKBLOCK', "GAME:$id", "admin blocked game");
                 }

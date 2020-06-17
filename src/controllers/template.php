@@ -57,10 +57,11 @@ $app->post("/templates/save", function ($params) use ($app) {
     $auth = $app['auth'];
     $auth->requireRole('admin');
 
-    $newItem = tecla\data\Template::createFromArray($_POST);
     $data = $app['dataservice'];
-    $data->updateTemplate($newItem);
-    $auth->logAction('TEMPLATE:UPDATE', "TEMPLATE:{$newItem->id}");
+    $obj = $data->loadTemplateById($_POST['id']);
+    $obj->fromArray($_POST);
+    $data->updateTemplate($obj);
+    $auth->logAction('TEMPLATE:UPDATE', "TEMPLATE:{$obj->id}");
     $app->reroute('/templates');
 });
 
@@ -69,7 +70,7 @@ $app->get('/templates/generate-games', function () use ($app) {
     $auth->requireRole('admin');
 
     $g = $app['dataservice']->getLastGame();
-    $t = is_null($g) ? new \DateTimeImmutable() : \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $g->startTime);
+    $t = is_null($g) ? new \DateTimeImmutable() : $g->startTime;
     $data = array(
         'firstDay' => $t->modify('+1 day')->format('Y-m-d'),
         'lastDay' => $t->modify('+1 day')->modify('last day of this month')->format('Y-m-d'),
@@ -85,7 +86,7 @@ $app->post('/templates/generate-games', function () use ($app) {
 
     $firstDay = $_POST['firstDay'];
     $lastDay = $_POST['lastDay'];
-    $templates = $_POST['templates'];
+    $templates = $_POST['templates'] ?? array();
     $numGenerated = $app['gameservice']->generateGames($firstDay, $lastDay, $templates);
     $data = array(
         'firstDay' => $firstDay,

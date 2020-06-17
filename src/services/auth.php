@@ -16,10 +16,6 @@ define('ROLES', array(
     'admin' => 100,
 ));
 
-define('ISODATE', '%Y-%m-%d');
-define('ISODATETIME', '%Y-%m-%dT%H:%M:%S');
-define('ISOTIME', '%H:%M');
-
 define('MAX_LOGIN_TRIES', 10); // maximum number of tries before we temporarily lock the account
 define('LOCK_SECONDS', 300); // lock user for 5 minutes
 
@@ -65,7 +61,7 @@ class AuthService
         // handle user locking (temporary disabling to slow down brute force attacks)
         if (!is_null($user->lockedUntil)) {
             // still locked?
-            if ($user->lockedUntil >= strftime(ISODATETIME, time())) {
+            if ($user->lockedUntil->getTimestamp() >= time()) {
                 return false;
             }
             // lock expired. Let's reset.
@@ -77,7 +73,7 @@ class AuthService
             $this->logAction('LOGIN:FAIL', 'USER:' . $user->id, "failed login for user '$email' from {$_SERVER['REMOTE_ADDR']}", $user->id);
             $user->failedLogins++;
             if ($user->failedLogins >= MAX_LOGIN_TRIES) {
-                $user->lockedUntil = strftime(ISODATETIME, time() + 300);
+                $user->lockedUntil = \tecla\util\dbTime(time() + LOCK_SECONDS);
                 $this->logAction('USER:LOCK', 'USER:' . $user->id, "locked user after exceeding maximum failures until {$user->lockedUntil}", $user->id);
             }
             $this->data->updateUser($user);
@@ -88,7 +84,7 @@ class AuthService
         $this->logAction('LOGIN:SUCCESS', 'USER:' . $user->id, "user '$email' logged in from {$_SERVER['REMOTE_ADDR']}", $user->id);
         $user->lockedUntil = null;
         $user->failedLogins = 0;
-        $user->lastLoginOn = strftime(ISODATETIME);
+        $user->lastLoginOn = \tecla\util\dbTime();
         $user->lastLoginFrom = $_SERVER['REMOTE_ADDR'];
         $this->data->updateUser($user);
 

@@ -41,18 +41,16 @@ function getPlayer($userId, $userLookup)
     </tr>
 <?php foreach ($games as $g): ?>
     <?php
-$start = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $g->startTime);
-$end = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $g->endTime);
 $statusClass = $g->status === GAME_AVAILABLE ? 'available' : 'taken';
-$statusClass .= '-' . $start->format('H');
+$statusClass .= '-' . $g->startTime->format('H');
 ?>
     <tr>
         <td><input type="checkbox" name="selectedGames[]" value="<?=$g->id?>"></td>
         <td><div class="tecla-list-item-icon small <?=$statusClass?>"></div></td>
         <td><a href="<?=$this->routeUrl("/game/edit/{$g->id}")?>"><?=$g->id?></a></td>
-        <td><a href="<?=$this->routeUrl("/game/edit/{$g->id}")?>"><?=tecla\data\WEEKDAYS[$start->format('w')]?></a></td>
-        <td><?=$start->format('Y-m-d')?></td>
-        <td><?=$start->format('H:i')?> - <?=$end->format('H:i')?></td>
+        <td><a href="<?=$this->routeUrl("/game/edit/{$g->id}")?>"><?=tecla\data\WEEKDAYS[$g->startTime->format('w')]?></a></td>
+        <td><?=$g->startTime->format('Y-m-d')?></td>
+        <td><?=$g->startTime->format('H:i')?> - <?=$g->endTime->format('H:i')?></td>
         <td><?=htmlentities($g->court)?></td>
         <td><?=$g->status?></td>
         <td><?=getPlayer($g->player1_id, $userLookup)?></td>

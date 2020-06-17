@@ -31,8 +31,8 @@ class Template
             'court' => $this->court,
             'notes' => $this->notes,
             'metaVersion' => $this->metaVersion,
-            'metaCreatedOn' => $this->metaCreatedOn,
-            'metaUpdatedOn' => $this->metaUpdatedOn,
+            'metaCreatedOn' => \tecla\util\dbFormatDateTime($this->metaCreatedOn),
+            'metaUpdatedOn' => \tecla\util\dbFormatDateTime($this->metaUpdatedOn),
         );
     }
 
@@ -45,8 +45,8 @@ class Template
         $this->court = $arr['court'] ?? $this->court;
         $this->notes = $arr['notes'] ?? $this->notes;
         $this->metaVersion = $arr['metaVersion'] ?? $this->metaVersion;
-        $this->metaCreatedOn = $arr['metaCreatedOn'] ?? $this->metaCreatedOn;
-        $this->metaUpdatedOn = $arr['metaUpdatedOn'] ?? $this->metaUpdatedOn;
+        $this->metaCreatedOn = isset($arr['metaCreatedOn']) ? \tecla\util\dbParseDateTime($arr['metaCreatedOn']) : $this->metaCreatedOn;
+        $this->metaUpdatedOn = isset($arr['metaUpdatedOn']) ? \tecla\util\dbParseDateTime($arr['metaUpdatedOn']) : $this->metaUpdatedOn;
     }
 
     public static function createFromArray($arr)
@@ -119,10 +119,10 @@ HERE;
     public function insert(&$obj)
     {
         $obj->metaVersion = 1;
+        $obj->metaUpdatedOn = \tecla\util\dbTime();
+        $obj->metaCreatedOn = $obj->metaUpdatedOn;
         $arr = $obj->toArray();
         unset($arr['id']);
-        unset($arr['metaUpdatedOn']);
-        unset($arr['metaCreatedOn']);
         $fields = array();
         $placeholders = array();
         foreach ($arr as $key => $value) {
@@ -148,8 +148,8 @@ HERE;
         }
 
         $obj->metaVersion++;
+        $obj->metaUpdatedOn = \tecla\util\dbTime();
         $arr = $obj->toArray();
-        unset($arr['metaUpdatedOn']);
         unset($arr['metaCreatedOn']);
 
         $fields = array();

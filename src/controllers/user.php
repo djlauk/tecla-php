@@ -115,7 +115,7 @@ $app->post("/users/enable", function () use ($app) {
         $user->disabledOn = null;
         $action = 'USER:ENABLE';
     } else {
-        $user->disabledOn = strftime(ISODATETIME);
+        $user->disabledOn = \tecla\util\dbTime();
         $action = 'USER:DISABLE';
     }
     $data->updateUser($user);

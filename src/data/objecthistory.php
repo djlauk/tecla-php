@@ -25,7 +25,7 @@ class ObjectHistory
             'id' => $this->id,
             'version' => $this->version,
             'data' => $this->data,
-            'metaCreatedOn' => $this->metaCreatedOn,
+            'metaCreatedOn' => \tecla\util\dbFormatDateTime($this->metaCreatedOn),
         );
     }
 
@@ -35,7 +35,7 @@ class ObjectHistory
         $this->id = $arr['id'] ?? $this->id;
         $this->version = $arr['version'] ?? $this->version;
         $this->data = $arr['data'] ?? $this->data;
-        $this->metaCreatedOn = $arr['metaCreatedOn'] ?? $this->metaCreatedOn;
+        $this->metaCreatedOn = isset($arr['metaCreatedOn']) ? \tecla\util\dbParseDateTime($arr['metaCreatedOn']) : $this->metaCreatedOn;
     }
 
     public static function createFromArray($arr)
@@ -84,10 +84,11 @@ HERE;
 
     public function insert(ObjectHistory &$obj)
     {
+        $obj->metaCreatedOn = \tecla\util\dbTime();
         $arr = $obj->toArray();
-        unset($arr['metaCreatedOn']);
-        $sql = "INSERT INTO `objecthistory` (`type`, `id`, `version`, `data`) VALUES (:type, :id, :version, :data)";
+        $sql = "INSERT INTO `objecthistory` (`type`, `id`, `version`, `data`, `metaCreatedOn`) VALUES (:type, :id, :version, :data, :metaCreatedOn)";
         $newId = $this->db->insert($sql, $arr);
+        $obj->id = $newId;
         return $newId;
     }
 }

@@ -54,7 +54,7 @@ function getUser($userId, $userLookup)
     ?>
 	<tr>
 	    <td><a href="<?=$viewLink?>"><?=$e->id?></a></td>
-	    <td><a href="<?=$viewLink?>"><?=$e->metaCreatedOn?></a></td>
+	    <td><a href="<?=$viewLink?>"><?=$e->metaCreatedOn->format('Y-m-d H:i:s')?></a></td>
 	    <td><a href="<?=$userLink?>"><?=getUser($e->user_id, $userLookup)?></a></td>
 	    <td><?=htmlentities($e->action)?></td>
 	    <td><?php if ($historyLink): ?><a href="<?=$historyLink?>"><?=htmlentities($e->object)?></a><?php endif?></td>

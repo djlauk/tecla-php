@@ -7,16 +7,14 @@
 // For details see LICENSE.md.
 // ----------------------------------------------------------------------
 
-$start = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $game->startTime);
-$end = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $game->endTime);
 ?>
 
 <h1>Game details</h1>
 
 <table>
-    <tr><td>Date:</td><td><?=$start->format('Y-m-d')?></td></tr>
-    <tr><td>Start:</td><td><?=$start->format('H:i')?></td></tr>
-    <tr><td>End:</td><td><?=$end->format('H:i')?></td></tr>
+    <tr><td>Date:</td><td><?=$game->startTime->format('Y-m-d')?></td></tr>
+    <tr><td>Start:</td><td><?=$game->startTime->format('H:i')?></td></tr>
+    <tr><td>End:</td><td><?=$game->endTime->format('H:i')?></td></tr>
     <tr><td>Court:</td><td><?=htmlentities($game->court)?></td></tr>
     <tr><td>Status:</td><td><?=htmlentities($game->status)?></td></tr>
     <tr><td>Notes:</td><td><?=str_replace("\n", "<br>", htmlentities($game->notes))?></td></tr>
@@ -36,7 +34,7 @@ if ($this['auth']->isLoggedIn()): ?>
     <?php if ($canBook): ?><a class="button primary" href="<?=$this->routeUrl("/game/book/$id")?>">Book game</a><?php endif?>
     <?php if ($canCancel): ?><a class="button primary" href="<?=$this->routeUrl("/game/cancel/$id")?>">Cancel game</a><?php endif?>
     <?php if (!$canBook && $game->status === GAME_AVAILABLE && $this['auth']->hasRole('member')): ?>
-        <?php if ($game->startTime < strftime('%Y-%m-%d %H:%M:%S', time())): ?>
+        <?php if ($game->startTime->getTimestamp() < time()): ?>
         <div class="info message"><strong>You can&apos;t book this game.</strong><br>This game started in the past.</div>
         <?php elseif (count($nextGames > 0)): ?>
         <div class="info message"><strong>You can&apos;t book this game.</strong><br>Your next games is: <a href="<?=$this->routeUrl('/game/view/' . $nextGames[0]->id)?>"><?=$nextGames[0]->startTime?></a></div>

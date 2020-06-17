@@ -11,6 +11,6 @@
 <h1>History of <?=strtoupper($type)?>:<?=$id?></h1>
 
 <?php foreach ($entries as $e): ?>
-<h2>Version <?=$e->version?> (<?=$e->metaCreatedOn?>)</h2>
+<h2>Version <?=$e->version?> (<?=$e->metaCreatedOn->format('Y-m-d H:i:s')?>)</h2>
 <pre><?=htmlentities($e->data)?></pre>
 <?php endforeach?>

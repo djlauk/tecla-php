@@ -22,7 +22,7 @@ if (!isset($_SERVER['PATH_INFO'])) {
 }
 
 require_once __DIR__ . '/vendor/Lime/App.php';
-$app = new Lime\App();
+$app = new \Lime\App();
 
 // Because of Lime's DI capabilities and lazy evalution the order
 // doesn't really matter, but I still think, this is the right order...
@@ -37,6 +37,8 @@ if ($app['config.debug']) {
 }
 
 $app('session')->init();
+
+require_once __DIR__ . '/util.php';
 
 require_once __DIR__ . '/data/index.php';
 require_once __DIR__ . '/services/index.php';

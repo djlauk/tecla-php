@@ -14,9 +14,9 @@
 <table>
     <tr><td>Display name:</td><td><?=$user->displayName?></td></tr>
     <tr><td>Email:</td><td><?=$user->email?></td></tr>
-    <tr><td>Last log in:</td><td><?=$user->lastLoginOn?> (from <?=$user->lastLoginFrom ?? 'unknown address'?>)</td></tr>
+    <tr><td>Last log in:</td><td><?=\tecla\util\viewFormatLastLogin($user)?></td></tr>
     <tr><td>Failed login attempts:</td><td><?=$user->failedLogins?></td></tr>
-    <tr><td>Account created on:</td><td><?=$user->metaCreatedOn?></td></tr>
+    <tr><td>Account created on:</td><td><?=$user->metaCreatedOn->format('Y-m-d H:i:s')?></td></tr>
 </table>
 
 <div>

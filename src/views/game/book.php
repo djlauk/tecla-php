@@ -7,9 +7,6 @@
 // For details see LICENSE.md.
 // ----------------------------------------------------------------------
 
-$start = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $game->startTime);
-$end = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $game->endTime);
-
 function formTextArea($name, $label, $value)
 {
     $safeName = htmlentities($name);
@@ -64,9 +61,9 @@ function formSelectUsers($name, $label, $allUsers, $value, \tecla\Data\User &$cu
 <?php endif?>
 
 <table>
-    <tr><td>Date:</td><td><?=$start->format('Y-m-d')?></td></tr>
-    <tr><td>Start:</td><td><?=$start->format('H:i')?></td></tr>
-    <tr><td>End:</td><td><?=$end->format('H:i')?></td></tr>
+    <tr><td>Date:</td><td><?=$game->startTime->format('Y-m-d')?></td></tr>
+    <tr><td>Start:</td><td><?=$game->startTime->format('H:i')?></td></tr>
+    <tr><td>End:</td><td><?=$game->endTime->format('H:i')?></td></tr>
     <tr><td>Court:</td><td><?=htmlentities($game->court)?></td></tr>
     <tr><td>Status:</td><td><?=htmlentities($game->status)?></td></tr>
 </table>

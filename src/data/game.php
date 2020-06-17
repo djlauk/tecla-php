@@ -36,27 +36,27 @@ class Game
     // status
 
     public $id = null;
-    public $startTime = '';
-    public $endTime = '';
-    public $court = '';
+    public $startTime = null;
+    public $endTime = null;
+    public $court = null;
     public $player1_id = null;
     public $player2_id = null;
     public $player3_id = null;
     public $player4_id = null;
     public $tournament_id = null;
     public $winner = null;
-    public $status = '';
+    public $status = null;
     public $notes = null;
-    public $metaVersion = '';
-    public $metaCreatedOn = '';
-    public $metaUpdatedOn = '';
+    public $metaVersion = null;
+    public $metaCreatedOn = null;
+    public $metaUpdatedOn = null;
 
     public function toArray()
     {
         return array(
             'id' => $this->id,
-            'startTime' => $this->startTime,
-            'endTime' => $this->endTime,
+            'startTime' => \tecla\util\dbFormatDateTime($this->startTime),
+            'endTime' => \tecla\util\dbFormatDateTime($this->endTime),
             'court' => $this->court,
             'player1_id' => $this->player1_id,
             'player2_id' => $this->player2_id,
@@ -67,16 +67,16 @@ class Game
             'status' => $this->status,
             'notes' => $this->notes,
             'metaVersion' => $this->metaVersion,
-            'metaCreatedOn' => $this->metaCreatedOn,
-            'metaUpdatedOn' => $this->metaUpdatedOn,
+            'metaCreatedOn' => \tecla\util\dbFormatDateTime($this->metaCreatedOn),
+            'metaUpdatedOn' => \tecla\util\dbFormatDateTime($this->metaUpdatedOn),
         );
     }
 
     public function fromArray($arr)
     {
         $this->id = $arr['id'] ?? $this->id;
-        $this->startTime = $arr['startTime'] ?? $this->startTime;
-        $this->endTime = $arr['endTime'] ?? $this->endTime;
+        $this->startTime = isset($arr['startTime']) ? \tecla\util\dbParseDateTime($arr['startTime']) : $this->startTime;
+        $this->endTime = isset($arr['endTime']) ? \tecla\util\dbParseDateTime($arr['endTime']) : $this->endTime;
         $this->court = $arr['court'] ?? $this->court;
         $this->player1_id = $arr['player1_id'] ?? $this->player1_id;
         $this->player2_id = $arr['player2_id'] ?? $this->player2_id;
@@ -87,8 +87,8 @@ class Game
         $this->status = $arr['status'] ?? $this->status;
         $this->notes = $arr['notes'] ?? $this->notes;
         $this->metaVersion = $arr['metaVersion'] ?? $this->metaVersion;
-        $this->metaCreatedOn = $arr['metaCreatedOn'] ?? $this->metaCreatedOn;
-        $this->metaUpdatedOn = $arr['metaUpdatedOn'] ?? $this->metaUpdatedOn;
+        $this->metaCreatedOn = isset($arr['metaCreatedOn']) ? \tecla\util\dbParseDateTime($arr['metaCreatedOn']) : $this->metaCreatedOn;
+        $this->metaUpdatedOn = isset($arr['metaUpdatedOn']) ? \tecla\util\dbParseDateTime($arr['metaUpdatedOn']) : $this->metaUpdatedOn;
     }
 
     public static function createFromArray($arr)
@@ -107,14 +107,13 @@ class GameDAO
         $this->db = $db;
     }
 
-    public function loadAllAfter($timestamp, $maxgames = 100)
+    private function _sqlSelect()
     {
-        $results = array();
         $sql = <<<HERE
 SELECT
     `id`,
-    `startTime`,
-    `endTime`,
+    DATE_FORMAT(`startTime`, '%Y-%m-%dT%H:%i:%S') as `startTime`,
+    DATE_FORMAT(`endTime`, '%Y-%m-%dT%H:%i:%S') as `endTime`,
     `court`,
     `player1_id`,
     `player2_id`,
@@ -125,10 +124,18 @@ SELECT
     `status`,
     `notes`,
     `metaVersion`,
-    `metaCreatedOn`,
-    `metaUpdatedOn`
+    DATE_FORMAT(`metaCreatedOn`, '%Y-%m-%dT%H:%i:%S') as `metaCreatedOn`,
+    DATE_FORMAT(`metaUpdatedOn`, '%Y-%m-%dT%H:%i:%S') as `metaUpdatedOn`
 FROM
     `games`
+HERE;
+        return $sql;
+    }
+
+    public function loadAllAfter($timestamp, $maxgames = 100)
+    {
+        $results = array();
+        $sql = $this->_sqlSelect() . <<<HERE
 WHERE
     `startTime` >= :timestamp
 ORDER BY
@@ -147,25 +154,7 @@ HERE;
 
     public function loadById($id)
     {
-        $sql = <<<HERE
-SELECT
-    `id`,
-    `startTime`,
-    `endTime`,
-    `court`,
-    `player1_id`,
-    `player2_id`,
-    `player3_id`,
-    `player4_id`,
-    `tournament_id`,
-    `winner`,
-    `status`,
-    `notes`,
-    `metaVersion`,
-    `metaCreatedOn`,
-    `metaUpdatedOn`
-FROM
-    `games`
+        $sql = $this->_sqlSelect() . <<<HERE
 WHERE
     `id` = :id
 HERE;
@@ -180,25 +169,7 @@ HERE;
         }
         $results = array();
         $params = array('userid' => $userId);
-        $sql = <<<HERE
-SELECT
-    `id`,
-    `startTime`,
-    `endTime`,
-    `court`,
-    `player1_id`,
-    `player2_id`,
-    `player3_id`,
-    `player4_id`,
-    `tournament_id`,
-    `winner`,
-    `status`,
-    `notes`,
-    `metaVersion`,
-    `metaCreatedOn`,
-    `metaUpdatedOn`
-FROM
-    `games`
+        $sql = $this->_sqlSelect() . <<<HERE
 WHERE
     `startTime` >= CURRENT_TIMESTAMP()
     AND (
@@ -225,25 +196,7 @@ HERE;
 
     public function getLastGame()
     {
-        $sql = <<<HERE
-SELECT
-    `id`,
-    `startTime`,
-    `endTime`,
-    `court`,
-    `player1_id`,
-    `player2_id`,
-    `player3_id`,
-    `player4_id`,
-    `tournament_id`,
-    `winner`,
-    `status`,
-    `notes`,
-    `metaVersion`,
-    `metaCreatedOn`,
-    `metaUpdatedOn`
-FROM
-    `games`
+        $sql = $this->_sqlSelect() . <<<HERE
 ORDER BY
     `startTime` DESC,
     `court` DESC,
@@ -257,10 +210,10 @@ HERE;
     public function insert(&$obj)
     {
         $obj->metaVersion = 1;
+        $obj->metaUpdatedOn = \tecla\util\dbTime();
+        $obj->metaCreatedOn = $obj->metaUpdatedOn;
         $arr = $obj->toArray();
         unset($arr['id']);
-        unset($arr['metaUpdatedOn']);
-        unset($arr['metaCreatedOn']);
         $fields = array();
         $placeholders = array();
         foreach ($arr as $key => $value) {
@@ -286,8 +239,8 @@ HERE;
         }
 
         $obj->metaVersion++;
+        $obj->metaUpdatedOn = \tecla\util\dbTime();
         $arr = $obj->toArray();
-        unset($arr['metaUpdatedOn']);
         unset($arr['metaCreatedOn']);
 
         $fields = array();

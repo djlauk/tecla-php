@@ -34,7 +34,7 @@ class DataService
         $entry->type = $type;
         $entry->id = $obj->id;
         $entry->version = $obj->metaVersion;
-        $entry->data = json_encode($obj, JSON_PRETTY_PRINT);
+        $entry->data = json_encode($obj->toArray(), JSON_PRETTY_PRINT);
         $this->objecthistorydao->insert($entry);
     }
 

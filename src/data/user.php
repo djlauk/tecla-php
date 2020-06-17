@@ -22,9 +22,9 @@ class User
     public $verifiedOn = null;
     public $lastLoginOn = null;
     public $lastLoginFrom = null;
-    public $metaVersion = '';
-    public $metaCreatedOn = '';
-    public $metaUpdatedOn = '';
+    public $metaVersion = null;
+    public $metaCreatedOn = null;
+    public $metaUpdatedOn = null;
 
     public function toArray()
     {
@@ -35,14 +35,14 @@ class User
             'email' => $this->email,
             'role' => $this->role,
             'failedLogins' => $this->failedLogins,
-            'lockedUntil' => $this->lockedUntil,
-            'disabledOn' => $this->disabledOn,
-            'verifiedOn' => $this->verifiedOn,
-            'lastLoginOn' => $this->lastLoginOn,
+            'lockedUntil' => is_null($this->lockedUntil) ? null : \tecla\util\dbFormatDateTime($this->lockedUntil),
+            'disabledOn' => is_null($this->disabledOn) ? null : \tecla\util\dbFormatDateTime($this->disabledOn),
+            'verifiedOn' => is_null($this->verifiedOn) ? null : \tecla\util\dbFormatDateTime($this->verifiedOn),
+            'lastLoginOn' => is_null($this->lastLoginOn) ? null : \tecla\util\dbFormatDateTime($this->lastLoginOn),
             'lastLoginFrom' => $this->lastLoginFrom,
             'metaVersion' => $this->metaVersion,
-            'metaCreatedOn' => $this->metaCreatedOn,
-            'metaUpdatedOn' => $this->metaUpdatedOn,
+            'metaCreatedOn' => \tecla\util\dbFormatDateTime($this->metaCreatedOn),
+            'metaUpdatedOn' => \tecla\util\dbFormatDateTime($this->metaUpdatedOn),
         );
     }
 
@@ -54,14 +54,14 @@ class User
         $this->email = $arr['email'] ?? $this->email;
         $this->role = $arr['role'] ?? $this->role;
         $this->failedLogins = $arr['failedLogins'] ?? $this->failedLogins;
-        $this->lockedUntil = $arr['lockedUntil'] ?? $this->lockedUntil;
-        $this->disabledOn = $arr['disabledOn'] ?? $this->disabledOn;
-        $this->verifiedOn = $arr['verifiedOn'] ?? $this->verifiedOn;
-        $this->lastLoginOn = $arr['lastLoginOn'] ?? $this->lastLoginOn;
+        $this->lockedUntil = isset($arr['lockedUntil']) ? \tecla\util\dbParseDateTime($arr['lockedUntil']) : $this->lockedUntil;
+        $this->disabledOn = isset($arr['disabledOn']) ? \tecla\util\dbParseDateTime($arr['disabledOn']) : $this->disabledOn;
+        $this->verifiedOn = isset($arr['verifiedOn']) ? \tecla\util\dbParseDateTime($arr['verifiedOn']) : $this->verifiedOn;
+        $this->lastLoginOn = isset($arr['lastLoginOn']) ? \tecla\util\dbParseDateTime($arr['lastLoginOn']) : $this->lastLoginOn;
         $this->lastLoginFrom = $arr['lastLoginFrom'] ?? $this->lastLoginFrom;
         $this->metaVersion = $arr['metaVersion'] ?? $this->metaVersion;
-        $this->metaCreatedOn = $arr['metaCreatedOn'] ?? $this->metaCreatedOn;
-        $this->metaUpdatedOn = $arr['metaUpdatedOn'] ?? $this->metaUpdatedOn;
+        $this->metaCreatedOn = isset($arr['metaCreatedOn']) ? \tecla\util\dbParseDateTime($arr['metaCreatedOn']) : $this->metaCreatedOn;
+        $this->metaUpdatedOn = isset($arr['metaUpdatedOn']) ? \tecla\util\dbParseDateTime($arr['metaUpdatedOn']) : $this->metaUpdatedOn;
     }
 
     public static function createFromArray($arr)
@@ -215,10 +215,10 @@ HERE;
     public function insert(&$obj)
     {
         $obj->metaVersion = 1;
+        $obj->metaUpdatedOn = \tecla\util\dbTime();
+        $obj->metaCreatedOn = $obj->metaUpdatedOn;
         $arr = $obj->toArray();
         unset($arr['id']);
-        unset($arr['metaUpdatedOn']);
-        unset($arr['metaCreatedOn']);
         $fields = array();
         $placeholders = array();
         foreach ($arr as $key => $value) {
@@ -229,6 +229,7 @@ HERE;
         $placeholders = implode(', ', $placeholders);
         $sql = "INSERT INTO `users` ($fields) VALUES ($placeholders)";
         $newId = $this->db->insert($sql, $arr);
+        $obj->id = $newId;
         return $newId;
     }
 
@@ -243,8 +244,8 @@ HERE;
         }
 
         $obj->metaVersion++;
+        $obj->metaUpdatedOn = \tecla\util\dbTime();
         $arr = $obj->toArray();
-        unset($arr['metaUpdatedOn']);
         unset($arr['metaCreatedOn']);
 
         $fields = array();
