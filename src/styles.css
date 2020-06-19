@@ -199,6 +199,11 @@ textarea {
 	flex: 1 1 auto;
 }
 
+tr.changed {
+	background-color: var(--tecla-secondary);
+	color: var(--tecla-secondary-on);
+}
+
 /* color scale per hour */
 .available-00 {
 	background-color: hsl(var(--tecla-hue-available), 100%, 90%);
