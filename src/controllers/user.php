@@ -122,3 +122,30 @@ $app->post("/users/enable", function () use ($app) {
     $auth->logAction($action, "USER:$id");
     $app->reroute('/users');
 });
+
+$app->get('/users/reset-password/:id', function ($params) use ($app) {
+    $auth = $app['auth'];
+    $auth->requireRole('admin');
+
+    $id = $params['id'];
+    $user = $app['dataservice']->loadUserById($id);
+
+    $data = array(
+        'id' => $id,
+        'user' => $user,
+    );
+
+    return $this->render("views/user/reset-password.php with views/layout.php", $data);
+});
+
+$app->post('/users/reset-password', function () use ($app) {
+    $auth = $app['auth'];
+    $auth->requireRole('admin');
+
+    $data = $app['dataservice'];
+    $userService = $app['userservice'];
+    $id = $_POST['id'];
+    $user = $data->loadUserById($id);
+    $userService->setPassword($user, $_POST['password']);
+    $app->reroute("/users/view/{$user->id}");
+});

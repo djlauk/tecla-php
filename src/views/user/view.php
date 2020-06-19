@@ -9,7 +9,7 @@
 
 ?>
 
-<h1><?=$user->displayName?></h1>
+<h1><?=htmlentities($user->displayName)?></h1>
 
 <table>
     <tr><td>Email:</td><td><?=$user->email?></td></tr>
@@ -25,4 +25,5 @@
 <div>
     <a class="button primary" href="<?=$this->routeUrl('/users/edit/' . $id)?>">Edit user</a>
     <a class="button secondary" href="<?=$this->routeUrl('/users/enable/' . $id)?>">Enable / disable user</a>
+    <a class="button" href="<?=$this->routeUrl('/users/reset-password/' . $id)?>">Reset password</a>
 </div>

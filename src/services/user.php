@@ -75,7 +75,6 @@ class UserService
 
     public function setPassword(\tecla\data\User &$user, $password)
     {
-        $this->checkPasswordRules($password);
         $user->passwordHash = password_hash($password, PASSWORD_DEFAULT);
         $this->data->updateUser($user);
         $this->auth->logAction('USER:ADMINPWCHANGE', "USER:{$user->id}", "admin set password");
