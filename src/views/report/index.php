@@ -7,14 +7,9 @@
 // For details see LICENSE.md.
 // ----------------------------------------------------------------------
 
-namespace tecla\controllers;
+?>
+<h1>Reports</h1>
 
-require __DIR__ . '/auditlog.php';
-require __DIR__ . '/auth.php';
-require __DIR__ . '/game.php';
-require __DIR__ . '/home.php';
-require __DIR__ . '/objecthistory.php';
-require __DIR__ . '/profile.php';
-require __DIR__ . '/report.php';
-require __DIR__ . '/template.php';
-require __DIR__ . '/user.php';
+<ul>
+    <li><a href="<?=$this->routeUrl("/reports/guest-games")?>">Guest games</a></li>
+</ul>

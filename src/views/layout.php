@@ -25,6 +25,7 @@
         <a href="<?=$this->routeUrl('/templates')?>">Templates</a>
         <a href="<?=$this->routeUrl('/users')?>">Users</a>
         <a href="<?=$this->routeUrl('/auditlog/list/1')?>">Audit log</a>
+        <a href="<?=$this->routeUrl('/reports')?>">Reports</a>
         <?php endif?>
         <?php if ($this['auth']->isLoggedIn()): ?>
         <a href="<?=$this->routeUrl('/profile')?>">My account</a>

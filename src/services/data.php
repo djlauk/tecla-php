@@ -82,6 +82,11 @@ class DataService
         return $this->gamedao->getLastGame();
     }
 
+    public function loadGuestGames(\DateTimeImmutable $start, \DateTimeImmutable $end, $userId = null)
+    {
+        return $this->gamedao->loadGuestGames($start->format('Y-m-d') . 'T00:00:00', $end->format('Y-m-d') . 'T23:59:59', $userId);
+    }
+
     public function insertGame(\tecla\data\Game &$obj)
     {
         $newId = $this->gamedao->insert($obj);

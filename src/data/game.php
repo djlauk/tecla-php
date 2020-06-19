@@ -111,23 +111,24 @@ class GameDAO
     {
         $sql = <<<HERE
 SELECT
-    `id`,
-    DATE_FORMAT(`startTime`, '%Y-%m-%dT%H:%i:%S') as `startTime`,
-    DATE_FORMAT(`endTime`, '%Y-%m-%dT%H:%i:%S') as `endTime`,
-    `court`,
-    `player1_id`,
-    `player2_id`,
-    `player3_id`,
-    `player4_id`,
-    `tournament_id`,
-    `winner`,
-    `status`,
-    `notes`,
-    `metaVersion`,
-    DATE_FORMAT(`metaCreatedOn`, '%Y-%m-%dT%H:%i:%S') as `metaCreatedOn`,
-    DATE_FORMAT(`metaUpdatedOn`, '%Y-%m-%dT%H:%i:%S') as `metaUpdatedOn`
+    `g`.`id`,
+    DATE_FORMAT(`g`.`startTime`, '%Y-%m-%dT%H:%i:%S') as `startTime`,
+    DATE_FORMAT(`g`.`endTime`, '%Y-%m-%dT%H:%i:%S') as `endTime`,
+    `g`.`court`,
+    `g`.`player1_id`,
+    `g`.`player2_id`,
+    `g`.`player3_id`,
+    `g`.`player4_id`,
+    `g`.`tournament_id`,
+    `g`.`winner`,
+    `g`.`status`,
+    `g`.`notes`,
+    `g`.`metaVersion`,
+    DATE_FORMAT(`g`.`metaCreatedOn`, '%Y-%m-%dT%H:%i:%S') as `metaCreatedOn`,
+    DATE_FORMAT(`g`.`metaUpdatedOn`, '%Y-%m-%dT%H:%i:%S') as `metaUpdatedOn`
 FROM
-    `games`
+    `games` AS `g`
+
 HERE;
         return $sql;
     }
@@ -205,6 +206,40 @@ LIMIT 1
 HERE;
         $row = $this->db->querySingle($sql);
         return is_null($row) ? null : Game::createFromArray($row);
+    }
+
+    public function loadGuestGames($start, $end, $user_id = null)
+    {
+        $results = array();
+        $params = array('start' => $start, 'end' => $end);
+        $usercondition = '';
+        if (!is_null($user_id)) {
+            $params['user_id'] = $user_id;
+            $usercondition = '`g`.`player1_id` = :user_id AND';
+        }
+        $sql = $this->_sqlSelect() . <<<HERE
+LEFT JOIN `users` AS `p1` on (`g`.`player1_id` = `p1`.`id`)
+LEFT JOIN `users` AS `p2` on (`g`.`player2_id` = `p2`.`id`)
+LEFT JOIN `users` AS `p3` on (`g`.`player3_id` = `p3`.`id`)
+LEFT JOIN `users` AS `p4` on (`g`.`player4_id` = `p4`.`id`)
+WHERE
+  $usercondition
+  (`p1`.`role` = 'guest' OR `p2`.`role` = 'guest' OR `p3`.`role` = 'guest' OR `p4`.`role` = 'guest')
+  AND `g`.`startTime` >= :start
+  AND `g`.`endTime` <= :end
+ORDER BY
+    `p1`.`displayName` ASC,
+    `p1`.`email` ASC,
+    `p1`.`id` ASC,
+    `g`.`startTime` ASC,
+    `g`.`court` ASC,
+    `g`.`id` ASC
+HERE;
+        $rows = $this->db->query($sql, $params);
+        foreach ($rows as $row) {
+            $results[] = Game::createFromArray($row);
+        }
+        return $results;
     }
 
     public function insert(&$obj)
