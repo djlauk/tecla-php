@@ -10,16 +10,29 @@
 ?>
 <h1>Templates</h1>
 
-<ul class="tecla-list">
+<table>
+    <thead>
+    <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Weekday</th>
+        <th scope="col">Time</th>
+        <th scope="col">Court</th>
+    </tr>
+    </thead>
+    <tbody>
   <?php foreach ($items as $item): ?>
-    <li class="tecla-list-item">
-        <a href="<?=$this->routeUrl("/templates/edit/{$item->id}")?>">
-            <div><?=tecla\data\WEEKDAYS[$item->weekday]?></div>
-            <div class="second-line"><?=$item->startTime?> - <?=$item->endTime?>, <?=$item->court?></div>
-        </a>
-    </li>
-	<?php endforeach?>
-</ul>
+    <?php
+$link = $this->routeUrl("/templates/edit/{$item->id}");
+?>
+    <tr>
+        <td><a href="<?=$link?>"><?=$item->id?></a></td>
+        <td><a href="<?=$link?>"><?=tecla\data\WEEKDAYS[$item->weekday]?></a></td>
+        <td><a href="<?=$link?>"><?=$item->startTime?> - <?=$item->endTime?></a></td>
+        <td><a href="<?=$link?>"><?=$item->court?></a></td>
+    </tr>
+    <?php endforeach?>
+  </tbody>
+</table>
 
 <div>
     <a class="button primary" href="<?=$this->routeUrl('/templates/add')?>">Add template</a>
