@@ -17,18 +17,21 @@
         <th scope="col">Weekday</th>
         <th scope="col">Time</th>
         <th scope="col">Court</th>
+        <th scope="col"></th>
     </tr>
     </thead>
     <tbody>
   <?php foreach ($items as $item): ?>
     <?php
 $link = $this->routeUrl("/templates/edit/{$item->id}");
+$linkHistory = $this->routeUrl("/history/template/{$item->id}");
 ?>
     <tr>
         <td><a href="<?=$link?>"><?=$item->id?></a></td>
         <td><a href="<?=$link?>"><?=tecla\data\WEEKDAYS[$item->weekday]?></a></td>
         <td><a href="<?=$link?>"><?=$item->startTime?> - <?=$item->endTime?></a></td>
         <td><a href="<?=$link?>"><?=$item->court?></a></td>
+        <td><a href="<?=$linkHistory?>">view history</a></td>
     </tr>
     <?php endforeach?>
   </tbody>

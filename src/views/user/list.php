@@ -19,12 +19,14 @@
         <th scope="col">Role</th>
         <th scope="col">Disabled on</th>
         <th scope="col">Locked until</th>
+        <th scope="col"></th>
     </tr>
     </thead>
     <tbody>
   <?php foreach ($users as $user): ?>
     <?php
 $link = $this->routeUrl("/users/view/{$user->id}");
+$linkHistory = $this->routeUrl("/history/user/{$user->id}");
 ?>
     <tr>
         <td><a href="<?=$link?>"><?=htmlentities($user->id)?></a></td>
@@ -33,6 +35,7 @@ $link = $this->routeUrl("/users/view/{$user->id}");
         <td><?=htmlentities($user->role)?></td>
         <td><?=is_null($user->disabledOn) ? '-' : $user->disabledOn->format('Y-m-d H:i:s')?></td>
         <td><?=is_null($user->lockedUntil) ? '-' : $user->lockedUntil->format('Y-m-d H:i:s')?></td>
+        <td><a href="<?=$linkHistory?>">view history</a></td>
     </tr>
     <?php endforeach?>
   </tbody>

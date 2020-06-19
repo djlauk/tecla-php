@@ -25,24 +25,29 @@ function getPlayer($userId, $userLookup)
 
 <label>Select games</label>
 <table class="fullwidth">
+    <thead>
     <tr>
-        <th></th>
-        <th></th>
-        <th>ID</th>
-        <th>Weekday</th>
-        <th>Date</th>
-        <th>Time</th>
-        <th>Court</th>
-        <th>Status</th>
-        <th>Player 1</th>
-        <th>Player 2</th>
-        <th>Player 3</th>
-        <th>Player 4</th>
+        <th scope="col"></th>
+        <th scope="col"></th>
+        <th scope="col">ID</th>
+        <th scope="col">Weekday</th>
+        <th scope="col">Date</th>
+        <th scope="col">Time</th>
+        <th scope="col">Court</th>
+        <th scope="col">Status</th>
+        <th scope="col">Player 1</th>
+        <th scope="col">Player 2</th>
+        <th scope="col">Player 3</th>
+        <th scope="col">Player 4</th>
+        <th scope="col"></th>
     </tr>
+    </thead>
+    <tbody>
 <?php foreach ($games as $g): ?>
     <?php
 $statusClass = $g->status === GAME_AVAILABLE ? 'available' : 'taken';
 $statusClass .= '-' . $g->startTime->format('H');
+$linkHistory = $this->routeUrl("/history/game/{$g->id}");
 ?>
     <tr>
         <td><input type="checkbox" name="selectedGames[]" value="<?=$g->id?>"></td>
@@ -57,8 +62,10 @@ $statusClass .= '-' . $g->startTime->format('H');
         <td><?=getPlayer($g->player2_id, $userLookup)?></td>
         <td><?=getPlayer($g->player3_id, $userLookup)?></td>
         <td><?=getPlayer($g->player4_id, $userLookup)?></td>
+        <td><a href="<?=$linkHistory?>">view history</a></td>
     </tr>
 <?php endforeach?>
+    </tbody>
 </table>
 <div>
     <label for="operation">Select operation</label>
