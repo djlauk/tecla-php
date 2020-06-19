@@ -10,16 +10,33 @@
 ?>
 <h1>Users</h1>
 
-<ul class="tecla-list">
+<table class="fullwidth">
+    <thead>
+    <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Display name</th>
+        <th scope="col">Email</th>
+        <th scope="col">Role</th>
+        <th scope="col">Disabled on</th>
+        <th scope="col">Locked until</th>
+    </tr>
+    </thead>
+    <tbody>
   <?php foreach ($users as $user): ?>
-    <li class="tecla-list-item">
-        <a href="<?=$this->routeUrl("/users/view/{$user->id}")?>">
-            <div><?=$user->displayName?></div>
-            <div class="second-line"><?=$user->email?></div>
-        </a>
-    </li>
-	<?php endforeach?>
-</ul>
+    <?php
+$link = $this->routeUrl("/users/view/{$user->id}");
+?>
+    <tr>
+        <td><a href="<?=$link?>"><?=htmlentities($user->id)?></a></td>
+        <td><a href="<?=$link?>"><?=htmlentities($user->displayName)?></a></td>
+        <td><a href="<?=$link?>"><?=htmlentities($user->email)?></a></td>
+        <td><?=htmlentities($user->role)?></td>
+        <td><?=is_null($user->disabledOn) ? '-' : $user->disabledOn->format('Y-m-d H:i:s')?></td>
+        <td><?=is_null($user->lockedUntil) ? '-' : $user->lockedUntil->format('Y-m-d H:i:s')?></td>
+    </tr>
+    <?php endforeach?>
+  </tbody>
+</table>
 
 <div>
     <a class="button primary" href="<?=$this->routeUrl('/users/add')?>">Add user</a>
