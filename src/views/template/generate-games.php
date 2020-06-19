@@ -28,7 +28,7 @@
         <label>Templates to use</label>
         <table>
             <tr>
-                <th>Use?</th>
+                <th></th>
                 <th>Weekday</th>
                 <th>Time</th>
                 <th>Court</th>
@@ -44,6 +44,28 @@
         </table>
     </div>
     <div class="form-buttons">
+        <button class="button" id="markAll">Unselect all</button>
         <button class="button primary" type="submit">Generate</button>
     </div>
 </form>
+
+<script type="module">
+    const button = document.getElementById('markAll');
+    const checkboxes = Array.from(document.querySelectorAll('form input[type=checkbox]'));
+    const areAllChecked = () => checkboxes.every(el => el.checked);
+    const updateButtonText = (allChecked) => {
+        button.innerText = allChecked ? 'Unselect all' : 'Select all';
+    }
+
+    button.addEventListener('click', (event) => {
+        event.preventDefault();
+        const checkboxes = Array.from(document.querySelectorAll('form input[type=checkbox]'));
+        const allChecked = checkboxes.every(el => el.checked);
+        checkboxes.forEach(el => { el.checked = !allChecked; });
+        updateButtonText(!allChecked);
+    });
+
+    checkboxes.forEach(el => { el.addEventListener('change', (event) => {
+        updateButtonText(event.target.checked && areAllChecked())
+    })});
+</script>
