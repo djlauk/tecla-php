@@ -105,7 +105,6 @@ class GameService
             $weekday = strftime('%w', $t->getTimestamp());
             $dateStr = $t->format('Y-m-d');
             foreach ($templatesByWeekday[$weekday] as $item) {
-                die(var_export($item));
                 $g = new \tecla\data\Game();
                 $g->startTime = \tecla\util\dbParseDateTime("${dateStr}T{$item->startTime}");
                 $g->endTime = \tecla\util\dbParseDateTime("${dateStr}T{$item->endTime}");
