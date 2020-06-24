@@ -36,8 +36,8 @@ if ($this['auth']->isLoggedIn()): ?>
     <?php if (!$canBook && $game->status === GAME_AVAILABLE && $this['auth']->hasRole('member')): ?>
         <?php if ($game->startTime->getTimestamp() < time()): ?>
         <div class="info message"><strong>You can&apos;t book this game.</strong><br>This game started in the past.</div>
-        <?php elseif (count($nextGames > 0)): ?>
-        <div class="info message"><strong>You can&apos;t book this game.</strong><br>Your next games is: <a href="<?=$this->routeUrl('/game/view/' . $nextGames[0]->id)?>"><?=$nextGames[0]->startTime?></a></div>
+        <?php elseif (count($nextGames) > 0): ?>
+        <div class="info message"><strong>You can&apos;t book this game.</strong><br>Your next games is: <a href="<?=$this->routeUrl('/game/view/' . $nextGames[0]->id)?>"><?=$nextGames[0]->startTime->format('Y-m-d H:i')?></a></div>
         <?php endif?>
     <?php endif?>
 </div>
