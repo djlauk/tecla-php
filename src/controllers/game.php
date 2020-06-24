@@ -187,6 +187,9 @@ $app->post("/game/save", function () use ($app) {
     $data = $app['dataservice'];
     $id = $_POST['id'];
     $game = $data->loadGameById($id);
+    // form only has the H:i part, but fromArray() will expect the full time stamp
+    $_POST['startTime'] = $game->startTime->format('Y-m-d') . 'T' . $_POST['startTime'] . ':00';
+    $_POST['endTime'] = $game->startTime->format('Y-m-d') . 'T' . $_POST['endTime'] . ':00';
     $game->fromArray($_POST);
     $game->player1_id = $_POST['player1_id'] ?: null;
     $game->player2_id = $_POST['player2_id'] ?: null;
