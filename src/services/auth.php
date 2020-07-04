@@ -152,6 +152,10 @@ class AuthService
 
     public function logout()
     {
+        // already logged out
+        if (!$this->isLoggedIn()) {
+            return;
+        }
         $this->logAction('LOGIN:LOGOUT', 'USER:' . $this->user->id, "user '{$this->user->email}' logged out from {$_SERVER['REMOTE_ADDR']}");
         $this->user = null;
         $this->session->destroy();
