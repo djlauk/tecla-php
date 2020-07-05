@@ -44,32 +44,38 @@ function viewFormatWeekday(\DateTimeImmutable $d)
 
 function viewFormatDateTime(\DateTimeImmutable $d)
 {
-    return $d->format('d.m.Y H:i');
+    global $app;
+    return $d->format($app['config.dateformat/datetime']);
 }
 
 function viewFormatDate(\DateTimeImmutable $d)
 {
-    return $d->format('d.m.Y');
+    global $app;
+    return $d->format($app['config.dateformat/date']);
 }
 
 function viewFormatTime(\DateTimeImmutable $d)
 {
-    return $d->format('H:i');
+    global $app;
+    return $d->format($app['config.dateformat/time']);
 }
 
 function viewFormatTimestamp(\DateTimeImmutable $d)
 {
-    return $d->format('d.m.Y H:i:s');
+    global $app;
+    return $d->format($app['config.dateformat/timestamp']);
 }
 
 function viewFormatDateHomeList(\DateTimeImmutable $d)
 {
-    return $d->format('d. F');
+    global $app;
+    return $d->format($app['config.dateformat/homelist']);
 }
 
 function viewFormatDateHomeNextGame(\DateTimeImmutable $d)
 {
-    return $d->format('d. F H:i');
+    global $app;
+    return $d->format($app['config.dateformat/homenextgame']);
 }
 
 function viewGameStatusClass(\tecla\data\Game &$g)
