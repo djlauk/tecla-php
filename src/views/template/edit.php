@@ -6,6 +6,12 @@
 // tecla is open source under the terms of the MIT license.
 // For details see LICENSE.md.
 // ----------------------------------------------------------------------
+
+use function \tecla\util\widgetInput;
+use function \tecla\util\widgetSelect;
+use function \tecla\util\widgetTextArea;
+use function \tecla\util\widgetTimeInput;
+
 ?>
 <h1>Edit template <?=$item->id?></h1>
 
@@ -13,30 +19,21 @@
     <input name="id" type="hidden" value="<?=$item->id?>">
     <input name="metaVersion" type="hidden" value="<?=$item->metaVersion?>">
     <div>
-        <label for="weekday">Weekday</label>
-        <select id="weekday" name="weekday">
-            <?php foreach (tecla\data\WEEKDAYS as $num => $str): ?>
-                <option value="<?=$num?>"<?=$item->weekday == $num ? ' selected' : ''?>><?=$str?></option>
-            <?php endforeach?>
-        </select>
+        <?=widgetSelect('Weekday', 'weekday', \tecla\data\WEEKDAYS, array('required' => true, 'value' => $item->weekday))?>
     </div>
     <div>
-        <label for="startTime">Start time</label>
-        <input name="startTime" placeholder="hh:mm" regex="\d\d:\d\d" required value="<?=$item->startTime?>">
+        <?=widgetTimeInput('Start time', 'startTime', array('required' => true, 'value' => $item->startTime))?>
     </div>
     <div>
-        <label for="endTime">End time</label>
-        <input name="endTime" placeholder="hh:mm" regex="\d\d:\d\d" required value="<?=$item->endTime?>">
+        <?=widgetTimeInput('End time', 'endTime', array('required' => true, 'value' => $item->endTime))?>
     </div>
     <div>
-        <label for="court">Court</label>
-        <input name="court" placeholder="Wimbledon" required value="<?=htmlentities($item->court)?>">
+        <?=widgetInput('Court', 'court', array('required' => true, 'value' => $item->court, 'placeholder' => 'Wimbledon'))?>
     </div>
     <div>
-        <label for="notes" required>Notes</label>
-        <textarea name="notes" placeholder="Note to future self ..."><?=htmlentities($item->notes)?></textarea>
+        <?=widgetTextArea('Notes', 'notes', array('value' => $item->notes, 'placeholder' => 'Note to future self...'))?>
     </div>
-    <div>
+    <div class="form-buttons">
         <button class="button primary" type="submit">Save template</button>
         <a class="button secondary" href="<?=$this->routeUrl("/templates/delete/{$item->id}")?>">Delete template</a>
     </div>

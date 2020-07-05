@@ -7,6 +7,8 @@
 // For details see LICENSE.md.
 // ----------------------------------------------------------------------
 
+use function \tecla\util\viewParseDate;
+
 $app->get("/reports", function () use ($app) {
     $auth = $app['auth'];
     $auth->requireRole('admin');
@@ -20,8 +22,8 @@ $app->bind("/reports/guest-games", function () use ($app) {
 
     $dataservice = $app['dataservice'];
     $gameservice = $app['gameservice'];
-    $start = isset($_REQUEST['start']) ? new \DateTimeImmutable($_REQUEST['start']) : (new \DateTimeImmutable())->modify('first day of this month');
-    $end = isset($_REQUEST['end']) ? new \DateTimeImmutable($_REQUEST['end']) : (new \DateTimeImmutable())->modify('last day of this month');
+    $start = isset($_REQUEST['start']) ? viewParseDate($_REQUEST['start']) : (new \DateTimeImmutable())->modify('first day of this month');
+    $end = isset($_REQUEST['end']) ? viewParseDate($_REQUEST['end']) : (new \DateTimeImmutable())->modify('last day of this month');
     $games = $dataservice->loadGuestGames($start, $end);
     $userLookup = $app['userservice']->getUserLookupMap();
 

@@ -72,8 +72,8 @@ class TemplateDAO
 SELECT
     `id`,
     `weekday`,
-    `startTime`,
-    `endTime`,
+    DATE_FORMAT(`startTime`, '%H:%i') as `startTime`,
+    DATE_FORMAT(`endTime`, '%H:%i') as `endTime`,
     `court`,
     `notes`,
     `metaVersion`,
@@ -100,8 +100,8 @@ HERE;
 SELECT
     `id`,
     `weekday`,
-    `startTime`,
-    `endTime`,
+    DATE_FORMAT(`startTime`, '%H:%i') as `startTime`,
+    DATE_FORMAT(`endTime`, '%H:%i') as `endTime`,
     `court`,
     `notes`,
     `metaVersion`,

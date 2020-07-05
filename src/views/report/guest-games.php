@@ -9,6 +9,7 @@
 
 use function \tecla\util\viewFormatDate;
 use function \tecla\util\viewFormatTime;
+use function \tecla\util\widgetInput;
 
 function userHeader(\tecla\data\User &$u)
 {
@@ -90,10 +91,8 @@ $gameCount++;
 <hr>
 <h2>Change time range</h2>
 <form method="POST" action="<?=$this->routeUrl('reports/guest-games')?>">
-    <label for="start">Start</label>
-    <input id="start" name="start" value="<?=viewFormatDate($start)?>">
-    <label for="end">End</label>
-    <input id="end" name="end" value="<?=viewFormatDate($end)?>">
+    <div><?=widgetInput('Start', 'start', array('value' => viewFormatDate($start)))?></div>
+    <div><?=widgetInput('End', 'end', array('value' => viewFormatDate($end)))?></div>
     <div class="form-buttons">
         <button class="button primary" type="submit">Change</button>
     </div>

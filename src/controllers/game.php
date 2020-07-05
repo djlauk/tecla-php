@@ -48,7 +48,7 @@ $app->get("/game/book/:id", function ($params) use ($app) {
     $gameService = $app['gameservice'];
     $id = $params['id'];
     $game = $data->loadGameById($id);
-    $allUsers = $data->loadAllUsersForBooking();
+    $allUsers = $data->loadAllUsersForBooking($user->id);
 
     $canBook = $gameService->canBookGame($game);
     if (!$canBook) {
@@ -91,7 +91,7 @@ $app->post("/game/book", function () use ($app) {
         $data = array(
             'id' => $id,
             'user' => $user,
-            'allUsers' => $data->loadAllUsersForBooking(),
+            'allUsers' => $data->loadAllUsersForBooking($user->id),
             'game' => $game,
             'canBook' => $canBook,
             'problem' => $e->getMessage(),
@@ -187,7 +187,7 @@ $app->post("/game/save", function () use ($app) {
     $data = $app['dataservice'];
     $id = $_POST['id'];
     $game = $data->loadGameById($id);
-    // form only has the H:i part, but fromArray() will expect the full time stamp
+    // form only has the H:i part, but fromArray() will expect the full time stamp in DB format
     $_POST['startTime'] = $game->startTime->format('Y-m-d') . 'T' . $_POST['startTime'] . ':00';
     $_POST['endTime'] = $game->startTime->format('Y-m-d') . 'T' . $_POST['endTime'] . ':00';
     $game->fromArray($_POST);

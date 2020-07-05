@@ -7,30 +7,13 @@
 // For details see LICENSE.md.
 // ----------------------------------------------------------------------
 
-function formInput($name, $label, $attrs = null)
-{
-    $safeName = htmlentities($name);
-    $safeLabel = htmlentities($label);
-    $safeAttrs = '';
-    if (!is_null($attrs)) {
-        foreach ($attrs as $k => $v) {
-            $safeAttrs .= " $k=\"" . htmlentities($v) . '"';
-        }
-    }
-
-    return <<<HERE
-<div>
-    <label for="$safeName">$safeLabel</label>
-    <input name="$safeName" $safeAttrs>
-</div>
-HERE;
-}
+use function \tecla\util\widgetInput;
 ?>
 
 <h1>Edit profile</h1>
 
 <form method="POST" action="<?=$this->routeUrl('/profile/save')?>">
-    <?=formInput('email', 'Email', array('value' => $user->email, 'placeholder' => "my.email@example.org"))?>
+    <div><?=widgetInput('Email', 'email', array('value' => $user->email, 'placeholder' => "my.email@example.org"))?></div>
     <div>
         <button class="button primary" type="submit">Save</button>
     </div>

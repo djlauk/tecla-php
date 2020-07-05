@@ -98,6 +98,7 @@ $app->get("/users/enable/:id", function ($params) use ($app) {
     $data = array(
         'id' => $id,
         'user' => $user,
+        'isEnabled' => is_null($user->disabledOn),
     );
 
     return $this->render("views/user/enable.php with views/layout.php", $data);

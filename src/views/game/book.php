@@ -9,48 +9,8 @@
 
 use function \tecla\util\viewFormatDate;
 use function \tecla\util\viewFormatTime;
-
-function formTextArea($name, $label, $value)
-{
-    $safeName = htmlentities($name);
-    $safeLabel = htmlentities($label);
-    $safeValue = htmlentities($value);
-    return <<<HERE
-<div>
-    <label for="$safeName">$safeLabel</label>
-    <textarea name="$safeName">$safeValue</textarea>
-</div>
-HERE;
-}
-
-function formSelect($name, $label, $value, $options)
-{
-    $safeName = htmlentities($name);
-    $safeLabel = htmlentities($label);
-    $safeValue = htmlentities($value);
-    $optStr = '';
-    foreach ($options as $k => $v) {
-        $optStr .= "<option value=\"" . htmlentities($k) . "\"" . ($k == $value ? ' selected' : '') . ">" . htmlentities($v) . "</option>";
-    }
-    return <<<HERE
-<div>
-    <label for="$safeName">$safeLabel</label>
-    <select name="$safeName" value="$safeValue">$optStr</select>
-</div>
-HERE;
-}
-
-function formSelectUsers($name, $label, $allUsers, $value, \tecla\Data\User &$currentUser)
-{
-    $options = array('' => '-- no one --');
-    foreach ($allUsers as $u) {
-        if ($u->id === $currentUser->id) {
-            continue;
-        }
-        $options[$u->id] = $u->displayName;
-    }
-    return formSelect($name, $label, $value, $options);
-}
+use function \tecla\util\widgetSelectUsers;
+use function \tecla\util\widgetTextArea;
 ?>
 
 <h1>Book game</h1>
@@ -80,9 +40,11 @@ function formSelectUsers($name, $label, $allUsers, $value, \tecla\Data\User &$cu
         <label>Player 1</label>
         <div><?=$user->displayName?></div>
     </div>
-    <?=formSelectUsers('player2_id', 'Player 2', $allUsers, $game->player2_id, $user)?>
-    <?=formSelectUsers('player3_id', 'Player 3', $allUsers, $game->player3_id, $user)?>
-    <?=formSelectUsers('player4_id', 'Player 4', $allUsers, $game->player4_id, $user)?>
-    <?=formTextArea('notes', 'Notes', '')?>
-    <button class="button primary" type="submit">Book</button>
+    <div><?=widgetSelectUsers('Player 2', 'player2_id', $allUsers, array('value' => $game->player2_id))?></div>
+    <div><?=widgetSelectUsers('Player 3', 'player3_id', $allUsers, array('value' => $game->player3_id))?></div>
+    <div><?=widgetSelectUsers('Player 4', 'player4_id', $allUsers, array('value' => $game->player4_id))?></div>
+    <div><?=widgetTextArea('Notes', 'notes', array('value' => $game->notes))?></div>
+    <div class="form-buttons">
+        <button class="button primary" type="submit">Book</button>
+    </div>
 </form>
