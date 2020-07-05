@@ -7,6 +7,7 @@
 // For details see LICENSE.md.
 // ----------------------------------------------------------------------
 
+use function \tecla\util\viewFormatTimestamp;
 ?>
 
 <h1>History of <?=strtoupper($type)?>:<?=$id?></h1>
@@ -18,7 +19,7 @@ foreach ($entries as $idx => $e): ?>
 $data = json_decode($e->data, true);
 $prevData = $idx < $maxIdx ? json_decode($entries[$idx + 1]->data, true) : array();
 ?>
-<h2>Version <?=$e->version?> (<?=$e->metaCreatedOn->format('Y-m-d H:i:s')?>)</h2>
+<h2>Version <?=$e->version?> (<?=viewFormatTimestamp($e->metaCreatedOn)?>)</h2>
 <table>
 <?php foreach ($data as $k => $v): ?>
     <tr class="<?=$prevData[$k] == $data[$k] ? 'unchanged' : 'changed'?>"><td><?=htmlentities($k)?></td><td><?=htmlentities($v)?></td></th>

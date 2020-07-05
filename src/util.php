@@ -9,10 +9,6 @@
 
 namespace tecla\util;
 
-define('ISODATE', '%Y-%m-%d');
-define('ISODATETIME', '%Y-%m-%dT%H:%M:%S');
-define('ISOTIME', '%H:%M');
-
 function dbParseDateTime($s)
 {
     $d = \DateTimeImmutable::createFromFormat('Y-m-d\\TH:i:s', $s);
@@ -38,5 +34,47 @@ function viewFormatLastLogin(\tecla\data\User &$user)
     if (is_null($user->lastLoginOn)) {
         return '';
     }
-    return $user->lastLoginOn->format('Y-m-d H:i:s') . ' from ' . ($user->lastLoginFrom ?? 'unkown address');
+    return viewFormatTimestamp($user->lastLoginOn) . ' from ' . ($user->lastLoginFrom ?? 'unkown address');
+}
+
+function viewFormatWeekday(\DateTimeImmutable $d)
+{
+    return \tecla\data\WEEKDAYS[$d->format('w')];
+}
+
+function viewFormatDateTime(\DateTimeImmutable $d)
+{
+    return $d->format('d.m.Y H:i');
+}
+
+function viewFormatDate(\DateTimeImmutable $d)
+{
+    return $d->format('d.m.Y');
+}
+
+function viewFormatTime(\DateTimeImmutable $d)
+{
+    return $d->format('H:i');
+}
+
+function viewFormatTimestamp(\DateTimeImmutable $d)
+{
+    return $d->format('d.m.Y H:i:s');
+}
+
+function viewFormatDateHomeList(\DateTimeImmutable $d)
+{
+    return $d->format('d. F');
+}
+
+function viewFormatDateHomeNextGame(\DateTimeImmutable $d)
+{
+    return $d->format('d. F H:i');
+}
+
+function viewGameStatusClass(\tecla\data\Game &$g)
+{
+    $statusClass = $g->status === GAME_AVAILABLE ? 'available' : 'taken';
+    $statusClass .= '-' . $g->startTime->format('H');
+    return $statusClass;
 }

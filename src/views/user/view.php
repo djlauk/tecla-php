@@ -7,19 +7,20 @@
 // For details see LICENSE.md.
 // ----------------------------------------------------------------------
 
+use function \tecla\util\viewFormatTimestamp;
 ?>
 
 <h1><?=htmlentities($user->displayName)?></h1>
 
 <table>
     <tr><td>Email:</td><td><?=$user->email?></td></tr>
-    <tr><td>Email verified on:</td><td><?=is_null($user->verifiedOn) ? 'not verified' : $user->verfiedOn->format('Y-m-d H:i:s')?></td></tr>
+    <tr><td>Email verified on:</td><td><?=is_null($user->verifiedOn) ? 'not verified' : viewFormatTimestamp($user->verfiedOn)?></td></tr>
     <tr><td>Role:</td><td><?=$user->role?></td></tr>
     <tr><td>Last log in:</td><td><?=\tecla\util\viewFormatLastLogin($user)?></td></tr>
     <tr><td>Failed login attempts:</td><td><?=$user->failedLogins?></td></tr>
-    <tr><td>Locked out:</td><td><?=is_null($user->lockedUntil) ? 'not locked' : $user->lockedUntil->format('Y-m-d H:i:s')?></td></tr>
-    <tr><td>Disabled:</td><td><?=is_null($user->disabledOn) ? 'enabled' : $user->disabledOn->format('Y-m-d H:i:s')?></td></tr>
-    <tr><td>Created on:</td><td><?=$user->metaCreatedOn->format('Y-m-d H:i:s')?></td></tr>
+    <tr><td>Locked out:</td><td><?=is_null($user->lockedUntil) ? 'not locked' : viewFormatTimestamp($user->lockedUntil)?></td></tr>
+    <tr><td>Disabled:</td><td><?=is_null($user->disabledOn) ? 'enabled' : viewFormatTimestamp($user->disabledOn)?></td></tr>
+    <tr><td>Created on:</td><td><?=viewFormatTimestamp($user->metaCreatedOn)?></td></tr>
 </table>
 
 <div>

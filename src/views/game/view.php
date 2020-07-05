@@ -7,14 +7,17 @@
 // For details see LICENSE.md.
 // ----------------------------------------------------------------------
 
+use function \tecla\util\viewFormatDate;
+use function \tecla\util\viewFormatDateTime;
+use function \tecla\util\viewFormatTime;
 ?>
 
 <h1>Game details</h1>
 
 <table>
-    <tr><td>Date:</td><td><?=$game->startTime->format('Y-m-d')?></td></tr>
-    <tr><td>Start:</td><td><?=$game->startTime->format('H:i')?></td></tr>
-    <tr><td>End:</td><td><?=$game->endTime->format('H:i')?></td></tr>
+    <tr><td>Date:</td><td><?=viewFormatDate($game->startTime)?></td></tr>
+    <tr><td>Start:</td><td><?=viewFormatTime($game->startTime)?></td></tr>
+    <tr><td>End:</td><td><?=viewFormatTime($game->endTime)?></td></tr>
     <tr><td>Court:</td><td><?=htmlentities($game->court)?></td></tr>
     <tr><td>Status:</td><td><?=htmlentities($game->status)?></td></tr>
     <tr><td>Notes:</td><td><?=str_replace("\n", "<br>", htmlentities($game->notes))?></td></tr>
@@ -37,7 +40,7 @@ if ($this['auth']->isLoggedIn()): ?>
         <?php if ($game->startTime->getTimestamp() < time()): ?>
         <div class="info message"><strong>You can&apos;t book this game.</strong><br>This game started in the past.</div>
         <?php elseif (count($nextGames) > 0): ?>
-        <div class="info message"><strong>You can&apos;t book this game.</strong><br>Your next games is: <a href="<?=$this->routeUrl('/game/view/' . $nextGames[0]->id)?>"><?=$nextGames[0]->startTime->format('Y-m-d H:i')?></a></div>
+        <div class="info message"><strong>You can&apos;t book this game.</strong><br>Your next games is: <a href="<?=$this->routeUrl('/game/view/' . $nextGames[0]->id)?>"><?=viewFormatDateTime($nextGames[0]->startTime)?></a></div>
         <?php endif?>
     <?php endif?>
 </div>

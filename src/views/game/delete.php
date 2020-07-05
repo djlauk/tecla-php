@@ -6,14 +6,17 @@
 // tecla is open source under the terms of the MIT license.
 // For details see LICENSE.md.
 // ----------------------------------------------------------------------
+
+use function \tecla\util\viewFormatDate;
+use function \tecla\util\viewFormatTime;
 ?>
 
 <h1>Delete game</h1>
 
 <table>
-    <tr><td>Date:</td><td><?=$game->startTime->format('Y-m-d')?></td></tr>
-    <tr><td>Start:</td><td><?=$game->startTime->format('H:i')?></td></tr>
-    <tr><td>End:</td><td><?=$game->endTime->format('H:i')?></td></tr>
+    <tr><td>Date:</td><td><?=viewFormatDate($game->startTime)?></td></tr>
+    <tr><td>Start:</td><td><?=viewFormatTime($game->startTime)?></td></tr>
+    <tr><td>End:</td><td><?=viewFormatTime($game->endTime)?></td></tr>
     <tr><td>Court:</td><td><?=htmlentities($game->court)?></td></tr>
     <tr><td>Status:</td><td><?=htmlentities($game->status)?></td></tr>
     <tr><td>Notes:</td><td><?=str_replace("\n", "<br>", htmlentities($game->notes))?></td></tr>

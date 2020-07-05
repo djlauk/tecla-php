@@ -7,6 +7,8 @@
 // For details see LICENSE.md.
 // ----------------------------------------------------------------------
 
+use function \tecla\util\viewFormatTime;
+
 function formInput($name, $label, $attrs = null)
 {
     $safeName = htmlentities($name);
@@ -79,8 +81,8 @@ function formSelectUsers($name, $label, $value, $allUsers)
 <form method="POST" action="<?=$this->routeUrl('/game/save')?>">
     <input type="hidden" name="id" value="<?=$game->id?>">
     <input type="hidden" name="metaVersion" value="<?=$game->metaVersion?>">
-    <?=formInput('startTime', 'Start time', array('value' => $game->startTime->format('H:i'), 'required' => '', 'placeholder' => 'hh:mm'))?>
-    <?=formInput('endTime', 'End time', array('value' => $game->endTime->format('H:i'), 'required' => '', 'placeholder' => 'hh:mm'))?>
+    <?=formInput('startTime', 'Start time', array('value' => viewFormatTime($game->startTime), 'required' => '', 'placeholder' => 'hh:mm'))?>
+    <?=formInput('endTime', 'End time', array('value' => viewFormatTime($game->endTime), 'required' => '', 'placeholder' => 'hh:mm'))?>
     <?=formInput('court', 'Court', array('value' => $game->court, 'required' => '', 'placeholder' => 'Wimbledon'))?>
     <?=formSelect('status', 'Status', $game->status, GAME_STATUS_VALUES)?>
 

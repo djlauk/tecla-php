@@ -7,6 +7,9 @@
 // For details see LICENSE.md.
 // ----------------------------------------------------------------------
 
+use function \tecla\util\viewFormatDate;
+use function \tecla\util\viewFormatTime;
+
 function userHeader(\tecla\data\User &$u)
 {
     $name = htmlentities($u->displayName);
@@ -45,7 +48,8 @@ function subtotal($gameCount)
     return "<p><strong>Total: $gameCount</strong></p>";
 }
 ?>
-<h1>Guest games <?=$start->format('Y-m-d')?> - <?=$end->format('Y-m-d')?></h1>
+<h1>Guest games <?=viewFormatDate($start)?>
+ - <?=viewFormatDate($end)?></h1>
 
 <?php if (count($games) === 0): ?>
 <p>No guest games in this time range.</p>
@@ -70,8 +74,8 @@ if ($g->player1_id !== $lastUser) {
 $gameCount++;
 ?>
     <tr>
-        <td><?=$g->startTime->format('Y-m-d')?></td>
-        <td><?=$g->startTime->format('H:i')?> - <?=$g->endTime->format('H:i')?></td>
+        <td><?=viewFormatDate($g->startTime)?></td>
+        <td><?=viewFormatTime($g->startTime)?> - <?=viewFormatTime($g->endTime)?></td>
         <td><?=htmlentities($g->status)?></td>
         <td><?=is_null($g->player1_id) ? '' : htmlentities($userLookup[$g->player1_id]->displayName)?></td>
         <td><?=is_null($g->player2_id) ? '' : htmlentities($userLookup[$g->player2_id]->displayName)?></td>
@@ -87,9 +91,9 @@ $gameCount++;
 <h2>Change time range</h2>
 <form method="POST" action="<?=$this->routeUrl('reports/guest-games')?>">
     <label for="start">Start</label>
-    <input id="start" name="start" value="<?=$start->format('Y-m-d')?>">
+    <input id="start" name="start" value="<?=viewFormatDate($start)?>">
     <label for="end">End</label>
-    <input id="end" name="end" value="<?=$end->format('Y-m-d')?>">
+    <input id="end" name="end" value="<?=viewFormatDate($end)?>">
     <div class="form-buttons">
         <button class="button primary" type="submit">Change</button>
     </div>

@@ -6,6 +6,9 @@
 // tecla is open source under the terms of the MIT license.
 // For details see LICENSE.md.
 // ----------------------------------------------------------------------
+
+use function \tecla\util\viewFormatTimestamp;
+
 function getUser($userId, $userLookup)
 {
     if (is_null($userId)) {return '';}
@@ -52,12 +55,12 @@ function getUser($userId, $userLookup)
     $viewLink = $this->routeUrl("/auditlog/view/{$e->id}");
     $userLink = $this->routeUrl("/users/view/{$e->user_id}");
     ?>
-	<tr>
-	    <td><a href="<?=$viewLink?>"><?=$e->id?></a></td>
-	    <td><a href="<?=$viewLink?>"><?=$e->metaCreatedOn->format('Y-m-d H:i:s')?></a></td>
-	    <td><a href="<?=$userLink?>"><?=getUser($e->user_id, $userLookup)?></a></td>
-	    <td><?=htmlentities($e->action)?></td>
-	    <td><?php if ($historyLink): ?><a href="<?=$historyLink?>"><?=htmlentities($e->object)?></a><?php endif?></td>
+					<tr>
+					    <td><a href="<?=$viewLink?>"><?=$e->id?></a></td>
+					    <td><a href="<?=$viewLink?>"><?=viewFormatTimestamp($e->metaCreatedOn)?></a></td>
+					    <td><a href="<?=$userLink?>"><?=getUser($e->user_id, $userLookup)?></a></td>
+					    <td><?=htmlentities($e->action)?></td>
+					    <td><?php if ($historyLink): ?><a href="<?=$historyLink?>"><?=htmlentities($e->object)?></a><?php endif?></td>
     </tr>
 <?php endforeach?>
 </table>
