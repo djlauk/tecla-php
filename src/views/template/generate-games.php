@@ -6,6 +6,9 @@
 // tecla is open source under the terms of the MIT license.
 // For details see LICENSE.md.
 // ----------------------------------------------------------------------
+
+use function \tecla\util\viewformatDate;
+use function \tecla\util\widgetInput;
 ?>
 <h1>Generate games</h1>
 
@@ -17,12 +20,10 @@
 
 <form method="POST" action="<?=$this->routeUrl('/templates/generate-games')?>">
     <div>
-        <label for="firstDay" required>First day</label>
-        <input id="firstDay" name="firstDay" placeholder="yyyy-mm-dd" regex="\d\d\d\d-\d\d-\d\d" required value="<?=$firstDay?>">
+        <?=widgetInput('First day', 'firstDay', array('value' => viewFormatDate($firstDay), 'required' => true))?>
     </div>
     <div>
-        <label for="lastDay" required>Last day</label>
-        <input name="lastDay" placeholder="yyyy-mm-dd" regex="\d\d\d\d-\d\d-\d\d" required value="<?=$lastDay?>">
+        <?=widgetInput('Last day', 'lastDay', array('value' => viewFormatDate($lastDay), 'required' => true))?>
     </div>
     <div>
         <label>Templates to use</label>

@@ -7,36 +7,8 @@
 // For details see LICENSE.md.
 // ----------------------------------------------------------------------
 
-function formField($name, $label, $value)
-{
-    $safeName = htmlentities($name);
-    $safeLabel = htmlentities($label);
-    $safeValue = htmlentities($value);
-
-    return <<<HERE
-<div>
-    <label for="$safeName">$safeLabel</label>
-    <input name="$safeName" value="$safeValue">
-</div>
-HERE;
-}
-
-function formSelect($name, $label, $value, $options)
-{
-    $safeName = htmlentities($name);
-    $safeLabel = htmlentities($label);
-    $safeValue = htmlentities($value);
-    $optStr = '';
-    foreach ($options as $k => $v) {
-        $optStr .= "<option value=\"" . htmlentities($k) . "\"" . ($k == $value ? ' selected' : '') . ">" . htmlentities($v) . "</option>";
-    }
-    return <<<HERE
-<div>
-    <label for="$safeName">$safeLabel</label>
-    <select name="$safeName" value="$safeValue">$optStr</select>
-</div>
-HERE;
-}
+use function \tecla\util\widgetInput;
+use function \tecla\util\widgetSelect;
 ?>
 
 <h1>Edit <?=$user->displayName?></h1>
@@ -44,10 +16,10 @@ HERE;
 <form method="POST" action="<?=$this->routeUrl('/users/save')?>">
     <input name="id" type="hidden" value="<?=$user->id?>">
     <input name="metaVersion" type="hidden" value="<?=$user->metaVersion?>">
-    <?=formField('displayName', 'Display name', $user->displayName)?>
-    <?=formField('email', 'Email', $user->email)?>
-    <?=formSelect('role', 'Role', $user->role, array('guest' => 'guest', 'member' => 'member', 'admin' => 'admin'))?>
-    <div>
+    <?=widgetInput('Display name', 'displayName', array('value' => $user->displayName, 'required' => true))?>
+    <?=widgetInput('Email', 'email', array('value' => $user->email, 'required' => true))?>
+    <?=widgetSelect('Role', 'role', array('guest' => 'guest', 'member' => 'member', 'admin' => 'admin'), array('value' => $user->role, 'required' => true))?>
+    <div class="form-buttons">
         <button class="button primary" type="submit">Save</button>
     </div>
 </form>

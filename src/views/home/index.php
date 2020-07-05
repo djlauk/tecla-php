@@ -7,6 +7,12 @@
 // For details see LICENSE.md.
 // ----------------------------------------------------------------------
 
+use function \tecla\util\viewFormatDateHomeList;
+use function \tecla\util\viewFormatDateHomeNextGame;
+use function \tecla\util\viewFormatTime;
+use function \tecla\util\viewFormatWeekday;
+use function \tecla\util\viewGameStatusClass;
+
 function getPlayers(\tecla\data\Game &$game, $userLookup)
 {
     $p = array();
@@ -24,7 +30,7 @@ function getPlayers(\tecla\data\Game &$game, $userLookup)
     Welcome, <?=$user->displayName?>!
     <?php if (count($nextGames) > 0): ?>
     <h2>Next game</h2>
-    <p>Your next game is on: <a href="<?=$this->routeUrl("/game/view/" . $nextGames[0]->id)?>"><?=$nextGames[0]->startTime->format('Y-m-d H:i')?>: <?=getPlayers($nextGames[0], $userLookup)?></a></p>
+    <p>Your next game is on: <a href="<?=$this->routeUrl("/game/view/" . $nextGames[0]->id)?>"><?=viewFormatDateHomeNextGame($nextGames[0]->startTime)?>: <?=getPlayers($nextGames[0], $userLookup)?></a></p>
     <?php endif?>
 </p>
 <?php endif?>
@@ -48,8 +54,7 @@ if ($thisWeek !== $lastWeek) {
     printWeekHeader($lastWeek);
     echo "<ul class=\"tecla-list\">";
 }
-$statusClass = $g->status === GAME_AVAILABLE ? 'available' : 'taken';
-$statusClass .= '-' . $g->startTime->format('H');
+$statusClass = viewGameStatusClass($g);
 ?>
     <li class="tecla-list-item">
         <a href="<?=$this->routeUrl("/game/view/{$g->id}")?>">
@@ -57,7 +62,7 @@ $statusClass .= '-' . $g->startTime->format('H');
         </a>
         <div class="tecla-list-item-content">
         <a href="<?=$this->routeUrl("/game/view/{$g->id}")?>">
-            <div><?=tecla\data\WEEKDAYS[$g->startTime->format('w')]?>, <?=$g->startTime->format('Y-m-d')?> <?=$g->startTime->format('H:i')?> - <?=$g->endTime->format('H:i')?>, <?=$g->court?></div>
+            <div><?=viewFormatWeekday($g->startTime)?>, <?=viewFormatDateHomeList($g->startTime)?> <?=viewFormatTime($g->startTime)?> - <?=viewFormatTime($g->endTime)?>, <?=$g->court?></div>
             <div class="second-line"><?=$g->status?><?php if (!is_null($user) && ($g->status !== GAME_AVAILABLE)): ?> &mdash; <?=getPlayers($g, $userLookup)?><?php endif?></div>
         </a>
         </div>

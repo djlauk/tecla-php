@@ -6,6 +6,8 @@
 // tecla is open source under the terms of the MIT license.
 // For details see LICENSE.md.
 // ----------------------------------------------------------------------
+
+use function \tecla\util\widgetInput;
 ?>
 <h1>Login</h1>
 <?php if ($problem): ?>
@@ -26,12 +28,10 @@
 
 <form method="POST" action="<?=$this->routeUrl('/login')?>">
     <div>
-        <label for="email" required>Email</label>
-        <input id="email" name="email" placeholder="my.name@example.org" regex="\S+@\S+\.\S+" required value="<?=$_POST['email'] ?? ''?>">
+        <?=widgetInput('Email', 'email', array('placeholder' => 'my.name@example.org', 'type' => 'email', 'required' => true, 'value' => $_POST['email'] ?? ''))?>
     </div>
     <div>
-        <label for="password" required>Password</label>
-        <input name="password" type="password" required>
+        <?=widgetInput('Password', 'password', array('required' => true, 'type' => 'password'))?>
     </div>
     <div class="form-buttons">
         <button class="button primary" type="submit">Login</button>

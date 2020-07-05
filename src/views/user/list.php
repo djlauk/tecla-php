@@ -7,6 +7,7 @@
 // For details see LICENSE.md.
 // ----------------------------------------------------------------------
 
+use function \tecla\util\viewFormatTimestamp;
 ?>
 <h1>Users</h1>
 
@@ -33,8 +34,8 @@ $linkHistory = $this->routeUrl("/history/user/{$user->id}");
         <td><a href="<?=$link?>"><?=htmlentities($user->displayName)?></a></td>
         <td><a href="<?=$link?>"><?=htmlentities($user->email)?></a></td>
         <td><?=htmlentities($user->role)?></td>
-        <td><?=is_null($user->disabledOn) ? '-' : $user->disabledOn->format('Y-m-d H:i:s')?></td>
-        <td><?=is_null($user->lockedUntil) ? '-' : $user->lockedUntil->format('Y-m-d H:i:s')?></td>
+        <td><?=is_null($user->disabledOn) ? '-' : viewFormatTimestamp($user->disabledOn)?></td>
+        <td><?=is_null($user->lockedUntil) ? '-' : viewFormatTimestamp($user->lockedUntil)?></td>
         <td><a href="<?=$linkHistory?>">view history</a></td>
     </tr>
     <?php endforeach?>

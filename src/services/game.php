@@ -79,7 +79,7 @@ class GameService
         return true;
     }
 
-    public function generateGames($firstDay, $lastDay, $selectedTemplates)
+    public function generateGames(\DateTimeImmutable $firstDay, \DateTimeImmutable $lastDay, $selectedTemplates)
     {
         $templatesByWeekday = array(
             0 => array(),
@@ -99,15 +99,18 @@ class GameService
         }
         $count = 0;
         $oneDay = new \DateInterval('P1D');
-        $t = \tecla\util\dbParseDateTime("${firstDay}T00:00:00");
-        $end = \tecla\util\dbParseDateTime("${lastDay}T23:59:59")->getTimestamp();
+        // normalize to start and end of day
+        $firstDay = $firstDay->setTime(0, 0, 0);
+        $lastDay = $lastDay->setTime(23, 59, 59);
+        $t = $firstDay;
+        $end = $lastDay->getTimestamp();
         while ($t->getTimestamp() <= $end) {
             $weekday = strftime('%w', $t->getTimestamp());
             $dateStr = $t->format('Y-m-d');
             foreach ($templatesByWeekday[$weekday] as $item) {
                 $g = new \tecla\data\Game();
-                $g->startTime = \tecla\util\dbParseDateTime("${dateStr}T{$item->startTime}");
-                $g->endTime = \tecla\util\dbParseDateTime("${dateStr}T{$item->endTime}");
+                $g->startTime = \tecla\util\dbParseDateTime("${dateStr}T{$item->startTime}:00");
+                $g->endTime = \tecla\util\dbParseDateTime("${dateStr}T{$item->endTime}:00");
                 $g->court = $item->court;
                 $g->status = GAME_AVAILABLE;
                 $newId = $this->data->insertGame($g);
@@ -115,6 +118,9 @@ class GameService
             }
             $t = $t->add($oneDay);
         }
+        // convert to strings for audit log
+        $firstDay = \tecla\util\dbFormatDateTime($firstDay);
+        $lastDay = \tecla\util\dbFormatDateTime($lastDay);
         $this->auth->logAction('GAME:GENERATE', null, "generated $count games for range $firstDay - $lastDay");
 
         return $count;

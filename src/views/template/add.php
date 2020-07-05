@@ -6,33 +6,30 @@
 // tecla is open source under the terms of the MIT license.
 // For details see LICENSE.md.
 // ----------------------------------------------------------------------
+
+use function \tecla\util\widgetInput;
+use function \tecla\util\widgetSelect;
+use function \tecla\util\widgetTextArea;
+use function \tecla\util\widgetTimeInput;
+
 ?>
 <h1>Add template</h1>
 
 <form method="POST" action="<?=$this->routeUrl('/templates/create')?>">
     <div>
-        <label for="weekday" required>Weekday</label>
-        <select id="weekday" name="weekday">
-            <?php foreach (tecla\data\WEEKDAYS as $num => $str): ?>
-                <option value="<?=$num?>"><?=$str?></option>
-            <?php endforeach?>
-        </select>
+        <?=widgetSelect('Weekday', 'weekday', \tecla\data\WEEKDAYS, array('required' => true))?>
     </div>
     <div>
-        <label for="startTime" required>Start time</label>
-        <input id="startTime" name="startTime" placeholder="hh:mm" regex="\d\d:\d\d" required>
+        <?=widgetTimeInput('Start time', 'startTime', array('required' => true))?>
     </div>
     <div>
-        <label for="endTime" required>End time</label>
-        <input name="endTime" placeholder="hh:mm" regex="\d\d:\d\d" required>
+        <?=widgetTimeInput('End time', 'endTime', array('required' => true))?>
     </div>
     <div>
-        <label for="court" required>Court</label>
-        <input name="court" placeholder="Wimbledon" required>
+        <?=widgetInput('Court', 'court', array('required' => true))?>
     </div>
     <div>
-        <label for="notes">Notes</label>
-        <textarea name="notes" placeholder="Note to future self ..."></textarea>
+        <?=widgetTextArea('Notes', 'notes', array('placeholder' => 'Note to future self...'))?>
     </div>
     <div class="form-buttons">
         <button class="button primary" type="submit">Add template</button>

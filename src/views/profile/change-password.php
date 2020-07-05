@@ -7,24 +7,7 @@
 // For details see LICENSE.md.
 // ----------------------------------------------------------------------
 
-function formInput($name, $label, $attrs = null)
-{
-    $safeName = htmlentities($name);
-    $safeLabel = htmlentities($label);
-    $safeAttrs = '';
-    if (!is_null($attrs)) {
-        foreach ($attrs as $k => $v) {
-            $safeAttrs .= " $k=\"" . htmlentities($v) . '"';
-        }
-    }
-
-    return <<<HERE
-<div>
-    <label for="$safeName">$safeLabel</label>
-    <input name="$safeName" $safeAttrs>
-</div>
-HERE;
-}
+use function \tecla\util\widgetInput;
 ?>
 
 <h1>Change password</h1>
@@ -49,10 +32,10 @@ HERE;
 <?php endif?>
 
 <form method="POST" action="<?=$this->routeUrl('/profile/change-password')?>">
-    <?=formInput('oldpassword', 'Current password', array('type' => 'password', 'required' => ''))?>
-    <?=formInput('newpassword', 'New password', array('type' => 'password', 'required' => ''))?>
-    <?=formInput('newpassword2', 'Repeat new password', array('type' => 'password', 'required' => ''))?>
-    <div>
+    <?=widgetInput('Current password', 'oldpassword', array('type' => 'password', 'required' => true))?>
+    <?=widgetInput('New password', 'newpassword', array('type' => 'password', 'required' => true))?>
+    <?=widgetInput('Repeat new password', 'newpassword2', array('type' => 'password', 'required' => true))?>
+    <div class="form-buttons">
         <button class="button primary" type="submit">Change password</button>
     </div>
 </form>

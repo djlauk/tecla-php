@@ -72,8 +72,8 @@ $app->get('/templates/generate-games', function () use ($app) {
     $g = $app['dataservice']->getLastGame();
     $t = is_null($g) ? new \DateTimeImmutable() : $g->startTime;
     $data = array(
-        'firstDay' => $t->modify('+1 day')->format('Y-m-d'),
-        'lastDay' => $t->modify('+1 day')->modify('last day of this month')->format('Y-m-d'),
+        'firstDay' => $t->modify('+1 day'),
+        'lastDay' => $t->modify('+1 day')->modify('last day of this month'),
         'templates' => $app['dataservice']->loadAllTemplates(),
         'problem' => false,
     );
@@ -84,8 +84,8 @@ $app->post('/templates/generate-games', function () use ($app) {
     $auth = $app['auth'];
     $auth->requireRole('admin');
 
-    $firstDay = $_POST['firstDay'];
-    $lastDay = $_POST['lastDay'];
+    $firstDay = \tecla\util\viewParseDate($_POST['firstDay']);
+    $lastDay = \tecla\util\viewParseDate($_POST['lastDay']);
     $templates = $_POST['templates'] ?? array();
     $numGenerated = $app['gameservice']->generateGames($firstDay, $lastDay, $templates);
     $data = array(

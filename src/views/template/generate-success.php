@@ -6,11 +6,13 @@
 // tecla is open source under the terms of the MIT license.
 // For details see LICENSE.md.
 // ----------------------------------------------------------------------
+
+use function \tecla\util\viewFormatDate;
 ?>
 <h1>Games generated successfully</h1>
 
 <ul>
-    <li>First day: <?=$firstDay?></li>
-    <li>Last day: <?=$lastDay?></li>
+    <li>First day: <?=viewFormatDate($firstDay)?></li>
+    <li>Last day: <?=viewFormatDate($lastDay)?></li>
     <li>Number of games: <?=$count?></li>
 </ul>

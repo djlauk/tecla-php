@@ -149,9 +149,19 @@ class DataService
         return $this->userdao->loadAll();
     }
 
-    public function loadAllUsersForBooking()
+    public function loadAllUsersForBooking($excludeUserId = null)
     {
-        return $this->userdao->loadAllForBooking();
+        $allUsers = $this->userdao->loadAllForBooking();
+        if (!is_null($excludeUserId)) {
+            foreach ($allUsers as $k => $v) {
+                if ($v->id !== $excludeUserId) {
+                    continue;
+                }
+                unset($allUsers[$k]);
+                break;
+            }
+        }
+        return $allUsers;
     }
 
     public function loadUserByEmail($email)

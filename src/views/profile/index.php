@@ -7,6 +7,8 @@
 // For details see LICENSE.md.
 // ----------------------------------------------------------------------
 
+use function \tecla\util\viewFormatLastLogin;
+use function \tecla\util\viewFormatTimestamp;
 ?>
 
 <h1>Account profile</h1>
@@ -14,9 +16,9 @@
 <table>
     <tr><td>Display name:</td><td><?=$user->displayName?></td></tr>
     <tr><td>Email:</td><td><?=$user->email?></td></tr>
-    <tr><td>Last log in:</td><td><?=\tecla\util\viewFormatLastLogin($user)?></td></tr>
+    <tr><td>Last log in:</td><td><?=viewFormatLastLogin($user)?></td></tr>
     <tr><td>Failed login attempts:</td><td><?=$user->failedLogins?></td></tr>
-    <tr><td>Account created on:</td><td><?=$user->metaCreatedOn->format('Y-m-d H:i:s')?></td></tr>
+    <tr><td>Account created on:</td><td><?=viewFormatTimestamp($user->metaCreatedOn)?></td></tr>
 </table>
 
 <div>

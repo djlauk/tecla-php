@@ -14,9 +14,8 @@
 <form method="POST" action="<?=$this->routeUrl('/users/reset-password')?>">
     <input name="id" type="hidden" value="<?=$user->id?>">
     <input name="metaVersion" type="hidden" value="<?=$user->metaVersion?>">
-    <label for="password">New password</label>
-    <input name="password" id="txtPassword">
-    <div>
+    <?=widgetInput('New password', 'password', array('required' => true))?>
+    <div class="form-buttons">
         <button id="btnRandom" class="button">Generate random password</button>
         <button class="button primary" type="submit">Set password</button>
     </div>
@@ -24,7 +23,7 @@
 
 <script type="module">
     const button = document.getElementById('btnRandom');
-    const input = document.getElementById('txtPassword');
+    const input = document.getElementById('password');
     const alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789~!@#$%^&*()-_+=/?<>,.[]{}';
 
     const randomPassword = () => {

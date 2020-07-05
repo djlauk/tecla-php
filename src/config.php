@@ -51,6 +51,17 @@ $app['config.auditlog'] = array(
     'pagesize' => 20,
 );
 
+// date formats for displays
+// for formatting options see https://www.php.net/manual/en/function.date.php
+$app['config.dateformat'] = array(
+    'date' => 'd.m.Y',
+    'datetime' => 'd.m.Y H:i',
+    'time' => 'H:i',
+    'timestamp' => 'd.m.Y H:i:s',
+    'homenextgame' => 'd. F H:i',
+    'homelist' => 'd. F',
+);
+
 // ======================================================================
 //
 // DO NOT REMOVE THIS PART BELOW!

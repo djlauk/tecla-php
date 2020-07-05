@@ -7,6 +7,11 @@
 // For details see LICENSE.md.
 // ----------------------------------------------------------------------
 
+use function \tecla\util\viewFormatDate;
+use function \tecla\util\viewFormatTime;
+use function \tecla\util\viewFormatWeekday;
+use function \tecla\util\viewGameStatusClass;
+
 function getPlayer($userId, $userLookup)
 {
     if (is_null($userId)) {return '';}
@@ -45,17 +50,16 @@ function getPlayer($userId, $userLookup)
     <tbody>
 <?php foreach ($games as $g): ?>
     <?php
-$statusClass = $g->status === GAME_AVAILABLE ? 'available' : 'taken';
-$statusClass .= '-' . $g->startTime->format('H');
+$statusClass = viewGameStatusClass($g);
 $linkHistory = $this->routeUrl("/history/game/{$g->id}");
 ?>
     <tr>
         <td><input type="checkbox" name="selectedGames[]" value="<?=$g->id?>"></td>
         <td><div class="tecla-list-item-icon small <?=$statusClass?>"></div></td>
         <td><a href="<?=$this->routeUrl("/game/edit/{$g->id}")?>"><?=$g->id?></a></td>
-        <td><a href="<?=$this->routeUrl("/game/edit/{$g->id}")?>"><?=tecla\data\WEEKDAYS[$g->startTime->format('w')]?></a></td>
-        <td><?=$g->startTime->format('Y-m-d')?></td>
-        <td><?=$g->startTime->format('H:i')?> - <?=$g->endTime->format('H:i')?></td>
+        <td><a href="<?=$this->routeUrl("/game/edit/{$g->id}")?>"><?=viewFormatWeekday($g->startTime)?></a></td>
+        <td><?=viewFormatDate($g->startTime)?></td>
+        <td><?=viewFormatTime($g->startTime)?> - <?=viewFormatTime($g->endTime)?></td>
         <td><?=htmlentities($g->court)?></td>
         <td><?=$g->status?></td>
         <td><?=getPlayer($g->player1_id, $userLookup)?></td>
