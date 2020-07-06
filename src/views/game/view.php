@@ -20,7 +20,9 @@ use function \tecla\util\viewFormatTime;
     <tr><td>End:</td><td><?=viewFormatTime($game->endTime)?></td></tr>
     <tr><td>Court:</td><td><?=htmlentities($game->court)?></td></tr>
     <tr><td>Status:</td><td><?=htmlentities($game->status)?></td></tr>
-    <tr><td>Notes:</td><td><?=str_replace("\n", "<br>", htmlentities($game->notes))?></td></tr>
+    <?php if ($this['auth']->isLoggedIn()): /* notes might also contain names; don't display */?>
+	<tr><td>Notes:</td><td><?=str_replace("\n", "<br>", htmlentities($game->notes))?></td></tr>
+	<?php endif?>
 </table>
 
 <?php /* only display players to logged in users, not to the world wide web at large */
