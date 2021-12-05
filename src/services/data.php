@@ -67,6 +67,11 @@ class DataService
         return $this->gamedao->loadAllAfter($timestamp, $maxgames);
     }
 
+    public function loadAllGamesBetween(\DateTimeImmutable $start, \DateTimeImmutable $end)
+    {
+        return $this->gamedao->loadAllBetween($start->format('Y-m-d') . 'T00:00:00', $end->format('Y-m-d') . 'T23:59:59');
+    }
+
     public function loadGameById($id)
     {
         return $this->gamedao->loadById($id);

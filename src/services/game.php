@@ -236,6 +236,53 @@ class GameService
 
         }
     }
+
+    public function getUsageStatistics(\DateTimeImmutable $start, \DateTimeImmutable $end) {
+        // initialize structure
+        $stats = array(
+            'total' => 0,
+            'total_by_hour' => array(),
+            'total_by_weekday' => array(),
+            'total_by_gamestatus' => array(
+                GAME_AVAILABLE => 0,
+                GAME_FREE => 0,
+                GAME_REGULAR => 0,
+                GAME_TRAINING => 0,
+                GAME_TOURNAMENT => 0,
+                GAME_BLOCKED => 0,
+            ),
+        );
+        for ($weekday = 0; $weekday < 7; $weekday++) {
+            $arr = array();
+            for ($hour = 0; $hour < 24; $hour++) {
+                $arr[$hour] = array(
+                    GAME_AVAILABLE => 0,
+                    GAME_FREE => 0,
+                    GAME_REGULAR => 0,
+                    GAME_TRAINING => 0,
+                    GAME_TOURNAMENT => 0,
+                    GAME_BLOCKED => 0,
+                );
+            }
+            $stats[$weekday] = $arr;
+            $stats['total_by_weekday'][$weekday] = 0;
+        }
+        for ($hour = 0; $hour < 24; $hour++) {
+            $stats['total_by_hour'][$hour] = 0;
+        }
+
+        $games = $this->data->loadAllGamesBetween($start, $end);
+        foreach ($games as $game) {
+            $weekday = $game->startTime->format('w');  // 0 = Sunday ... 6 = Saturday
+            $hour = $game->startTime->format('G');  // 24 hours, no leading zero
+            $stats['total']++;
+            $stats['total_by_weekday'][$weekday]++;
+            $stats['total_by_hour'][$hour]++;
+            $stats['total_by_gamestatus'][$game->status]++;
+            $stats[$weekday][$hour][$game->status]++;
+        }
+        return $stats;
+    }
 }
 
 $app->service('gameservice', function () use ($app) {

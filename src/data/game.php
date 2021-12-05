@@ -153,6 +153,25 @@ HERE;
         return $results;
     }
 
+    public function loadAllBetween($start, $end)
+    {
+        $results = array();
+        $sql = $this->_sqlSelect() . <<<HERE
+WHERE
+    `startTime` >= :start
+    AND `endTime` <= :end
+ORDER BY
+    `startTime` ASC,
+    `court` ASC,
+    `id` ASC
+HERE;
+        $rows = $this->db->query($sql, array('start' => $start, 'end' => $end));
+        foreach ($rows as $row) {
+            $results[] = Game::createFromArray($row);
+        }
+        return $results;
+    }
+
     public function loadById($id)
     {
         $sql = $this->_sqlSelect() . <<<HERE

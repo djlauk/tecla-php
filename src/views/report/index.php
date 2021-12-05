@@ -12,4 +12,5 @@
 
 <ul>
     <li><a href="<?=$this->routeUrl("/reports/guest-games")?>">Guest games</a></li>
+    <li><a href="<?=$this->routeUrl("/reports/times-usage")?>">Times usage statistics</a></li>
 </ul>

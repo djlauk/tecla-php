@@ -14,6 +14,7 @@
 	--tecla-gray-20: hsl(0, 0%, 20%);
 
 	--tecla-surface: white;
+	--tecla-surface-darker:	var(--tecla-gray-90);
 	--tecla-surface-on: var(--tecla-gray-20);
 	--tecla-border-color: var(--tecla-gray-40);
 
@@ -202,6 +203,31 @@ textarea {
 tr.changed {
 	background-color: var(--tecla-secondary);
 	color: var(--tecla-secondary-on);
+}
+
+table.data-table {
+	border-color: var(--tecla-border-color);
+	border-width: 1px;
+	border-style: solid;
+}
+
+table.data-table thead {
+	background-color: var(--tecla-border-color);
+	color: var(--tecla-surface);
+}
+
+table.data-table th,
+table.data-table td {
+	padding: var(--tecla-spacing);
+}
+
+table.data-table tbody tr {
+	background-color: var(--tecla-surface);
+	color: var(--tecla-surface-on);
+}
+
+table.data-table tbody tr:nth-child(even) {
+	background-color: var(--tecla-surface-darker);
 }
 
 /* color scale per hour */
