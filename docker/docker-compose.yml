@@ -15,6 +15,7 @@ services:
       - ./mysql-data:/var/lib/mysql/
     ports:
       - "9906:3306"
+    user: mysql
 
   phpmyadmin:
     depends_on:
