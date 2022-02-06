@@ -22,7 +22,7 @@ HERE;
 function tableStart()
 {
     return <<<HERE
-<table>
+<table class="data-table fullwidth">
 <thead>
     <tr>
         <th scope="col">Date</th>
