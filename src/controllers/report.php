@@ -22,8 +22,8 @@ $app->bind("/reports/guest-games", function () use ($app) {
 
     $dataservice = $app['dataservice'];
     $gameservice = $app['gameservice'];
-    $start = isset($_REQUEST['start']) ? viewParseDate($_REQUEST['start']) : (new \DateTimeImmutable())->modify('first day of this month');
-    $end = isset($_REQUEST['end']) ? viewParseDate($_REQUEST['end']) : (new \DateTimeImmutable())->modify('last day of this month');
+    $start = isset($_REQUEST['start']) ? viewParseDate($_REQUEST['start']) : (new \DateTimeImmutable())->modify('first day of last month');
+    $end = isset($_REQUEST['end']) ? viewParseDate($_REQUEST['end']) : (new \DateTimeImmutable())->modify('last day of last month');
     $games = $dataservice->loadGuestGames($start, $end);
     $userLookup = $app['userservice']->getUserLookupMap();
 
@@ -41,8 +41,8 @@ $app->bind("/reports/times-usage", function () use ($app) {
     $auth->requireRole('admin');
 
     $gameservice = $app['gameservice'];
-    $start = isset($_REQUEST['start']) ? viewParseDate($_REQUEST['start']) : (new \DateTimeImmutable())->modify('first day of this month');
-    $end = isset($_REQUEST['end']) ? viewParseDate($_REQUEST['end']) : (new \DateTimeImmutable())->modify('last day of this month');
+    $start = isset($_REQUEST['start']) ? viewParseDate($_REQUEST['start']) : (new \DateTimeImmutable())->modify('first day of last month');
+    $end = isset($_REQUEST['end']) ? viewParseDate($_REQUEST['end']) : (new \DateTimeImmutable())->modify('last day of last month');
     $stats = $gameservice->getUsageStatistics($start, $end);
 
     $data = array(
