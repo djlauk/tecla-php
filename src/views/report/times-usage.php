@@ -12,18 +12,60 @@ use function \tecla\util\viewFormatTime;
 use function \tecla\util\widgetInput;
 
 ?>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+
 <h1>Times and usage for <?=viewFormatDate($start)?>
  - <?=viewFormatDate($end)?></h1>
 
+<h2>Change time range</h2>
+<form method="POST" action="<?=$this->routeUrl('reports/times-usage')?>">
+    <div><?=widgetInput('Start', 'start', array('value' => viewFormatDate($start)))?></div>
+    <div><?=widgetInput('End', 'end', array('value' => viewFormatDate($end)))?></div>
+    <div class="form-buttons">
+        <button class="button primary" type="submit">Change</button>
+    </div>
+</form>
+<hr>
+
+
 <ul>
-    <li><a href="#by-status">Breakdown by status</a></li>
-    <li><a href="#by-hour">Breakdown by hour</a></li>
-    <li><a href="#by-weekday">Breakdown by weekday</a></li>
-    <li><a href="#detailed">Detailed breakdown</a></li>
+    <li><a href="#chart-by-weekday">Chart by weekday</a></li>
+    <li><a href="#breakdown-by-status">Breakdown by status</a></li>
+    <li><a href="#breakdown-by-hour">Breakdown by hour</a></li>
+    <li><a href="#breakdown-by-weekday">Breakdown by weekday</a></li>
+    <li><a href="#breakdown-detailed">Detailed breakdown</a></li>
 </ul>
 
 
-<h2 id="by-status">Breakdown by status</h2>
+<h2 id="chart-by-weekday">Chart by weekday</h2>
+
+<div id="chart-by-weekday-container"></div>
+<script type="module">
+    const stats = <?=json_encode($stats)?>;
+    const weekdays = <?=json_encode(\tecla\data\WEEKDAYS)?>;
+    const statusTypes = Object.keys(stats["total_by_gamestatus"]);
+    const chartTitle = "<?=viewFormatDate($start)?> - <?=viewFormatDate($end)?>";
+    const series = statusTypes.map((status) => {
+        const data = weekdays.map((_, wd) => {
+            let sum = 0;
+            for (let h=0; h<24; h++) {
+                 sum += stats[wd][h][status];
+            }
+            return sum;
+        })
+        return { name: status, data }
+    });
+    const chart = Highcharts.chart("chart-by-weekday-container", {
+        chart: { type: "column" },
+        title: { text: chartTitle },
+        xAxis: { categories: weekdays },
+        yAxis: { title: { text: "Number of slots/games" }},
+        plotOptions: { column: { stacking: "normal" } },
+        series
+    });
+</script>
+
+<h2 id="breakdown-by-status">Breakdown by status</h2>
 
 <table class="data-table fullwidth">
 <thead>
@@ -40,7 +82,7 @@ use function \tecla\util\widgetInput;
 </table>
 
 
-<h2 id="by-hour">Breakdown by hour</h2>
+<h2 id="breakdown-by-hour">Breakdown by hour</h2>
 
 <table class="data-table fullwidth">
 <thead>
@@ -57,7 +99,7 @@ use function \tecla\util\widgetInput;
 </table>
 
 
-<h2 id="by-weekday">Breakdown by weekday</h2>
+<h2 id="breakdown-by-weekday">Breakdown by weekday</h2>
 
 <table class="data-table fullwidth">
 <thead>
@@ -74,7 +116,7 @@ use function \tecla\util\widgetInput;
 </table>
 
 
-<h2 id="detailed">Detailed breakdown</h2>
+<h2 id="breakdown-detailed">Detailed breakdown</h2>
 
 <table class="data-table fullwidth">
 <thead>
@@ -126,13 +168,3 @@ use function \tecla\util\widgetInput;
     </tr>
 </tbody>
 </table>
-
-<hr>
-<h2>Change time range</h2>
-<form method="POST" action="<?=$this->routeUrl('reports/times-usage')?>">
-    <div><?=widgetInput('Start', 'start', array('value' => viewFormatDate($start)))?></div>
-    <div><?=widgetInput('End', 'end', array('value' => viewFormatDate($end)))?></div>
-    <div class="form-buttons">
-        <button class="button primary" type="submit">Change</button>
-    </div>
-</form>
