@@ -7,6 +7,7 @@
 // For details see LICENSE.md.
 // ----------------------------------------------------------------------
 
+use function \tecla\util\widgetInput;
 ?>
 
 <h1>Reset password for <?=htmlentities($user->displayName)?></h1>
