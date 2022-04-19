@@ -7,8 +7,8 @@
 // For details see LICENSE.md.
 // ----------------------------------------------------------------------
 
-use \tecla\util\widgetInput;
-use \tecla\util\widgetSelect;
+use function \tecla\util\widgetInput;
+use function \tecla\util\widgetSelect;
 ?>
 
 <h1>Add user</h1>
