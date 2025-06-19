@@ -176,7 +176,8 @@ class GameService
         if ($u->role === 'guest') {return;} // guest users may be placeholders and used multiple times. they don't count.
         $games = $this->data->loadFutureGamesForUser($userId, $gameType);
         if (count($games) === 0) {return;}
-        throw new \Exception("Player '{$u->displayName}' already has a {$games[0]->status} game on {$games[0]->startTime}");
+        $ts = \tecla\util\viewFormatDateTime($games[0]->startTime);
+        throw new \Exception("Player '{$u->displayName}' already has a {$games[0]->status} game on {$ts}");
     }
 
     public function bulkEdit($operation, $selectedGames)
